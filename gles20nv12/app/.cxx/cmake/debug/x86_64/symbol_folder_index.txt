@@ -1,0 +1,1 @@
+C:\Users\Q\Desktop\TTTTTTTTTTTT\ndk-samples-main\hello-gl2\app\build\intermediates\cmake\debug\obj\x86_64

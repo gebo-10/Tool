@@ -1,0 +1,304 @@
+The target system is: Android - 1 - x86_64
+The host system is: Windows - 10.0.25227 - AMD64
+Detecting C compiler ABI info compiled with the following output:
+Change Dir: C:/Users/Q/Desktop/TTTTTTTTTTTT/ndk-samples-main/hello-gl2/app/.cxx/cmake/debug/x86_64/CMakeFiles/CMakeTmp
+
+Run Build Command(s):D:\UnityHub\2020.3.36f1\Editor\Data\PlaybackEngines\AndroidPlayer\SDK\cmake\3.18.1\bin\ninja.exe cmTC_b560c && [1/2] Building C object CMakeFiles/cmTC_b560c.dir/CMakeCCompilerABI.c.o
+Android (7155654, based on r399163b1) clang version 11.0.5 (https://android.googlesource.com/toolchain/llvm-project 87f1315dfbea7c137aa2e6d362dbb457e388158d)
+Target: x86_64-none-linux-android21
+Thread model: posix
+InstalledDir: D:\UnityHub\2020.3.36f1\Editor\Data\PlaybackEngines\AndroidPlayer\SDK\ndk\22.1.7171670\toolchains\llvm\prebuilt\windows-x86_64\bin
+Found candidate GCC installation: D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/i686-linux-android\4.9.x
+Found candidate GCC installation: D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/x86_64-linux-android\4.9.x
+Selected GCC installation: D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/x86_64-linux-android/4.9.x
+Candidate multilib: .;@m64
+Selected multilib: .;@m64
+ (in-process)
+ "D:\\UnityHub\\2020.3.36f1\\Editor\\Data\\PlaybackEngines\\AndroidPlayer\\SDK\\ndk\\22.1.7171670\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang.exe" -cc1 -triple x86_64-none-linux-android21 -emit-obj -mrelax-all -mnoexecstack -disable-free -disable-llvm-verifier -discard-value-names -main-file-name CMakeCCompilerABI.c -mrelocation-model pic -pic-level 2 -pic-is-pie -mframe-pointer=all -fno-rounding-math -mconstructor-aliases -munwind-tables -target-cpu x86-64 -target-feature +sse4.2 -target-feature +popcnt -target-feature +cx16 -fno-split-dwarf-inlining -debug-info-kind=limited -dwarf-version=4 -debugger-tuning=gdb -v -ffunction-sections -fdata-sections -resource-dir "D:\\UnityHub\\2020.3.36f1\\Editor\\Data\\PlaybackEngines\\AndroidPlayer\\SDK\\ndk\\22.1.7171670\\toolchains\\llvm\\prebuilt\\windows-x86_64\\lib64\\clang\\11.0.5" -dependency-file "CMakeFiles\\cmTC_b560c.dir\\CMakeCCompilerABI.c.o.d" -MT CMakeFiles/cmTC_b560c.dir/CMakeCCompilerABI.c.o -sys-header-deps -D ANDROID -D _FORTIFY_SOURCE=2 -isysroot D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot -internal-isystem D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/local/include -internal-isystem "D:\\UnityHub\\2020.3.36f1\\Editor\\Data\\PlaybackEngines\\AndroidPlayer\\SDK\\ndk\\22.1.7171670\\toolchains\\llvm\\prebuilt\\windows-x86_64\\lib64\\clang\\11.0.5\\include" -internal-externc-isystem D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/x86_64-linux-android -internal-externc-isystem D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/include -internal-externc-isystem D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include -Wformat -fdebug-compilation-dir "C:\\Users\\Q\\Desktop\\TTTTTTTTTTTT\\ndk-samples-main\\hello-gl2\\app\\.cxx\\cmake\\debug\\x86_64\\CMakeFiles\\CMakeTmp" -ferror-limit 19 -stack-protector 2 -fgnuc-version=4.2.1 -o CMakeFiles/cmTC_b560c.dir/CMakeCCompilerABI.c.o -x c D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/cmake/3.18.1/share/cmake-3.18/Modules/CMakeCCompilerABI.c
+clang -cc1 version 11.0.5 based upon LLVM 11.0.5git default target x86_64-w64-windows-gnu
+ignoring nonexistent directory "D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/include"
+#include "..." search starts here:
+#include <...> search starts here:
+ D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/local/include
+ D:\UnityHub\2020.3.36f1\Editor\Data\PlaybackEngines\AndroidPlayer\SDK\ndk\22.1.7171670\toolchains\llvm\prebuilt\windows-x86_64\lib64\clang\11.0.5\include
+ D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/x86_64-linux-android
+ D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include
+End of search list.
+[2/2] Linking C executable cmTC_b560c
+Android (7155654, based on r399163b1) clang version 11.0.5 (https://android.googlesource.com/toolchain/llvm-project 87f1315dfbea7c137aa2e6d362dbb457e388158d)
+Target: x86_64-none-linux-android21
+Thread model: posix
+InstalledDir: D:\UnityHub\2020.3.36f1\Editor\Data\PlaybackEngines\AndroidPlayer\SDK\ndk\22.1.7171670\toolchains\llvm\prebuilt\windows-x86_64\bin
+Found candidate GCC installation: D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/i686-linux-android\4.9.x
+Found candidate GCC installation: D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/x86_64-linux-android\4.9.x
+Selected GCC installation: D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/x86_64-linux-android/4.9.x
+Candidate multilib: .;@m64
+Selected multilib: .;@m64
+ "D:\\UnityHub\\2020.3.36f1\\Editor\\Data\\PlaybackEngines\\AndroidPlayer\\SDK\\ndk\\22.1.7171670\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\ld" --sysroot=D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot -pie -z noexecstack --warn-shared-textrel -z now -z relro --hash-style=both --enable-new-dtags --eh-frame-hdr -m elf_x86_64 -dynamic-linker /system/bin/linker64 -o cmTC_b560c "D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/x86_64-linux-android/21\\crtbegin_dynamic.o" "-LD:\\UnityHub\\2020.3.36f1\\Editor\\Data\\PlaybackEngines\\AndroidPlayer\\SDK\\ndk\\22.1.7171670\\toolchains\\llvm\\prebuilt\\windows-x86_64\\lib64\\clang\\11.0.5\\lib\\linux\\x86_64" -LD:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/x86_64-linux-android/4.9.x -LD:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/x86_64-linux-android/4.9.x/../../../../x86_64-linux-android/lib/../lib64 -LD:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/x86_64-linux-android/21 -LD:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/x86_64-linux-android -LD:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/x86_64-linux-android/4.9.x/../../../../x86_64-linux-android/lib -LD:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib --exclude-libs libgcc.a --exclude-libs libgcc_real.a --exclude-libs libatomic.a --build-id=sha1 --no-rosegment --fatal-warnings --no-undefined --gc-sections CMakeFiles/cmTC_b560c.dir/CMakeCCompilerABI.c.o -lgcc -ldl -lc -lgcc -ldl "D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/x86_64-linux-android/21\\crtend_android.o"
+
+
+
+Parsed C implicit include dir info from above output: rv=done
+  found start of include info
+  found start of implicit include info
+    add: [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/local/include]
+    add: [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/lib64/clang/11.0.5/include]
+    add: [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/x86_64-linux-android]
+    add: [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include]
+  end of search list found
+  collapse include dir [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/local/include] ==> [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/local/include]
+  collapse include dir [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/lib64/clang/11.0.5/include] ==> [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/lib64/clang/11.0.5/include]
+  collapse include dir [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/x86_64-linux-android] ==> [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/x86_64-linux-android]
+  collapse include dir [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include] ==> [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include]
+  implicit include dirs: [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/local/include;D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/lib64/clang/11.0.5/include;D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/x86_64-linux-android;D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include]
+
+
+Parsed C implicit link information from above output:
+  link line regex: [^( *|.*[/\])(ld\.lld\.exe|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\]+-)?ld|collect2)[^/\]*( |$)]
+  ignore line: [Change Dir: C:/Users/Q/Desktop/TTTTTTTTTTTT/ndk-samples-main/hello-gl2/app/.cxx/cmake/debug/x86_64/CMakeFiles/CMakeTmp]
+  ignore line: []
+  ignore line: [Run Build Command(s):D:\UnityHub\2020.3.36f1\Editor\Data\PlaybackEngines\AndroidPlayer\SDK\cmake\3.18.1\bin\ninja.exe cmTC_b560c && [1/2] Building C object CMakeFiles/cmTC_b560c.dir/CMakeCCompilerABI.c.o]
+  ignore line: [Android (7155654  based on r399163b1) clang version 11.0.5 (https://android.googlesource.com/toolchain/llvm-project 87f1315dfbea7c137aa2e6d362dbb457e388158d)]
+  ignore line: [Target: x86_64-none-linux-android21]
+  ignore line: [Thread model: posix]
+  ignore line: [InstalledDir: D:\UnityHub\2020.3.36f1\Editor\Data\PlaybackEngines\AndroidPlayer\SDK\ndk\22.1.7171670\toolchains\llvm\prebuilt\windows-x86_64\bin]
+  ignore line: [Found candidate GCC installation: D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/i686-linux-android\4.9.x]
+  ignore line: [Found candidate GCC installation: D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/x86_64-linux-android\4.9.x]
+  ignore line: [Selected GCC installation: D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/x86_64-linux-android/4.9.x]
+  ignore line: [Candidate multilib: .]
+  ignore line: [@m64]
+  ignore line: [Selected multilib: .]
+  ignore line: [@m64]
+  ignore line: [ (in-process)]
+  ignore line: [ "D:\\UnityHub\\2020.3.36f1\\Editor\\Data\\PlaybackEngines\\AndroidPlayer\\SDK\\ndk\\22.1.7171670\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang.exe" -cc1 -triple x86_64-none-linux-android21 -emit-obj -mrelax-all -mnoexecstack -disable-free -disable-llvm-verifier -discard-value-names -main-file-name CMakeCCompilerABI.c -mrelocation-model pic -pic-level 2 -pic-is-pie -mframe-pointer=all -fno-rounding-math -mconstructor-aliases -munwind-tables -target-cpu x86-64 -target-feature +sse4.2 -target-feature +popcnt -target-feature +cx16 -fno-split-dwarf-inlining -debug-info-kind=limited -dwarf-version=4 -debugger-tuning=gdb -v -ffunction-sections -fdata-sections -resource-dir "D:\\UnityHub\\2020.3.36f1\\Editor\\Data\\PlaybackEngines\\AndroidPlayer\\SDK\\ndk\\22.1.7171670\\toolchains\\llvm\\prebuilt\\windows-x86_64\\lib64\\clang\\11.0.5" -dependency-file "CMakeFiles\\cmTC_b560c.dir\\CMakeCCompilerABI.c.o.d" -MT CMakeFiles/cmTC_b560c.dir/CMakeCCompilerABI.c.o -sys-header-deps -D ANDROID -D _FORTIFY_SOURCE=2 -isysroot D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot -internal-isystem D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/local/include -internal-isystem "D:\\UnityHub\\2020.3.36f1\\Editor\\Data\\PlaybackEngines\\AndroidPlayer\\SDK\\ndk\\22.1.7171670\\toolchains\\llvm\\prebuilt\\windows-x86_64\\lib64\\clang\\11.0.5\\include" -internal-externc-isystem D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/x86_64-linux-android -internal-externc-isystem D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/include -internal-externc-isystem D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include -Wformat -fdebug-compilation-dir "C:\\Users\\Q\\Desktop\\TTTTTTTTTTTT\\ndk-samples-main\\hello-gl2\\app\\.cxx\\cmake\\debug\\x86_64\\CMakeFiles\\CMakeTmp" -ferror-limit 19 -stack-protector 2 -fgnuc-version=4.2.1 -o CMakeFiles/cmTC_b560c.dir/CMakeCCompilerABI.c.o -x c D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/cmake/3.18.1/share/cmake-3.18/Modules/CMakeCCompilerABI.c]
+  ignore line: [clang -cc1 version 11.0.5 based upon LLVM 11.0.5git default target x86_64-w64-windows-gnu]
+  ignore line: [ignoring nonexistent directory "D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/include"]
+  ignore line: [#include "..." search starts here:]
+  ignore line: [#include <...> search starts here:]
+  ignore line: [ D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/local/include]
+  ignore line: [ D:\UnityHub\2020.3.36f1\Editor\Data\PlaybackEngines\AndroidPlayer\SDK\ndk\22.1.7171670\toolchains\llvm\prebuilt\windows-x86_64\lib64\clang\11.0.5\include]
+  ignore line: [ D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/x86_64-linux-android]
+  ignore line: [ D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include]
+  ignore line: [End of search list.]
+  ignore line: [[2/2] Linking C executable cmTC_b560c]
+  ignore line: [Android (7155654  based on r399163b1) clang version 11.0.5 (https://android.googlesource.com/toolchain/llvm-project 87f1315dfbea7c137aa2e6d362dbb457e388158d)]
+  ignore line: [Target: x86_64-none-linux-android21]
+  ignore line: [Thread model: posix]
+  ignore line: [InstalledDir: D:\UnityHub\2020.3.36f1\Editor\Data\PlaybackEngines\AndroidPlayer\SDK\ndk\22.1.7171670\toolchains\llvm\prebuilt\windows-x86_64\bin]
+  ignore line: [Found candidate GCC installation: D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/i686-linux-android\4.9.x]
+  ignore line: [Found candidate GCC installation: D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/x86_64-linux-android\4.9.x]
+  ignore line: [Selected GCC installation: D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/x86_64-linux-android/4.9.x]
+  ignore line: [Candidate multilib: .]
+  ignore line: [@m64]
+  ignore line: [Selected multilib: .]
+  ignore line: [@m64]
+  link line: [ "D:\\UnityHub\\2020.3.36f1\\Editor\\Data\\PlaybackEngines\\AndroidPlayer\\SDK\\ndk\\22.1.7171670\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\ld" --sysroot=D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot -pie -z noexecstack --warn-shared-textrel -z now -z relro --hash-style=both --enable-new-dtags --eh-frame-hdr -m elf_x86_64 -dynamic-linker /system/bin/linker64 -o cmTC_b560c "D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/x86_64-linux-android/21\\crtbegin_dynamic.o" "-LD:\\UnityHub\\2020.3.36f1\\Editor\\Data\\PlaybackEngines\\AndroidPlayer\\SDK\\ndk\\22.1.7171670\\toolchains\\llvm\\prebuilt\\windows-x86_64\\lib64\\clang\\11.0.5\\lib\\linux\\x86_64" -LD:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/x86_64-linux-android/4.9.x -LD:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/x86_64-linux-android/4.9.x/../../../../x86_64-linux-android/lib/../lib64 -LD:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/x86_64-linux-android/21 -LD:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/x86_64-linux-android -LD:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/x86_64-linux-android/4.9.x/../../../../x86_64-linux-android/lib -LD:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib --exclude-libs libgcc.a --exclude-libs libgcc_real.a --exclude-libs libatomic.a --build-id=sha1 --no-rosegment --fatal-warnings --no-undefined --gc-sections CMakeFiles/cmTC_b560c.dir/CMakeCCompilerABI.c.o -lgcc -ldl -lc -lgcc -ldl "D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/x86_64-linux-android/21\\crtend_android.o"]
+    arg [D:\\UnityHub\\2020.3.36f1\\Editor\\Data\\PlaybackEngines\\AndroidPlayer\\SDK\\ndk\\22.1.7171670\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\ld] ==> ignore
+    arg [--sysroot=D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot] ==> ignore
+    arg [-pie] ==> ignore
+    arg [-znoexecstack] ==> ignore
+    arg [--warn-shared-textrel] ==> ignore
+    arg [-znow] ==> ignore
+    arg [-zrelro] ==> ignore
+    arg [--hash-style=both] ==> ignore
+    arg [--enable-new-dtags] ==> ignore
+    arg [--eh-frame-hdr] ==> ignore
+    arg [-m] ==> ignore
+    arg [elf_x86_64] ==> ignore
+    arg [-dynamic-linker] ==> ignore
+    arg [/system/bin/linker64] ==> ignore
+    arg [-o] ==> ignore
+    arg [cmTC_b560c] ==> ignore
+    arg [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/x86_64-linux-android/21\\crtbegin_dynamic.o] ==> ignore
+    arg [-LD:\\UnityHub\\2020.3.36f1\\Editor\\Data\\PlaybackEngines\\AndroidPlayer\\SDK\\ndk\\22.1.7171670\\toolchains\\llvm\\prebuilt\\windows-x86_64\\lib64\\clang\\11.0.5\\lib\\linux\\x86_64] ==> dir [D:\\UnityHub\\2020.3.36f1\\Editor\\Data\\PlaybackEngines\\AndroidPlayer\\SDK\\ndk\\22.1.7171670\\toolchains\\llvm\\prebuilt\\windows-x86_64\\lib64\\clang\\11.0.5\\lib\\linux\\x86_64]
+    arg [-LD:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/x86_64-linux-android/4.9.x] ==> dir [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/x86_64-linux-android/4.9.x]
+    arg [-LD:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/x86_64-linux-android/4.9.x/../../../../x86_64-linux-android/lib/../lib64] ==> dir [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/x86_64-linux-android/4.9.x/../../../../x86_64-linux-android/lib/../lib64]
+    arg [-LD:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/x86_64-linux-android/21] ==> dir [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/x86_64-linux-android/21]
+    arg [-LD:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/x86_64-linux-android] ==> dir [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/x86_64-linux-android]
+    arg [-LD:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/x86_64-linux-android/4.9.x/../../../../x86_64-linux-android/lib] ==> dir [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/x86_64-linux-android/4.9.x/../../../../x86_64-linux-android/lib]
+    arg [-LD:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib] ==> dir [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib]
+    arg [--exclude-libs] ==> ignore
+    arg [libgcc.a] ==> ignore
+    arg [--exclude-libs] ==> ignore
+    arg [libgcc_real.a] ==> ignore
+    arg [--exclude-libs] ==> ignore
+    arg [libatomic.a] ==> ignore
+    arg [--build-id=sha1] ==> ignore
+    arg [--no-rosegment] ==> ignore
+    arg [--fatal-warnings] ==> ignore
+    arg [--no-undefined] ==> ignore
+    arg [--gc-sections] ==> ignore
+    arg [CMakeFiles/cmTC_b560c.dir/CMakeCCompilerABI.c.o] ==> ignore
+    arg [-lgcc] ==> lib [gcc]
+    arg [-ldl] ==> lib [dl]
+    arg [-lc] ==> lib [c]
+    arg [-lgcc] ==> lib [gcc]
+    arg [-ldl] ==> lib [dl]
+    arg [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/x86_64-linux-android/21\\crtend_android.o] ==> ignore
+  collapse library dir [D:\\UnityHub\\2020.3.36f1\\Editor\\Data\\PlaybackEngines\\AndroidPlayer\\SDK\\ndk\\22.1.7171670\\toolchains\\llvm\\prebuilt\\windows-x86_64\\lib64\\clang\\11.0.5\\lib\\linux\\x86_64] ==> [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/lib64/clang/11.0.5/lib/linux/x86_64]
+  collapse library dir [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/x86_64-linux-android/4.9.x] ==> [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/x86_64-linux-android/4.9.x]
+  collapse library dir [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/x86_64-linux-android/4.9.x/../../../../x86_64-linux-android/lib/../lib64] ==> [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/x86_64-linux-android/lib64]
+  collapse library dir [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/x86_64-linux-android/21] ==> [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/x86_64-linux-android/21]
+  collapse library dir [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/x86_64-linux-android] ==> [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/x86_64-linux-android]
+  collapse library dir [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/x86_64-linux-android/4.9.x/../../../../x86_64-linux-android/lib] ==> [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/x86_64-linux-android/lib]
+  collapse library dir [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib] ==> [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib]
+  implicit libs: [gcc;dl;c;gcc;dl]
+  implicit dirs: [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/lib64/clang/11.0.5/lib/linux/x86_64;D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/x86_64-linux-android/4.9.x;D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/x86_64-linux-android/lib64;D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/x86_64-linux-android/21;D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/x86_64-linux-android;D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/x86_64-linux-android/lib;D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib]
+  implicit fwks: []
+
+
+Detecting CXX compiler ABI info compiled with the following output:
+Change Dir: C:/Users/Q/Desktop/TTTTTTTTTTTT/ndk-samples-main/hello-gl2/app/.cxx/cmake/debug/x86_64/CMakeFiles/CMakeTmp
+
+Run Build Command(s):D:\UnityHub\2020.3.36f1\Editor\Data\PlaybackEngines\AndroidPlayer\SDK\cmake\3.18.1\bin\ninja.exe cmTC_6db4c && [1/2] Building CXX object CMakeFiles/cmTC_6db4c.dir/CMakeCXXCompilerABI.cpp.o
+Android (7155654, based on r399163b1) clang version 11.0.5 (https://android.googlesource.com/toolchain/llvm-project 87f1315dfbea7c137aa2e6d362dbb457e388158d)
+Target: x86_64-none-linux-android21
+Thread model: posix
+InstalledDir: D:\UnityHub\2020.3.36f1\Editor\Data\PlaybackEngines\AndroidPlayer\SDK\ndk\22.1.7171670\toolchains\llvm\prebuilt\windows-x86_64\bin
+Found candidate GCC installation: D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/i686-linux-android\4.9.x
+Found candidate GCC installation: D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/x86_64-linux-android\4.9.x
+Selected GCC installation: D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/x86_64-linux-android/4.9.x
+Candidate multilib: .;@m64
+Selected multilib: .;@m64
+ (in-process)
+ "D:\\UnityHub\\2020.3.36f1\\Editor\\Data\\PlaybackEngines\\AndroidPlayer\\SDK\\ndk\\22.1.7171670\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe" -cc1 -triple x86_64-none-linux-android21 -emit-obj -mrelax-all -mnoexecstack -disable-free -disable-llvm-verifier -discard-value-names -main-file-name CMakeCXXCompilerABI.cpp -mrelocation-model pic -pic-level 2 -pic-is-pie -mframe-pointer=all -fno-rounding-math -mconstructor-aliases -munwind-tables -target-cpu x86-64 -target-feature +sse4.2 -target-feature +popcnt -target-feature +cx16 -fno-split-dwarf-inlining -debug-info-kind=limited -dwarf-version=4 -debugger-tuning=gdb -v -ffunction-sections -fdata-sections -resource-dir "D:\\UnityHub\\2020.3.36f1\\Editor\\Data\\PlaybackEngines\\AndroidPlayer\\SDK\\ndk\\22.1.7171670\\toolchains\\llvm\\prebuilt\\windows-x86_64\\lib64\\clang\\11.0.5" -dependency-file "CMakeFiles\\cmTC_6db4c.dir\\CMakeCXXCompilerABI.cpp.o.d" -MT CMakeFiles/cmTC_6db4c.dir/CMakeCXXCompilerABI.cpp.o -sys-header-deps -D ANDROID -D _FORTIFY_SOURCE=2 -isysroot D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot -internal-isystem D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1 -internal-isystem D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/local/include -internal-isystem "D:\\UnityHub\\2020.3.36f1\\Editor\\Data\\PlaybackEngines\\AndroidPlayer\\SDK\\ndk\\22.1.7171670\\toolchains\\llvm\\prebuilt\\windows-x86_64\\lib64\\clang\\11.0.5\\include" -internal-externc-isystem D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/x86_64-linux-android -internal-externc-isystem D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/include -internal-externc-isystem D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include -Wformat -fdeprecated-macro -fdebug-compilation-dir "C:\\Users\\Q\\Desktop\\TTTTTTTTTTTT\\ndk-samples-main\\hello-gl2\\app\\.cxx\\cmake\\debug\\x86_64\\CMakeFiles\\CMakeTmp" -ferror-limit 19 -stack-protector 2 -fgnuc-version=4.2.1 -fcxx-exceptions -fexceptions -o CMakeFiles/cmTC_6db4c.dir/CMakeCXXCompilerABI.cpp.o -x c++ D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/cmake/3.18.1/share/cmake-3.18/Modules/CMakeCXXCompilerABI.cpp
+clang -cc1 version 11.0.5 based upon LLVM 11.0.5git default target x86_64-w64-windows-gnu
+ignoring nonexistent directory "D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/include"
+#include "..." search starts here:
+#include <...> search starts here:
+ D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1
+ D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/local/include
+ D:\UnityHub\2020.3.36f1\Editor\Data\PlaybackEngines\AndroidPlayer\SDK\ndk\22.1.7171670\toolchains\llvm\prebuilt\windows-x86_64\lib64\clang\11.0.5\include
+ D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/x86_64-linux-android
+ D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include
+End of search list.
+[2/2] Linking CXX executable cmTC_6db4c
+Android (7155654, based on r399163b1) clang version 11.0.5 (https://android.googlesource.com/toolchain/llvm-project 87f1315dfbea7c137aa2e6d362dbb457e388158d)
+Target: x86_64-none-linux-android21
+Thread model: posix
+InstalledDir: D:\UnityHub\2020.3.36f1\Editor\Data\PlaybackEngines\AndroidPlayer\SDK\ndk\22.1.7171670\toolchains\llvm\prebuilt\windows-x86_64\bin
+Found candidate GCC installation: D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/i686-linux-android\4.9.x
+Found candidate GCC installation: D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/x86_64-linux-android\4.9.x
+Selected GCC installation: D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/x86_64-linux-android/4.9.x
+Candidate multilib: .;@m64
+Selected multilib: .;@m64
+ "D:\\UnityHub\\2020.3.36f1\\Editor\\Data\\PlaybackEngines\\AndroidPlayer\\SDK\\ndk\\22.1.7171670\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\ld" --sysroot=D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot -pie -z noexecstack --warn-shared-textrel -z now -z relro --hash-style=both --enable-new-dtags --eh-frame-hdr -m elf_x86_64 -dynamic-linker /system/bin/linker64 -o cmTC_6db4c "D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/x86_64-linux-android/21\\crtbegin_dynamic.o" "-LD:\\UnityHub\\2020.3.36f1\\Editor\\Data\\PlaybackEngines\\AndroidPlayer\\SDK\\ndk\\22.1.7171670\\toolchains\\llvm\\prebuilt\\windows-x86_64\\lib64\\clang\\11.0.5\\lib\\linux\\x86_64" -LD:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/x86_64-linux-android/4.9.x -LD:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/x86_64-linux-android/4.9.x/../../../../x86_64-linux-android/lib/../lib64 -LD:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/x86_64-linux-android/21 -LD:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/x86_64-linux-android -LD:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/x86_64-linux-android/4.9.x/../../../../x86_64-linux-android/lib -LD:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib --exclude-libs libgcc.a --exclude-libs libgcc_real.a --exclude-libs libatomic.a --build-id=sha1 --no-rosegment --fatal-warnings --no-undefined --gc-sections CMakeFiles/cmTC_6db4c.dir/CMakeCXXCompilerABI.cpp.o -Bstatic -lc++ -Bdynamic -lm -lgcc -ldl -lc -lgcc -ldl "D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/x86_64-linux-android/21\\crtend_android.o"
+
+
+
+Parsed CXX implicit include dir info from above output: rv=done
+  found start of include info
+  found start of implicit include info
+    add: [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1]
+    add: [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/local/include]
+    add: [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/lib64/clang/11.0.5/include]
+    add: [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/x86_64-linux-android]
+    add: [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include]
+  end of search list found
+  collapse include dir [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1] ==> [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1]
+  collapse include dir [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/local/include] ==> [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/local/include]
+  collapse include dir [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/lib64/clang/11.0.5/include] ==> [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/lib64/clang/11.0.5/include]
+  collapse include dir [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/x86_64-linux-android] ==> [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/x86_64-linux-android]
+  collapse include dir [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include] ==> [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include]
+  implicit include dirs: [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1;D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/local/include;D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/lib64/clang/11.0.5/include;D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/x86_64-linux-android;D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include]
+
+
+Parsed CXX implicit link information from above output:
+  link line regex: [^( *|.*[/\])(ld\.lld\.exe|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\]+-)?ld|collect2)[^/\]*( |$)]
+  ignore line: [Change Dir: C:/Users/Q/Desktop/TTTTTTTTTTTT/ndk-samples-main/hello-gl2/app/.cxx/cmake/debug/x86_64/CMakeFiles/CMakeTmp]
+  ignore line: []
+  ignore line: [Run Build Command(s):D:\UnityHub\2020.3.36f1\Editor\Data\PlaybackEngines\AndroidPlayer\SDK\cmake\3.18.1\bin\ninja.exe cmTC_6db4c && [1/2] Building CXX object CMakeFiles/cmTC_6db4c.dir/CMakeCXXCompilerABI.cpp.o]
+  ignore line: [Android (7155654  based on r399163b1) clang version 11.0.5 (https://android.googlesource.com/toolchain/llvm-project 87f1315dfbea7c137aa2e6d362dbb457e388158d)]
+  ignore line: [Target: x86_64-none-linux-android21]
+  ignore line: [Thread model: posix]
+  ignore line: [InstalledDir: D:\UnityHub\2020.3.36f1\Editor\Data\PlaybackEngines\AndroidPlayer\SDK\ndk\22.1.7171670\toolchains\llvm\prebuilt\windows-x86_64\bin]
+  ignore line: [Found candidate GCC installation: D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/i686-linux-android\4.9.x]
+  ignore line: [Found candidate GCC installation: D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/x86_64-linux-android\4.9.x]
+  ignore line: [Selected GCC installation: D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/x86_64-linux-android/4.9.x]
+  ignore line: [Candidate multilib: .]
+  ignore line: [@m64]
+  ignore line: [Selected multilib: .]
+  ignore line: [@m64]
+  ignore line: [ (in-process)]
+  ignore line: [ "D:\\UnityHub\\2020.3.36f1\\Editor\\Data\\PlaybackEngines\\AndroidPlayer\\SDK\\ndk\\22.1.7171670\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe" -cc1 -triple x86_64-none-linux-android21 -emit-obj -mrelax-all -mnoexecstack -disable-free -disable-llvm-verifier -discard-value-names -main-file-name CMakeCXXCompilerABI.cpp -mrelocation-model pic -pic-level 2 -pic-is-pie -mframe-pointer=all -fno-rounding-math -mconstructor-aliases -munwind-tables -target-cpu x86-64 -target-feature +sse4.2 -target-feature +popcnt -target-feature +cx16 -fno-split-dwarf-inlining -debug-info-kind=limited -dwarf-version=4 -debugger-tuning=gdb -v -ffunction-sections -fdata-sections -resource-dir "D:\\UnityHub\\2020.3.36f1\\Editor\\Data\\PlaybackEngines\\AndroidPlayer\\SDK\\ndk\\22.1.7171670\\toolchains\\llvm\\prebuilt\\windows-x86_64\\lib64\\clang\\11.0.5" -dependency-file "CMakeFiles\\cmTC_6db4c.dir\\CMakeCXXCompilerABI.cpp.o.d" -MT CMakeFiles/cmTC_6db4c.dir/CMakeCXXCompilerABI.cpp.o -sys-header-deps -D ANDROID -D _FORTIFY_SOURCE=2 -isysroot D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot -internal-isystem D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1 -internal-isystem D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/local/include -internal-isystem "D:\\UnityHub\\2020.3.36f1\\Editor\\Data\\PlaybackEngines\\AndroidPlayer\\SDK\\ndk\\22.1.7171670\\toolchains\\llvm\\prebuilt\\windows-x86_64\\lib64\\clang\\11.0.5\\include" -internal-externc-isystem D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/x86_64-linux-android -internal-externc-isystem D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/include -internal-externc-isystem D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include -Wformat -fdeprecated-macro -fdebug-compilation-dir "C:\\Users\\Q\\Desktop\\TTTTTTTTTTTT\\ndk-samples-main\\hello-gl2\\app\\.cxx\\cmake\\debug\\x86_64\\CMakeFiles\\CMakeTmp" -ferror-limit 19 -stack-protector 2 -fgnuc-version=4.2.1 -fcxx-exceptions -fexceptions -o CMakeFiles/cmTC_6db4c.dir/CMakeCXXCompilerABI.cpp.o -x c++ D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/cmake/3.18.1/share/cmake-3.18/Modules/CMakeCXXCompilerABI.cpp]
+  ignore line: [clang -cc1 version 11.0.5 based upon LLVM 11.0.5git default target x86_64-w64-windows-gnu]
+  ignore line: [ignoring nonexistent directory "D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/include"]
+  ignore line: [#include "..." search starts here:]
+  ignore line: [#include <...> search starts here:]
+  ignore line: [ D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1]
+  ignore line: [ D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/local/include]
+  ignore line: [ D:\UnityHub\2020.3.36f1\Editor\Data\PlaybackEngines\AndroidPlayer\SDK\ndk\22.1.7171670\toolchains\llvm\prebuilt\windows-x86_64\lib64\clang\11.0.5\include]
+  ignore line: [ D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/x86_64-linux-android]
+  ignore line: [ D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include]
+  ignore line: [End of search list.]
+  ignore line: [[2/2] Linking CXX executable cmTC_6db4c]
+  ignore line: [Android (7155654  based on r399163b1) clang version 11.0.5 (https://android.googlesource.com/toolchain/llvm-project 87f1315dfbea7c137aa2e6d362dbb457e388158d)]
+  ignore line: [Target: x86_64-none-linux-android21]
+  ignore line: [Thread model: posix]
+  ignore line: [InstalledDir: D:\UnityHub\2020.3.36f1\Editor\Data\PlaybackEngines\AndroidPlayer\SDK\ndk\22.1.7171670\toolchains\llvm\prebuilt\windows-x86_64\bin]
+  ignore line: [Found candidate GCC installation: D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/i686-linux-android\4.9.x]
+  ignore line: [Found candidate GCC installation: D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/x86_64-linux-android\4.9.x]
+  ignore line: [Selected GCC installation: D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/x86_64-linux-android/4.9.x]
+  ignore line: [Candidate multilib: .]
+  ignore line: [@m64]
+  ignore line: [Selected multilib: .]
+  ignore line: [@m64]
+  link line: [ "D:\\UnityHub\\2020.3.36f1\\Editor\\Data\\PlaybackEngines\\AndroidPlayer\\SDK\\ndk\\22.1.7171670\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\ld" --sysroot=D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot -pie -z noexecstack --warn-shared-textrel -z now -z relro --hash-style=both --enable-new-dtags --eh-frame-hdr -m elf_x86_64 -dynamic-linker /system/bin/linker64 -o cmTC_6db4c "D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/x86_64-linux-android/21\\crtbegin_dynamic.o" "-LD:\\UnityHub\\2020.3.36f1\\Editor\\Data\\PlaybackEngines\\AndroidPlayer\\SDK\\ndk\\22.1.7171670\\toolchains\\llvm\\prebuilt\\windows-x86_64\\lib64\\clang\\11.0.5\\lib\\linux\\x86_64" -LD:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/x86_64-linux-android/4.9.x -LD:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/x86_64-linux-android/4.9.x/../../../../x86_64-linux-android/lib/../lib64 -LD:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/x86_64-linux-android/21 -LD:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/x86_64-linux-android -LD:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/x86_64-linux-android/4.9.x/../../../../x86_64-linux-android/lib -LD:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib --exclude-libs libgcc.a --exclude-libs libgcc_real.a --exclude-libs libatomic.a --build-id=sha1 --no-rosegment --fatal-warnings --no-undefined --gc-sections CMakeFiles/cmTC_6db4c.dir/CMakeCXXCompilerABI.cpp.o -Bstatic -lc++ -Bdynamic -lm -lgcc -ldl -lc -lgcc -ldl "D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/x86_64-linux-android/21\\crtend_android.o"]
+    arg [D:\\UnityHub\\2020.3.36f1\\Editor\\Data\\PlaybackEngines\\AndroidPlayer\\SDK\\ndk\\22.1.7171670\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\ld] ==> ignore
+    arg [--sysroot=D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot] ==> ignore
+    arg [-pie] ==> ignore
+    arg [-znoexecstack] ==> ignore
+    arg [--warn-shared-textrel] ==> ignore
+    arg [-znow] ==> ignore
+    arg [-zrelro] ==> ignore
+    arg [--hash-style=both] ==> ignore
+    arg [--enable-new-dtags] ==> ignore
+    arg [--eh-frame-hdr] ==> ignore
+    arg [-m] ==> ignore
+    arg [elf_x86_64] ==> ignore
+    arg [-dynamic-linker] ==> ignore
+    arg [/system/bin/linker64] ==> ignore
+    arg [-o] ==> ignore
+    arg [cmTC_6db4c] ==> ignore
+    arg [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/x86_64-linux-android/21\\crtbegin_dynamic.o] ==> ignore
+    arg [-LD:\\UnityHub\\2020.3.36f1\\Editor\\Data\\PlaybackEngines\\AndroidPlayer\\SDK\\ndk\\22.1.7171670\\toolchains\\llvm\\prebuilt\\windows-x86_64\\lib64\\clang\\11.0.5\\lib\\linux\\x86_64] ==> dir [D:\\UnityHub\\2020.3.36f1\\Editor\\Data\\PlaybackEngines\\AndroidPlayer\\SDK\\ndk\\22.1.7171670\\toolchains\\llvm\\prebuilt\\windows-x86_64\\lib64\\clang\\11.0.5\\lib\\linux\\x86_64]
+    arg [-LD:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/x86_64-linux-android/4.9.x] ==> dir [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/x86_64-linux-android/4.9.x]
+    arg [-LD:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/x86_64-linux-android/4.9.x/../../../../x86_64-linux-android/lib/../lib64] ==> dir [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/x86_64-linux-android/4.9.x/../../../../x86_64-linux-android/lib/../lib64]
+    arg [-LD:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/x86_64-linux-android/21] ==> dir [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/x86_64-linux-android/21]
+    arg [-LD:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/x86_64-linux-android] ==> dir [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/x86_64-linux-android]
+    arg [-LD:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/x86_64-linux-android/4.9.x/../../../../x86_64-linux-android/lib] ==> dir [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/x86_64-linux-android/4.9.x/../../../../x86_64-linux-android/lib]
+    arg [-LD:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib] ==> dir [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib]
+    arg [--exclude-libs] ==> ignore
+    arg [libgcc.a] ==> ignore
+    arg [--exclude-libs] ==> ignore
+    arg [libgcc_real.a] ==> ignore
+    arg [--exclude-libs] ==> ignore
+    arg [libatomic.a] ==> ignore
+    arg [--build-id=sha1] ==> ignore
+    arg [--no-rosegment] ==> ignore
+    arg [--fatal-warnings] ==> ignore
+    arg [--no-undefined] ==> ignore
+    arg [--gc-sections] ==> ignore
+    arg [CMakeFiles/cmTC_6db4c.dir/CMakeCXXCompilerABI.cpp.o] ==> ignore
+    arg [-Bstatic] ==> ignore
+    arg [-lc++] ==> lib [c++]
+    arg [-Bdynamic] ==> ignore
+    arg [-lm] ==> lib [m]
+    arg [-lgcc] ==> lib [gcc]
+    arg [-ldl] ==> lib [dl]
+    arg [-lc] ==> lib [c]
+    arg [-lgcc] ==> lib [gcc]
+    arg [-ldl] ==> lib [dl]
+    arg [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/x86_64-linux-android/21\\crtend_android.o] ==> ignore
+  collapse library dir [D:\\UnityHub\\2020.3.36f1\\Editor\\Data\\PlaybackEngines\\AndroidPlayer\\SDK\\ndk\\22.1.7171670\\toolchains\\llvm\\prebuilt\\windows-x86_64\\lib64\\clang\\11.0.5\\lib\\linux\\x86_64] ==> [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/lib64/clang/11.0.5/lib/linux/x86_64]
+  collapse library dir [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/x86_64-linux-android/4.9.x] ==> [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/x86_64-linux-android/4.9.x]
+  collapse library dir [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/x86_64-linux-android/4.9.x/../../../../x86_64-linux-android/lib/../lib64] ==> [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/x86_64-linux-android/lib64]
+  collapse library dir [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/x86_64-linux-android/21] ==> [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/x86_64-linux-android/21]
+  collapse library dir [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/x86_64-linux-android] ==> [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/x86_64-linux-android]
+  collapse library dir [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/x86_64-linux-android/4.9.x/../../../../x86_64-linux-android/lib] ==> [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/x86_64-linux-android/lib]
+  collapse library dir [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib] ==> [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib]
+  implicit libs: [c++;m;gcc;dl;c;gcc;dl]
+  implicit dirs: [D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/lib64/clang/11.0.5/lib/linux/x86_64;D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/x86_64-linux-android/4.9.x;D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/x86_64-linux-android/lib64;D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/x86_64-linux-android/21;D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/x86_64-linux-android;D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/x86_64-linux-android/lib;D:/UnityHub/2020.3.36f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib]
+  implicit fwks: []
+
+

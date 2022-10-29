@@ -1,0 +1,7 @@
+Executable : D:\UnityHub\2020.3.36f1\Editor\Data\PlaybackEngines\AndroidPlayer\SDK\cmake\3.18.1\bin\ninja.exe
+arguments : 
+-C
+C:\Users\Q\Desktop\TTTTTTTTTTTT\ndk-samples-main\hello-gl2\app\.cxx\cmake\debug\x86_64
+gl2jni
+jvmArgs : 
+
