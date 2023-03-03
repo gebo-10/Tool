@@ -1,17 +1,17 @@
-ninja: Entering directory `C:\Users\Q\Desktop\TTTTTTTTTTTT\ndk-samples-main\hello-gl2\app\.cxx\cmake\debug\x86_64'
+ninja: Entering directory `D:\ToolAndDemo\gles20nv12\app\.cxx\cmake\debug\x86_64'
 [1/2] Building CXX object CMakeFiles/gl2jni.dir/gl_code.cpp.o
-C:/Users/Q/Desktop/TTTTTTTTTTTT/ndk-samples-main/hello-gl2/app/src/main/cpp/gl_code.cpp:30:31: warning: more '%' conversions than data arguments [-Wformat]
+D:/ToolAndDemo/gles20nv12/app/src/main/cpp/gl_code.cpp:30:31: warning: more '%' conversions than data arguments [-Wformat]
         LOGE("cant open file %s");
                              ~^
-C:/Users/Q/Desktop/TTTTTTTTTTTT/ndk-samples-main/hello-gl2/app/src/main/cpp/gl_code.cpp:20:67: note: expanded from macro 'LOGE'
+D:/ToolAndDemo/gles20nv12/app/src/main/cpp/gl_code.cpp:20:67: note: expanded from macro 'LOGE'
 #define  LOGE(...)  __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
                                                                   ^~~~~~~~~~~
-C:/Users/Q/Desktop/TTTTTTTTTTTT/ndk-samples-main/hello-gl2/app/src/main/cpp/gl_code.cpp:47:25: warning: missing terminating '"' character [-Winvalid-pp-token]
+D:/ToolAndDemo/gles20nv12/app/src/main/cpp/gl_code.cpp:47:25: warning: missing terminating '"' character [-Winvalid-pp-token]
 #include "nv12_to_rgb.h""
                         ^
-C:/Users/Q/Desktop/TTTTTTTTTTTT/ndk-samples-main/hello-gl2/app/src/main/cpp/gl_code.cpp:47:25: warning: extra tokens at end of #include directive [-Wextra-tokens]
+D:/ToolAndDemo/gles20nv12/app/src/main/cpp/gl_code.cpp:47:25: warning: extra tokens at end of #include directive [-Wextra-tokens]
 #include "nv12_to_rgb.h""
                         ^
                         //
 3 warnings generated.
-[2/2] Linking CXX shared library C:\Users\Q\Desktop\TTTTTTTTTTTT\ndk-samples-main\hello-gl2\app\build\intermediates\cmake\debug\obj\x86_64\libgl2jni.so
+[2/2] Linking CXX shared library D:\ToolAndDemo\gles20nv12\app\build\intermediates\cmake\debug\obj\x86_64\libgl2jni.so

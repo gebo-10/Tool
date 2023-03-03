@@ -2,7 +2,7 @@
 	"artifacts" : 
 	[
 		{
-			"path" : "C:/Users/Q/Desktop/TTTTTTTTTTTT/ndk-samples-main/hello-gl2/app/build/intermediates/cmake/debug/obj/x86_64/libgl2jni.so"
+			"path" : "D:/ToolAndDemo/gles20nv12/app/build/intermediates/cmake/debug/obj/x86/libgl2jni.so"
 		}
 	],
 	"backtrace" : 1,
@@ -42,7 +42,7 @@
 			"compileCommandFragments" : 
 			[
 				{
-					"fragment" : "-g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security   -std=c++11 -Wall -O0 -fno-limit-debug-info  -fPIC"
+					"fragment" : "-g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -mstackrealign -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security   -std=c++11 -Wall -O0 -fno-limit-debug-info  -fPIC"
 				}
 			],
 			"defines" : 

@@ -10,4 +10,4 @@
 -- Detecting CXX compile features - done
 -- Configuring done
 -- Generating done
--- Build files have been written to: C:/Users/Q/Desktop/TTTTTTTTTTTT/ndk-samples-main/hello-gl2/app/.cxx/cmake/debug/x86_64
+-- Build files have been written to: D:/ToolAndDemo/gles20nv12/app/.cxx/cmake/debug/x86_64

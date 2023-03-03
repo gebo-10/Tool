@@ -2,11 +2,11 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/hello-gl2.iml" filepath="$PROJECT_DIR$/.idea/modules/hello-gl2.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/hello-gl2.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/hello-gl2.app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/hello-gl2.app.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/hello-gl2.app.androidTest.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/hello-gl2.app.main.iml" filepath="$PROJECT_DIR$/.idea/modules/app/hello-gl2.app.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/hello-gl2.app.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/hello-gl2.app.unitTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/gles20nv12.iml" filepath="$PROJECT_DIR$/.idea/modules/gles20nv12.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/gles20nv12.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/gles20nv12.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/gles20nv12.app.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/gles20nv12.app.androidTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/gles20nv12.app.main.iml" filepath="$PROJECT_DIR$/.idea/modules/app/gles20nv12.app.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/gles20nv12.app.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/gles20nv12.app.unitTest.iml" />
     </modules>
   </component>
 </project>

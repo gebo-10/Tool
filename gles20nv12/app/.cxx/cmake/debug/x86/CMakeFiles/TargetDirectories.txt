@@ -1,3 +1,3 @@
-C:/Users/Q/Desktop/TTTTTTTTTTTT/ndk-samples-main/hello-gl2/app/.cxx/cmake/debug/x86/CMakeFiles/gl2jni.dir
-C:/Users/Q/Desktop/TTTTTTTTTTTT/ndk-samples-main/hello-gl2/app/.cxx/cmake/debug/x86/CMakeFiles/edit_cache.dir
-C:/Users/Q/Desktop/TTTTTTTTTTTT/ndk-samples-main/hello-gl2/app/.cxx/cmake/debug/x86/CMakeFiles/rebuild_cache.dir
+D:/ToolAndDemo/gles20nv12/app/.cxx/cmake/debug/x86/CMakeFiles/gl2jni.dir
+D:/ToolAndDemo/gles20nv12/app/.cxx/cmake/debug/x86/CMakeFiles/edit_cache.dir
+D:/ToolAndDemo/gles20nv12/app/.cxx/cmake/debug/x86/CMakeFiles/rebuild_cache.dir

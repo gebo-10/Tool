@@ -1,1 +1,1 @@
-C:\Users\Q\Desktop\TTTTTTTTTTTT\ndk-samples-main\hello-gl2\app\src\main\cpp\CMakeLists.txt
+D:\ToolAndDemo\gles20nv12\app\src\main\cpp\CMakeLists.txt

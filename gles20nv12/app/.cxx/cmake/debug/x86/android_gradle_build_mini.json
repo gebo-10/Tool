@@ -1,26 +1,26 @@
 {
   "buildFiles": [
-    "C:\\Users\\Q\\Desktop\\TTTTTTTTTTTT\\ndk-samples-main\\hello-gl2\\app\\src\\main\\cpp\\CMakeLists.txt"
+    "D:\\ToolAndDemo\\gles20nv12\\app\\src\\main\\cpp\\CMakeLists.txt"
   ],
   "cleanCommandsComponents": [
     [
       "D:\\UnityHub\\2020.3.36f1\\Editor\\Data\\PlaybackEngines\\AndroidPlayer\\SDK\\cmake\\3.18.1\\bin\\ninja.exe",
       "-C",
-      "C:\\Users\\Q\\Desktop\\TTTTTTTTTTTT\\ndk-samples-main\\hello-gl2\\app\\.cxx\\cmake\\debug\\x86",
+      "D:\\ToolAndDemo\\gles20nv12\\app\\.cxx\\cmake\\debug\\x86",
       "clean"
     ]
   ],
   "buildTargetsCommandComponents": [
     "D:\\UnityHub\\2020.3.36f1\\Editor\\Data\\PlaybackEngines\\AndroidPlayer\\SDK\\cmake\\3.18.1\\bin\\ninja.exe",
     "-C",
-    "C:\\Users\\Q\\Desktop\\TTTTTTTTTTTT\\ndk-samples-main\\hello-gl2\\app\\.cxx\\cmake\\debug\\x86",
+    "D:\\ToolAndDemo\\gles20nv12\\app\\.cxx\\cmake\\debug\\x86",
     "{LIST_OF_TARGETS_TO_BUILD}"
   ],
   "libraries": {
     "gl2jni::@6890427a1f51a3e7e1df": {
       "artifactName": "gl2jni",
       "abi": "x86",
-      "output": "C:\\Users\\Q\\Desktop\\TTTTTTTTTTTT\\ndk-samples-main\\hello-gl2\\app\\build\\intermediates\\cmake\\debug\\obj\\x86\\libgl2jni.so",
+      "output": "D:\\ToolAndDemo\\gles20nv12\\app\\build\\intermediates\\cmake\\debug\\obj\\x86\\libgl2jni.so",
       "runtimeFiles": []
     }
   }

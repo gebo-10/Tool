@@ -1,4 +1,4 @@
-# Install script for directory: C:/Users/Q/Desktop/TTTTTTTTTTTT/ndk-samples-main/hello-gl2/app/src/main/cpp
+# Install script for directory: D:/ToolAndDemo/gles20nv12/app/src/main/cpp
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -50,5 +50,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "C:/Users/Q/Desktop/TTTTTTTTTTTT/ndk-samples-main/hello-gl2/app/.cxx/cmake/debug/x86_64/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "D:/ToolAndDemo/gles20nv12/app/.cxx/cmake/debug/x86_64/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
