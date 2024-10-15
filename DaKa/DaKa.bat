@@ -12,6 +12,10 @@ if %errorlevel% neq 0 (
 
 adb shell input keyevent 3
 timeout /t 1
+
+adb shell am force-stop com.ss.android.lark
+timeout /t 1
+
 adb shell am start -n com.ss.android.lark/.main.app.MainActivity
 timeout /t 5
 
