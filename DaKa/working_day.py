@@ -41,7 +41,7 @@ def run_batch_script(batch_script_path):
 # 目标网址
 url = "https://date.appworlds.cn/work"
 
-batch_script_path = r'D:\DaKa\DaKa.bat'
+batch_script_path = r'D:\ToolAndDemo\DaKa\DaKa.bat'
 try:
     response = requests.get(url)
     response.raise_for_status()  # 检查请求是否成功

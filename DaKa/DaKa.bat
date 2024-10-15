@@ -14,6 +14,16 @@ adb shell input keyevent 3
 timeout /t 1
 adb shell am start -n com.ss.android.lark/.main.app.MainActivity
 timeout /t 5
+
+adb shell input tap 78 1688
+timeout /t 2
+adb shell input tap 500 402
+timeout /t 2
+adb shell input tap 394 1690
+timeout /t 2
+adb shell input tap 132 790
+timeout /t 3
+
 if "%~1"=="morning" (
     echo morning
     adb shell input tap 1900 750
