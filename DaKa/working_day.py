@@ -27,7 +27,7 @@ def run_batch_script(batch_script_path):
 
     print(f"将延迟 {random_delay:.2f} 秒")
 
-    time.sleep(random_delay)
+    #time.sleep(random_delay)
 
     print("延迟结束")
 
