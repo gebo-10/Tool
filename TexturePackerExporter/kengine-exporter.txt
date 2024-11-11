@@ -1,0 +1,27 @@
+{
+  "texture":{
+    "name":"{{ texture.fullName }}",
+    "width":{{ texture.size.width }},
+    "height":{{ texture.size.height }}
+  },
+  "frames": [
+    {% for sprite in allSprites %}
+    {
+      "filename": "{{ sprite.trimmedName }}",
+      "frame": {
+        "x": {{ sprite.frameRect.x }},
+        "y": {{ sprite.frameRect.y }},
+        "w": {{ sprite.frameRect.width }},
+        "h": {{ sprite.frameRect.height }}
+      },
+      "scale9enbale":{{sprite.scale9Enabled}},
+      "scale9Borders":{
+        "x":{{sprite.scale9Borders.x}},
+        "y":{{sprite.scale9Borders.y}},
+        "width":{{sprite.scale9Borders.width}},
+        "height":{{sprite.scale9Borders.height}}
+      }
+    }{% if not forloop.last %}, {% endif %}
+    {% endfor %}
+  ]
+}
