@@ -21,13 +21,13 @@ adb shell am start -n com.ss.android.lark/.main.app.MainActivity
 timeout /t 10
 
 adb shell input tap 78 1688
-timeout /t 2
+timeout /t 5
 adb shell input tap 500 402
-timeout /t 2
+timeout /t 5
 adb shell input tap 394 1690
-timeout /t 2
+timeout /t 5
 adb shell input tap 132 790
-timeout /t 3
+timeout /t 15
 
 if "%~1"=="morning" (
     echo morning
