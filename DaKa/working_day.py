@@ -20,7 +20,7 @@ def run_batch_script(batch_script_path):
         daka_type="afternoon"
     else:
         daka_type="unknown"
-        print("unknown time")
+        print("time not <10 or >19")
         return
     
     random_delay = random.uniform(1, 100)
@@ -43,7 +43,7 @@ url = "https://date.appworlds.cn/work"
 
 batch_script_path = r'D:\ToolAndDemo\DaKa\DaKa.bat'
 try:
-    response = requests.get(url)
+    response = requests.get(url, verify=False)
     response.raise_for_status()  # 检查请求是否成功
 
     data = response.json()

@@ -1,3 +1,4 @@
+echo DaKa
 adb start-server
 
 adb shell dumpsys input_method | findstr "mInteractive=true" > temp.txt
@@ -26,7 +27,7 @@ adb shell input tap 500 402
 timeout /t 5
 adb shell input tap 394 1690
 timeout /t 5
-adb shell input tap 132 790
+adb shell input tap 132 1250
 timeout /t 15
 
 if "%~1"=="morning" (
