@@ -2,6 +2,8 @@
 import WeatherForecast from '../components/WeatherForecast.vue';
 import LogViewer from '../components/LogViewer.vue';
 import HeaderBar from '../components/HeaderBar.vue';
+//import PipelineDetail from '../components/PipelineDetail.vue';
+import G6Test from '../components/G6Test.vue';
 </script>
 
 <template>
@@ -10,7 +12,11 @@ import HeaderBar from '../components/HeaderBar.vue';
     <div class="content">
       <WeatherForecast />
       <hr />
+      <!-- <PipelineDetail /> -->
+      <hr />
       <LogViewer />
+      <hr />
+      <G6Test />
     </div>
   </div>
 </template>

@@ -13,9 +13,16 @@ export default defineConfig({
         //rewrite: (path) => path.replace(/^\/api/, '') // 去掉 /api 前缀
         configure: (proxy) => {
         proxy.on('proxyReq', (proxyReq, req, res) => {
-          // 可以设置一些头部
+          // 设置请求头，告诉后端这是一个长连接
+          proxyReq.setHeader('Connection', 'keep-alive');
         });
-      }
+        proxy.on('proxyRes', (proxyRes, req, res) => {
+          // 禁用代理响应缓冲
+          proxyRes.headers['cache-control'] = 'no-cache';
+          proxyRes.headers['x-accel-buffering'] = 'no'; // 禁用 nginx 类缓冲（如果有）
+          delete proxyRes.headers['content-length'];     // 防止提前结束
+        });
+      },
       }
     }
   }

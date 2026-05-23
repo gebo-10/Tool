@@ -16,7 +16,8 @@ const scrollToBottom = async () => {
 }
 
 onMounted(() => {
-  eventSource = new EventSource('/api/logs')
+  const token = localStorage.getItem('token');
+  const eventSource = new EventSource(`/api/logs?token=${encodeURIComponent(token)}`);
 
   eventSource.onmessage = (event) => {
     const log = JSON.parse(event.data)

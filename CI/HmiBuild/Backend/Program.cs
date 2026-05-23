@@ -74,6 +74,20 @@ app.UseStaticFiles();
 
 // 2. 配置路由
 app.UseRouting();
+
+
+
+app.Use((context, next) =>
+{
+    if (string.IsNullOrEmpty(context.Request.Headers["Authorization"]) &&
+        context.Request.Query.TryGetValue("token", out var token))
+    {
+        context.Request.Headers["Authorization"] = $"Bearer {token}";
+    }
+    return next();
+});
+
+
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
@@ -152,6 +166,75 @@ app.MapGet("/api/logs", async (HttpContext context, CancellationToken ct) =>
         // 客户端断开连接（刷新页面、关闭标签页等），正常结束，无需记录
     }
 }).RequireAuthorization();
+
+
+
+
+//app.MapGet("/api/pipelines/{pipelineId}/dag-updates", async(string pipelineId, HttpContext context, ...) =>
+//{
+//    context.Response.ContentType = "text/event-stream";
+//    var channel = _pipelineHub.Subscribe(pipelineId);
+//    try
+//    {
+//        await foreach (var msg in channel.Reader.ReadAllAsync(context.RequestAborted))
+//        {
+//            await context.Response.WriteAsync($"data: {msg}\n\n", context.RequestAborted);
+//            await context.Response.Body.FlushAsync();
+//        }
+//    }
+//    catch (OperationCanceledException) { }
+//});
+
+
+
+// ====== 获取 Demo DAG 结构 ======
+app.MapGet("/api/pipeline/demo/dag", () =>
+{
+    var nodes = new[]
+    {
+        new { id = "build-front",  label = "编译前端", status = "pending", progress = 0 },
+        new { id = "build-back",   label = "编译后端", status = "pending", progress = 0 },
+        new { id = "integration",  label = "集成测试", status = "pending", progress = 0 },
+        new { id = "deploy",       label = "部署上线", status = "pending", progress = 0 }
+    };
+
+    var edges = new[]
+    {
+        new { source = "build-front", target = "integration" },
+        new { source = "build-back",  target = "integration" },
+        new { source = "integration", target = "deploy" }
+    };
+
+    return Results.Ok(new { nodes, edges });
+});
+
+// ====== Demo SSE：模拟任务进度推送 ======
+app.MapGet("/api/pipeline/demo/dag-updates", async (HttpContext context, CancellationToken ct) =>
+{
+    context.Response.ContentType = "text/event-stream";
+    context.Response.Headers["Cache-Control"] = "no-cache";
+
+    var steps = new[] { "build-front", "build-back", "integration", "deploy" };
+    foreach (var nodeId in steps)
+    {
+        for (int p = 0; p <= 100; p += 20)
+        {
+            if (ct.IsCancellationRequested) break;
+
+            var update = new
+            {
+                nodeId,
+                status = p == 100 ? "completed" : "running",
+                progress = p
+            };
+            string json = System.Text.Json.JsonSerializer.Serialize(update);
+            await context.Response.WriteAsync($"data: {json}\n\n", ct);
+            await context.Response.Body.FlushAsync(ct);
+            await Task.Delay(300, ct);   // 模拟实际耗时
+        }
+    }
+});
+
 
 
 
