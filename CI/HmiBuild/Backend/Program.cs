@@ -1,6 +1,9 @@
 using Backend.Data;
 using Backend.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +15,28 @@ builder.Services.AddControllers();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+
+
+// JWT 认证配置
+var jwtKey = builder.Configuration["Jwt:Key"]!;
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
+        };
+    });
+builder.Services.AddAuthorization();
+
+
 
 var app = builder.Build();
 
@@ -42,6 +67,8 @@ app.UseStaticFiles();
 
 // 2. 配置路由
 app.UseRouting();
+app.UseAuthentication();
+app.UseAuthorization();
 app.MapControllers();
 
 // 3. 最关键：所有不是 /api 开头的请求，且找不到对应文件的，都返回 index.html
@@ -84,7 +111,7 @@ app.MapGet("/api/weatherforecast", async (AppDbContext db) =>
         records = seedData;
     }
     return records;
-});
+}).RequireAuthorization();
 
 
 app.MapGet("/api/logs", async (HttpContext context, CancellationToken ct) =>
@@ -117,7 +144,7 @@ app.MapGet("/api/logs", async (HttpContext context, CancellationToken ct) =>
     {
         // 客户端断开连接（刷新页面、关闭标签页等），正常结束，无需记录
     }
-});
+}).RequireAuthorization();
 
 
 

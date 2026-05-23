@@ -1,23 +1,21 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted } from 'vue';
+import request from '../utils/request';
 
-const weatherList = ref([])
-const loading = ref(true)
-const errorMsg = ref('')
+const weatherList = ref([]);
+const loading = ref(true);
+const errorMsg = ref('');
 
 onMounted(async () => {
   try {
-    const res = await fetch('/api/weatherforecast')
-    if (!res.ok) {
-      throw new Error('请求失败：' + res.status)
-    }
-    weatherList.value = await res.json()
+    const res = await request.get('/weatherforecast');  // 直接写 path，baseURL 已配
+    weatherList.value = res.data;    // axios 默认包装在 data 里
   } catch (err) {
-    errorMsg.value = err.message
+    errorMsg.value = err.response?.data || err.message;
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-})
+});
 </script>
 
 <template>
