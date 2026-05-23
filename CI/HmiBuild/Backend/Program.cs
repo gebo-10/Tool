@@ -13,6 +13,10 @@ builder.Services.AddOpenApi();
 builder.Services.AddControllers();
 
 
+// 注册 UserDbContext（用户数据）
+builder.Services.AddDbContext<UserDbContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("UserConnection")));
+
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -52,6 +56,9 @@ using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     db.Database.EnsureCreated();
+
+    var userDb = scope.ServiceProvider.GetRequiredService<UserDbContext>();
+    userDb.Database.EnsureCreated();
 }
 
 
