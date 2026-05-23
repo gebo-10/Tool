@@ -87,6 +87,38 @@ app.MapGet("/api/weatherforecast", async (AppDbContext db) =>
 });
 
 
+app.MapGet("/api/logs", async (HttpContext context, CancellationToken ct) =>
+{
+    context.Response.ContentType = "text/event-stream";
+    context.Response.Headers["Cache-Control"] = "no-cache";
+    context.Response.Headers["Connection"] = "keep-alive";
+
+    try
+    {
+        int i = 0;
+        while (!ct.IsCancellationRequested)
+        {
+            var logEntry = new
+            {
+                time = DateTime.Now.ToString("HH:mm:ss"),
+                level = i % 5 == 0 ? "ERROR" : "INFO",
+                message = $"日志消息 #{i}"
+            };
+
+            string json = System.Text.Json.JsonSerializer.Serialize(logEntry);
+            await context.Response.WriteAsync($"data: {json}\n\n", ct);
+            await context.Response.Body.FlushAsync(ct);
+
+            i++;
+            await Task.Delay(1000, ct);
+        }
+    }
+    catch (OperationCanceledException)
+    {
+        // 客户端断开连接（刷新页面、关闭标签页等），正常结束，无需记录
+    }
+});
+
 
 
 app.Run();
