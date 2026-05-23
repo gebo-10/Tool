@@ -1,8 +1,17 @@
+using Backend.Data;
+using Backend.Models;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+builder.Services.AddControllers();
+
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 var app = builder.Build();
 
@@ -12,26 +21,73 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-app.UseHttpsRedirection();
+
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.EnsureCreated();
+}
+
+
+
+
+
+//app.UseHttpsRedirection();
+
+
+// 1. 启用静态文件服务（会自动去 wwwroot 找 index.html、JS、CSS 等）
+app.UseDefaultFiles();       // 自动寻找默认页（如 index.html）
+app.UseStaticFiles();
+
+// 2. 配置路由
+app.UseRouting();
+app.MapControllers();
+
+// 3. 最关键：所有不是 /api 开头的请求，且找不到对应文件的，都返回 index.html
+app.MapFallbackToFile("index.html");
+
 
 var summaries = new[]
 {
     "1Freezing", "2Bracing", "3Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
 };
 
-app.MapGet("/weatherforecast", () =>
+//app.MapGet("/api/weatherforecast", () =>
+//{
+//    var forecast =  Enumerable.Range(1, 3).Select(index =>
+//        new WeatherForecast
+//        (
+//            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
+//            Random.Shared.Next(-20, 55),
+//            summaries[Random.Shared.Next(summaries.Length)]
+//        ))
+//        .ToArray();
+//    return forecast;
+//})
+//.WithName("GetWeatherForecast");
+
+
+app.MapGet("/api/weatherforecast", async (AppDbContext db) =>
 {
-    var forecast =  Enumerable.Range(1, 3).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
+    var records = await db.WeatherRecords.ToListAsync();
+    if (!records.Any())
+    {
+        var seedData = new List<WeatherRecord>
+        {
+            new() { Date = DateOnly.FromDateTime(DateTime.Now), TemperatureC = 10, Summary = "Cool" },
+            new() { Date = DateOnly.FromDateTime(DateTime.Now.AddDays(1)), TemperatureC = 25, Summary = "Warm" },
+            new() { Date = DateOnly.FromDateTime(DateTime.Now.AddDays(2)), TemperatureC = -5, Summary = "Freezing" }
+        };
+        db.WeatherRecords.AddRange(seedData);
+        await db.SaveChangesAsync();
+        records = seedData;
+    }
+    return records;
+});
+
+
+
 
 app.Run();
 

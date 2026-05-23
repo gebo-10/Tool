@@ -10,7 +10,7 @@ export default defineConfig({
       '/api': {               // 匹配所有以 /api 开头的请求
         target: 'http://localhost:5255', // 后端地址
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, '') // 去掉 /api 前缀
+        //rewrite: (path) => path.replace(/^\/api/, '') // 去掉 /api 前缀
       }
     }
   }
