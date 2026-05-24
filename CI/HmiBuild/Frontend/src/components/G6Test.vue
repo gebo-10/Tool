@@ -41,16 +41,20 @@
     //   shadowOffsetY: 2,
     // }, container);
 
-    // ---------- 任务名称 ----------
-    // this.upsert('label', 'text', {
-    //   x: 14,
-    //   y: 14,
-    //   text: "a",
-    //   fontSize: 14,
-    //   // fontWeight: 600,
-    //   // fill: '#1F2937',
-    //   // fontFamily: 'system-ui, sans-serif',
-    // }, container);
+    const startx= -width/2;
+    const starty= -height/2;
+    //---------- 任务名称 ----------
+    this.upsert('status-name', 'text', {
+      x: startx+10,
+      y: 0 ,
+      text: label,
+      textAlign: 'left',
+      textBaseline: 'middle',
+      fontSize: 14,
+      fontWeight: 600,
+      fill: '#8F4997',
+      fontFamily: 'system-ui, sans-serif',
+    }, container);
 
     // // ---------- 状态标签 ----------
     this.upsert('status-text', 'text', {
@@ -64,10 +68,11 @@
     }, container);
 
     // ---------- 进度条背景 ----------
-    const barY = height - 10;
+    const barY = height/2 - 10;
+    const barX = -width/2+10;
     this.upsert('progress-bg', 'rect', {
-      x: 0,
-      y: 0,
+      x: barX,
+      y: barY,
       width: width - 20,
       height: 4,
       radius: 2,
@@ -77,8 +82,8 @@
 
     // ---------- 进度条填充 ----------
     this.upsert('progress-bar', 'rect', {
-      x: 0,
-      y: 0,
+      x: barX,
+      y: barY,
       width: (width - 20) * (progress / 100),
       height: 4,
       radius: 2,
@@ -87,6 +92,44 @@
 
     //return keyShape;
   }
+
+
+getButtonStyle(attributes) {
+    return {
+      x: 40,
+      y: -10,
+      width: 20,
+      height: 20,
+      radius: 10,
+      fill: '#1890ff',
+      cursor: 'pointer', // 鼠标指针变为手型
+    };
+  }
+
+  drawButtonShape(attributes, container) {
+    const btnStyle = this.getButtonStyle(attributes, container);
+    const btn = this.upsert('button', 'rect', btnStyle, container);
+
+    // 为按钮添加点击事件
+    if (!btn.__clickBound) {
+      btn.addEventListener('click', (e) => {
+        // 阻止事件冒泡，避免触发节点的点击事件
+        e.stopPropagation();
+
+        // 执行业务逻辑
+        console.log('Button clicked on node:', this.id);
+
+        // 如果数据中有回调函数，则调用
+        if (typeof attributes.onButtonClick === 'function') {
+          attributes.onButtonClick(this.id, this.data);
+        }
+      });
+      btn.__clickBound = true; // 标记已绑定事件，避免重复绑定
+    }
+  }
+
+
+
 
   // // 数据更新时，G6 会调用此方法重新绘制图形
   // processStyle(style, attributes) {
@@ -101,6 +144,7 @@
 
     // 2. 添加副标题
     this.drawExtShape(attributes, container);
+    //this.drawButtonShape(attributes, container);
   }
 }
 
@@ -131,6 +175,12 @@ register(ExtensionCategory.NODE, 'dag-task', DagTaskNode);
               { key: 'right', placement: [1, 0.5] }, // 右边缘中心
               // ...
             ],
+          },
+          state: {
+            active: {
+              fill: '#338833', // 选中时的填充色
+              stroke: 'transparent', // 去掉边框
+            }
           },
       },
       edge: {
@@ -165,24 +215,42 @@ register(ExtensionCategory.NODE, 'dag-task', DagTaskNode);
       data: {
         nodes: [
           {
+            id: 'node-0',
+            style: {
+              label: '开始',
+              status: 'completed',
+              progress: 100,
+            },
+          },
+          {
             id: 'node-1',
-            //style: { x: 50, y: 100 },
+            style: {
+              label: '任务1',
+              status: 'panding',
+              progress: 10,
+            },
           },
           {
             id: 'node-2',
-            //style: { x: 150, y: 100 },
+            style: {
+              label: '任务2',
+              status: 'running',
+              progress: 10,
+            },
           },
           {
             id: 'node-3',
-             style: {
+            style: {
 
-               label: '任务三',
-               status: 'running',
-               progress: 10,
-             },
+              label: '任务三',
+              status: 'running',
+              progress: 10,
+            },
           }
         ],
         edges: [
+          {id: 'edge-01', source: 'node-0', target: 'node-1' ,sourcePort: 'right', targetPort: 'left'},
+          {id: 'edge-03', source: 'node-0', target: 'node-3' ,sourcePort: 'right', targetPort: 'left'},
           { id: 'edge-1', source: 'node-1', target: 'node-2' ,sourcePort: 'right', targetPort: 'left'},
           { id: 'edge-2', source: 'node-3', target: 'node-2' ,sourcePort: 'right', targetPort: 'left'}
         ],

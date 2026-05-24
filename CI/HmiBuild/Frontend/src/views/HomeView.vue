@@ -4,12 +4,15 @@ import LogViewer from '../components/LogViewer.vue';
 import HeaderBar from '../components/HeaderBar.vue';
 //import PipelineDetail from '../components/PipelineDetail.vue';
 import G6Test from '../components/G6Test.vue';
+import G6VueNode from '../components/G6VueNode.vue';
 </script>
 
 <template>
   <div class="home">
     <HeaderBar />
     <div class="content">
+      <!-- <G6VueNode /> -->
+      <hr />
       <WeatherForecast />
       <hr />
       <!-- <PipelineDetail /> -->
