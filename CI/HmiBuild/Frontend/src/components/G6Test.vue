@@ -15,8 +15,8 @@
   drawExtShape(attributes, container) {
     // 从 attributes 中获取业务数据
     const { label = '', status = 'pending', progress = 0 } = attributes;
-    const width = 180;
-    const height = 72;
+    const size = this.getSize(); // 返回 [width, height]
+    const [width, height] = size;
 
     // 状态色盘
     const statusColors = {
@@ -58,12 +58,12 @@
 
     // // ---------- 状态标签 ----------
     this.upsert('status-text', 'text', {
-      x: 0,
+      x: width/2 - 10,
       y: 0,
       text: statusLabel,
       fontSize: 12,
       fill: colors.text,
-      textAlign: 'center',
+      textAlign: 'right',
       textBaseline: 'middle',
     }, container);
 
@@ -164,7 +164,7 @@ register(ExtensionCategory.NODE, 'dag-task', DagTaskNode);
           type: 'dag-task',
           style: {
             //size: [50, 20],  // 宽度 100，高度 40
-            size: [180, 72],
+            size: [130, 52],
             radius: 6,        // 圆角（可选）
             fill: '#DBEAFE',
             stroke: '#3B82F6',
@@ -226,7 +226,7 @@ register(ExtensionCategory.NODE, 'dag-task', DagTaskNode);
             id: 'node-1',
             style: {
               label: '任务1',
-              status: 'panding',
+              status: 'pending',
               progress: 10,
             },
           },
@@ -256,6 +256,27 @@ register(ExtensionCategory.NODE, 'dag-task', DagTaskNode);
         ],
       },
     });
+
+
+graph.on('node:click', (evt) => {
+  const nodeId = evt.target.id;
+
+    console.log('Node clicked:', nodeId);
+  
+    // 示例：点击节点后更新其状态和进度
+    // const item = evt.item;
+    // const model = item.getModel();
+    // const newStatus = model.style.status === 'running' ? 'completed' : 'running';
+    // const newProgress = model.style.progress >= 100 ? 0 : model.style.progress + 10;
+  
+    // graph.updateItem(item, {
+    //   style: {
+    //     ...model.style,
+    //     status: newStatus,
+    //     progress: newProgress,
+    //   },
+    // });
+});
 
     graph.render();
 
