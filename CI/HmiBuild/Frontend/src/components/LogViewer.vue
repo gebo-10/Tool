@@ -8,12 +8,12 @@ let eventSource = null
 
 // 自动滚动到底部
 const scrollToBottom = async () => {
-  await nextTick()
+  await nextTick();
   if (scrollRef.value) {
-    const el = scrollRef.value.$el?.querySelector('.n-scrollbar-content')
-    if (el) el.scrollTop = el.scrollHeight
+    // 使用 Naive UI 组件自带的 scrollTo 方法
+    scrollRef.value.scrollTo({ top: 99999, behavior: 'auto' });
   }
-}
+};
 
 onMounted(() => {
   const token = localStorage.getItem('token');

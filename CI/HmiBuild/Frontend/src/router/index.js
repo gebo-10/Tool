@@ -1,18 +1,25 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import HomeView from '../views/HomeView.vue';     // 你原来的 App.vue 内容可移到这里
 import LoginView from '../views/LoginView.vue';
+import PipelineView from '../views/PipelineView.vue';
 
 const routes = [
   {
     path: '/',
     name: 'home',
-    component: HomeView,
+    component: () => import('../views/HomeView.vue'), // 或直接 import HomeView
     meta: { requiresAuth: true },
   },
   {
     path: '/login',
     name: 'login',
-    component: LoginView,
+    component: () => import('../views/LoginView.vue'),
+  },
+  {
+    path: '/pipeline/:id',          // 动态路由参数
+    name: 'pipeline-detail',
+    component: PipelineView,
+    meta: { requiresAuth: true },
   },
 ];
 

@@ -166,7 +166,11 @@ getButtonStyle(attributes) {
 }
 
 // 注册到 G6
-register(ExtensionCategory.NODE, 'dag-task', DagTaskNode);
+let registered = false;
+if (!registered) {
+  register(ExtensionCategory.NODE, 'dag-task', DagTaskNode);
+  registered = true;
+}
 
 const selectedTaskId = ref(null);
 const showModal = ref(false);
@@ -177,7 +181,8 @@ const showModal = ref(false);
       container: document.getElementById('graphContainer'),
       width: graphContainer.clientWidth,
       height: 500,
-      autoFit: 'center',
+      autoFit: 'center',      // 保持居中
+      animation: false,        // 全局关闭动画
       node: {
           // 全局默认节点类型设为矩形
           type: 'dag-task',
@@ -230,6 +235,7 @@ const showModal = ref(false);
         rankdir: 'LR',          // 方向：LR（左→右）、TB（上→下）
         nodesep: 40,            // 同层节点水平间距
         ranksep: 80,            // 层级之间的间距
+        animate: false,
       },
       data: {
         nodes: [
