@@ -1,12 +1,29 @@
+
+
+
 <template>
-  <div id="container"></div>
+  <div class="dag-page">
+    <!-- 左侧：DAG 图 -->
+    <div class="dag-left" id="graphContainer"></div>
+
+    <!-- 右侧：任务详情面板 -->
+    <div class="dag-right">
+      <TaskDetail
+        v-if="selectedTaskId"
+        :task-id="selectedTaskId"
+        @close="selectedTaskId = null"
+      />
+      <n-empty v-else description="点击左侧节点查看任务详情" style="margin-top: 40px;" />
+    </div>
+  </div>
 </template>
 
 <script setup>
-  import { onMounted } from 'vue';
+  import { onMounted,ref } from 'vue';
   import { Rect, register, Graph, ExtensionCategory  } from '@antv/g6';
 
-
+  import { NModal } from 'naive-ui';   // 按需引入
+  import TaskDetail from './TaskDetail.vue';
 
   class DagTaskNode extends Rect {
 
@@ -151,12 +168,14 @@ getButtonStyle(attributes) {
 // 注册到 G6
 register(ExtensionCategory.NODE, 'dag-task', DagTaskNode);
 
-
-
+const selectedTaskId = ref(null);
+const showModal = ref(false);
   onMounted(() => {
+    //const selectedTaskId = ref(null);
+
     const graph = new Graph({
-      container: document.getElementById('container'),
-      width: container.clientWidth,
+      container: document.getElementById('graphContainer'),
+      width: graphContainer.clientWidth,
       height: 500,
       autoFit: 'center',
       node: {
@@ -262,7 +281,9 @@ graph.on('node:click', (evt) => {
   const nodeId = evt.target.id;
 
     console.log('Node clicked:', nodeId);
-  
+    selectedTaskId.value = nodeId;
+    showModal.value = true;
+
     // 示例：点击节点后更新其状态和进度
     // const item = evt.item;
     // const model = item.getModel();

@@ -17,7 +17,7 @@ import G6VueNode from '../components/G6VueNode.vue';
       <hr />
       <!-- <PipelineDetail /> -->
       <hr />
-      <LogViewer />
+      <!-- <LogViewer /> -->
       <hr />
       <G6Test />
     </div>

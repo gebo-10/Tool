@@ -1,5 +1,5 @@
 <template>
-  <n-layout-header bordered style="padding: 0 24px; height: 64px; display: flex; align-items: center; justify-content: space-between; background: #fff">
+  <n-layout-header bordered style="padding: 0 24px; height: 38px; display: flex; align-items: center; justify-content: space-between; background: #fff">
     <!-- 左侧：品牌 / 标题 -->
     <div class="left">
       <h2 style="margin: 0;">HMI CI</h2>
