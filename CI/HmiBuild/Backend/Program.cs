@@ -10,7 +10,13 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
 builder.Services.AddControllers();
+
+
 
 
 // 注册 UserDbContext（用户数据）
@@ -20,6 +26,7 @@ builder.Services.AddDbContext<UserDbContext>(options =>
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddHostedService<Backend.Services.BuildService>();
 
 
 // JWT 认证配置
@@ -48,8 +55,9 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
-
 
 
 using (var scope = app.Services.CreateScope())
