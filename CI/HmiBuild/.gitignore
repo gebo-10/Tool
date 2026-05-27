@@ -1,0 +1,135 @@
+## 忽略 Visual Studio 临时文件、生成结果和
+## 常用工具生成的文件。
+## 
+## 获取最新版本: https://github.com/github/gitignore/blob/main/VisualStudio.gitignore
+
+# 用户特定文件
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# 用户特定文件（MonoDevelop/Xamarin Studio）
+*.userprefs
+
+# 生成结果
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Ww][Ii][Nn]32/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+# Visual Studio 2015/2017 缓存/选项文件
+.vs/
+# 当 .sln 使用 submodules 时，取消下面这行的注释
+# *.sln.ide/
+
+# Visual Studio 2017 自动生成的文件
+Generated\ Files/
+
+# MSTest test Results
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+
+# NUnit
+*.VisualState.xml
+TestResult.xml
+nunit-*.xml
+
+# 构建分析
+*.dotCover
+
+# .NET Core
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+# StyleCop
+StyleCopReport.xml
+
+# 由 Files 添加/忽略的文件
+*.jfm
+
+# 由 Rider 添加的文件
+.idea/
+
+# 用户特定文件
+*.sln.iml
+
+# 构建结果
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Ww][Ii][Nn]32/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+# Visual Studio 2015 缓存/选项文件
+.vs/
+
+# Roslyn 缓存目录
+*.ide/
+
+# Visual Studio Code
+.vscode/
+## 如果你希望保留 VS Code 的设置，取消下面一行的注释
+# !.vscode/settings.json
+## 或者把 .vscode 下的特定配置文件加入版本控制
+# !.vscode/tasks.json
+# !.vscode/launch.json
+# !.vscode/extensions.json
+## 等等
+
+# 本地环境设置
+*.local.json
+
+# NuGet 包目录
+**/[Pp]ackages/*
+# 例外：不忽略 packages 目录下的 .targets 文件
+!**/[Pp]ackages/*.targets
+
+# NuGet 包管理器
+project.assets.json
+*.nuget.props
+*.nuget.targets
+
+# .NET 工具
+.nuget/
+
+# JetBrains Rider
+.idea/
+*.sln.iml
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# 其他
+*.swp
+*.bak
+*.orig
+*.tmp
+*~
