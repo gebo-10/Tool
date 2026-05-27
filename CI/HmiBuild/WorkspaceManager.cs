@@ -1,6 +1,6 @@
 using System.Collections.Concurrent;
 
-namespace HmiBuildSystem
+namespace BuildSystem
 {
     /// <summary>
     /// 管理多个工作区，提供线程安全的申请/释放接口。

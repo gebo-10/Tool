@@ -7,7 +7,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace HmiBuildSystem
+namespace BuildSystem
 {
     /// <summary>
     /// 工作区，对应一个物理目录，包含 Unity 工程和 Android 工程。

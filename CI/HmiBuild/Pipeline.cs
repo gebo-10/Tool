@@ -1,6 +1,4 @@
-﻿using HmiBuildSystem;
-
-namespace BuildSystem
+﻿namespace BuildSystem
 {
 
     //public class PipelineProgress
