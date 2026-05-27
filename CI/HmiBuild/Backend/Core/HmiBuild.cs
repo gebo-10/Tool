@@ -15,9 +15,12 @@ namespace BuildSystem
         private readonly Task _dispatcherTask;
         private bool _disposed;
 
+        private readonly ConcurrentDictionary<string, Pipeline> _activePipelines = new ConcurrentDictionary<string, Pipeline>();
+
         public event Action<Pipeline, Workspace>? PipelineStarted;
         public event Action<Pipeline, Workspace>? PipelineCompleted;
         public event Action<Pipeline, Exception>? PipelineFailed;
+        public event Action<Pipeline>? PipelineCancelled;
 
         public HmiCi(IEnumerable<string> workspaceDirs)
         {
@@ -31,53 +34,74 @@ namespace BuildSystem
         public void EnqueuePipeline(Pipeline pipeline)
         {
             if (pipeline == null) throw new ArgumentNullException(nameof(pipeline));
+            if (string.IsNullOrEmpty(pipeline.Id))
+                throw new ArgumentException("Pipeline 必须具有非空的 Id 属性");
+
+            if (!_activePipelines.TryAdd(pipeline.Id, pipeline))
+                throw new InvalidOperationException($"Pipeline {pipeline.Id} 已存在");
+
             _pendingQueue.Enqueue(pipeline);
             _queueSignal.Release();
         }
 
-        /// <summary>
-        /// 调度器主循环：等待队列非空且有空闲工作区，取出 Pipeline 并执行
-        /// </summary>
+        public bool CancelPipeline(string pipelineId)
+        {
+            if (!_activePipelines.TryRemove(pipelineId, out var pipeline))
+                return false;
+
+            // 调用 Pipeline 自己的取消方法
+            pipeline.Cancel();
+            PipelineCancelled?.Invoke(pipeline);
+            return true;
+        }
+
         private async Task DispatcherLoopAsync()
         {
             var cancellationToken = _stopCts.Token;
             while (!cancellationToken.IsCancellationRequested)
             {
-                // 等待队列中有任务
                 await _queueSignal.WaitAsync(cancellationToken).ConfigureAwait(false);
                 if (cancellationToken.IsCancellationRequested) break;
 
-                // 等待有空闲工作区（异步等待）
+                // 1. 先出队一个 Pipeline
+                if (!_pendingQueue.TryDequeue(out var pipeline))
+                    continue;
+
+                // 2. 检查是否已被取消（不在活跃字典中）
+                if (!_activePipelines.ContainsKey(pipeline.Id))
+                    continue;  // 已取消，丢弃
+
+                // 3. 用 pipeline.Id 申请 Workspace
                 Workspace? workspace = null;
                 try
                 {
-                    workspace = await _workspaceManager.AcquireAsync(cancellationToken).ConfigureAwait(false);
+                    workspace = await _workspaceManager.AcquireAsync(pipeline.Id, cancellationToken).ConfigureAwait(false);
                 }
                 catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
                 {
+                    // 如果申请过程中被停止，将 pipeline 放回队列（可选）
+                    _pendingQueue.Enqueue(pipeline);
                     break;
                 }
 
-                // 从队列中取出一个 Pipeline
-                if (!_pendingQueue.TryDequeue(out var pipeline))
-                {
-                    // 理论上不应该发生，因为队列信号已经增加
-                    _workspaceManager.Release(workspace);
-                    continue;
-                }
-
-                // 启动 Pipeline 执行（不等待，避免阻塞调度器）
-                _ = Task.Run(() => ExecutePipelineAsync(pipeline, workspace, cancellationToken), cancellationToken);
+                // 4. 启动执行
+                _ = Task.Run(() => ExecutePipelineAsync(pipeline, workspace, _stopCts.Token), _stopCts.Token);
             }
         }
 
-        private async Task ExecutePipelineAsync(Pipeline pipeline, Workspace workspace, CancellationToken cancellationToken)
+
+        private async Task ExecutePipelineAsync(Pipeline pipeline, Workspace workspace, CancellationToken stopToken)
         {
             PipelineStarted?.Invoke(pipeline, workspace);
             try
             {
-                await pipeline.ExecuteAsync(workspace, cancellationToken).ConfigureAwait(false);
+                // Pipeline 内部会合并自己的令牌和 stopToken
+                await pipeline.ExecuteAsync(workspace, stopToken).ConfigureAwait(false);
                 PipelineCompleted?.Invoke(pipeline, workspace);
+            }
+            catch (OperationCanceledException)
+            {
+                PipelineCancelled?.Invoke(pipeline);
             }
             catch (Exception ex)
             {
@@ -85,7 +109,11 @@ namespace BuildSystem
             }
             finally
             {
-                _workspaceManager.Release(workspace);
+                // 从活跃字典中移除并释放 Pipeline 资源
+                if (_activePipelines.TryRemove(pipeline.Id, out var _))
+                    pipeline.Dispose();
+
+                _workspaceManager.Release(workspace, pipeline.Id);
             }
         }
 
@@ -93,6 +121,10 @@ namespace BuildSystem
         {
             _stopCts.Cancel();
             await _dispatcherTask.ConfigureAwait(false);
+
+            // 取消所有活跃的 Pipeline
+            foreach (var pipeline in _activePipelines.Values.ToList())
+                CancelPipeline(pipeline.Id);
         }
 
         public void Dispose()
@@ -101,6 +133,9 @@ namespace BuildSystem
             _stopCts.Cancel();
             _stopCts.Dispose();
             _queueSignal.Dispose();
+            foreach (var pipeline in _activePipelines.Values)
+                pipeline.Dispose();
+            _activePipelines.Clear();
             _disposed = true;
         }
     }

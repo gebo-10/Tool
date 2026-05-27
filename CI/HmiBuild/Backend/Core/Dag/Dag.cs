@@ -60,6 +60,12 @@ namespace DagEngine
         }
     }
 
+    public class NodeProgressEventArgs : EventArgs
+    {
+        public string NodeId { get; set; } = "";
+        public int Percentage { get; set; }
+    }
+
     // ---------- 可扩展节点基类（支持多输入/多输出）----------
     public abstract class Node
     {
@@ -70,6 +76,9 @@ namespace DagEngine
 
         public IReadOnlyList<PinIn> Inputs => InputPins;
         public IReadOnlyList<PinOut> Outputs => OutputPins;
+
+        // 进度更新事件
+        public event EventHandler<NodeProgressEventArgs>? ProgressUpdated;
 
         protected PinIn AddInput(string name, Type type)
         {
@@ -108,6 +117,13 @@ namespace DagEngine
             pin.Value = value;
         }
 
+        // 子类调用此方法报告内部进度
+        protected void ReportProgress(int percentage)
+        {
+            percentage = Math.Clamp(percentage, 0, 100);
+            ProgressUpdated?.Invoke(this, new NodeProgressEventArgs { NodeId = this.Id, Percentage = percentage });
+        }
+
         // 异步执行节点逻辑（子类必须实现）
         public abstract Task ExecuteAsync(CancellationToken cancellationToken = default);
     }
@@ -115,6 +131,9 @@ namespace DagEngine
     // ---------- DAG 核心 ----------
     public class Dag
     {
+        public event EventHandler<NodeProgressEventArgs>? NodeProgressUpdated;
+
+
         private readonly Dictionary<string, Node> _nodes = new();
         private readonly List<(string FromNode, string FromPin, string ToNode, string ToPin)> _edges = new();
 
@@ -126,6 +145,8 @@ namespace DagEngine
             if (_nodes.ContainsKey(node.Id))
                 throw new InvalidOperationException($"节点 {node.Id} 已存在");
             _nodes[node.Id] = node;
+
+            node.ProgressUpdated += (s, e) => NodeProgressUpdated?.Invoke(s, e);
         }
 
         public void AddEdge(string fromNodeId, string fromPinName, string toNodeId, string toPinName)
