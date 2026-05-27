@@ -5,6 +5,10 @@ VisualStudioVersion = 18.4.11605.240
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HmiCi", "HmiCi.csproj", "{5ADA2BB6-BD8A-FBBA-631C-E748BB1D8E69}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HmiBuild", "..\..\HmiBuild\HmiBuild.csproj", "{88C0CEFB-0B59-A81D-510C-EED5849D24C7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HmiBuildTest", "..\..\Test\HmiBuildTest\HmiBuildTest.csproj", "{9AA154CB-A36E-E7C1-A70C-4F69549D3AB7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{5ADA2BB6-BD8A-FBBA-631C-E748BB1D8E69}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5ADA2BB6-BD8A-FBBA-631C-E748BB1D8E69}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5ADA2BB6-BD8A-FBBA-631C-E748BB1D8E69}.Release|Any CPU.Build.0 = Release|Any CPU
+		{88C0CEFB-0B59-A81D-510C-EED5849D24C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{88C0CEFB-0B59-A81D-510C-EED5849D24C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{88C0CEFB-0B59-A81D-510C-EED5849D24C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{88C0CEFB-0B59-A81D-510C-EED5849D24C7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9AA154CB-A36E-E7C1-A70C-4F69549D3AB7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9AA154CB-A36E-E7C1-A70C-4F69549D3AB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9AA154CB-A36E-E7C1-A70C-4F69549D3AB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9AA154CB-A36E-E7C1-A70C-4F69549D3AB7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
