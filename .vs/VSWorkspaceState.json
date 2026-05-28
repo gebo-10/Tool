@@ -1,0 +1,11 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\CI",
+    "\\CI\\HmiBuild",
+    "\\CI\\Test",
+    "\\CI\\Test\\HmiBuildTest"
+  ],
+  "SelectedNode": "\\CI\\Test\\HmiBuildTest\\Program.cs",
+  "PreviewInSolutionExplorer": false
+}

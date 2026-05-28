@@ -69,6 +69,7 @@ namespace DagEngine
     // ---------- 可扩展节点基类（支持多输入/多输出）----------
     public abstract class Node
     {
+        public IBlackboard? Blackboard { get; internal set; }
         public string Id { get; set; } = Guid.NewGuid().ToString();
 
         protected List<PinIn> InputPins { get; } = new List<PinIn>();
@@ -128,9 +129,60 @@ namespace DagEngine
         public abstract Task ExecuteAsync(CancellationToken cancellationToken = default);
     }
 
+
+    /// <summary>
+    /// 黑板接口，提供线程安全的键值对存储
+    /// </summary>
+    public interface IBlackboard
+    {
+        T Get<T>(string key);
+        void Set<T>(string key, T value);
+        bool TryGet<T>(string key, out T value);
+        bool ContainsKey(string key);
+        bool Remove(string key);
+    }
+
+    /// <summary>
+    /// 基于 ConcurrentDictionary 的黑板实现
+    /// </summary>
+    public class Blackboard : IBlackboard
+    {
+        private readonly ConcurrentDictionary<string, object> _storage = new();
+
+        public T Get<T>(string key)
+        {
+            if (_storage.TryGetValue(key, out var value) && value is T t)
+                return t;
+            throw new KeyNotFoundException($"Key '{key}' not found or type mismatch.");
+        }
+
+        public void Set<T>(string key, T value)
+        {
+            _storage[key] = value;
+        }
+
+        public bool TryGet<T>(string key, out T value)
+        {
+            if (_storage.TryGetValue(key, out var obj) && obj is T t)
+            {
+                value = t;
+                return true;
+            }
+            value = default!;
+            return false;
+        }
+
+        public bool ContainsKey(string key) => _storage.ContainsKey(key);
+
+        public bool Remove(string key) => _storage.TryRemove(key, out _);
+    }
+
+
+
     // ---------- DAG 核心 ----------
     public class Dag
     {
+        private IBlackboard _blackboard= new Blackboard();
         public event EventHandler<NodeProgressEventArgs>? NodeProgressUpdated;
 
 
@@ -139,6 +191,17 @@ namespace DagEngine
 
         public IReadOnlyDictionary<string, Node> Nodes => _nodes;
         public IReadOnlyList<(string FromNode, string FromPin, string ToNode, string ToPin)> Edges => _edges;
+
+        public IBlackboard Blackboard
+        {
+            get => _blackboard;
+            set => _blackboard = value;
+        }
+
+        //public Dag() {
+        //    Blackboard = new Blackboard();
+        //}
+
 
         public void AddNode(Node node)
         {
@@ -291,6 +354,9 @@ namespace DagEngine
                     await semaphore.WaitAsync(cts.Token).ConfigureAwait(false);
 
                 var node = _nodes[nodeId];
+                // 注入黑板
+                node.Blackboard = _blackboard;
+
                 try
                 {
                     await node.ExecuteAsync(cts.Token).ConfigureAwait(false);

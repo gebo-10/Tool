@@ -3,17 +3,26 @@ namespace HmiBuildTest
 {
     internal class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             Console.WriteLine("Hello, World!");
             HmiCi ci = new HmiCi(new[] { "H:\\Work\\Tool\\CI\\Workspaces\\Workspace1", "H:\\Work\\Tool\\CI\\Workspaces\\Workspace2" });
-            
-            var pipeline = new Pipeline
+
+            var pipeline = new Pipeline(new Dictionary<string, object>
             {
-                Name = "Test Pipeline",
-            };  
-            ci.EnqueuePipeline(pipeline);
+                ["Name"] = "Test Pipeline"
+            });
             
+
+            ci.EnqueuePipeline(pipeline);
+
+
+            Console.WriteLine("等待所有打包任务完成...");
+            await ci.WaitForCompletionAsync();
+            Console.WriteLine("所有任务已完成。");
+
+            // 可选：优雅停止调度器
+            await ci.StopAsync();
         }
     }
 }

@@ -1,4 +1,7 @@
-﻿namespace BuildSystem
+﻿using HmiBuild;
+using System.Diagnostics;
+
+namespace BuildSystem
 {
 
     //public class PipelineProgress
@@ -67,12 +70,27 @@
         /// <summary>
         /// 根据参数构建 DAG（由子类重写，或通过工厂注入）
         /// </summary>
-        protected virtual DagEngine.Dag BuildDag()
+        protected virtual DagEngine.Dag BuildDag(Workspace workspace)
         {
             // 示例实现：根据参数创建一个简单的 DAG
             var dag = new DagEngine.Dag();
+            dag.Blackboard.Set("workspace", workspace);
             // 添加节点（实际应从参数读取节点类型和连接）
             // 此处仅为演示，真正使用时需根据业务逻辑构建
+
+            var node1 = new ClearAndroidProject();
+            var node2 = new BuildApk();  
+            dag.AddNode(node1);
+            dag.AddNode(node2);
+
+            dag.AddEdge(node1.Id, "AndroidProjet", node2.Id, "Project");
+
+            dag.NodeProgressUpdated += (s, e) =>
+            {
+                Console.WriteLine($"节点 {e.NodeId} 进度: {e.Percentage}%");
+                // 这里可以将节点进度转换为 PipelineProgress 并报告
+                // _progress?.Report(new PipelineProgress { ... });
+            };
             return dag;
         }
 
@@ -89,7 +107,7 @@
             var combinedToken = linkedCts.Token;
 
 
-            _dag = BuildDag();
+            _dag = BuildDag(workspace);
 
             // 可选：将 Workspace 路径注入到节点参数中（例如通过全局变量）
             InjectWorkspaceToNodes(_dag, workspace.RootPath);

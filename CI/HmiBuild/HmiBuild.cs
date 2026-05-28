@@ -116,6 +116,23 @@ namespace BuildSystem
             }
         }
 
+        public async Task WaitForCompletionAsync(CancellationToken cancellationToken = default)
+        {
+            // 轮询检查是否还有待处理的任务
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                // 当队列为空且没有活跃的 Pipeline 时，表示所有任务已完成
+                if (_pendingQueue.Count == 0 && _activePipelines.Count == 0)
+                    return;
+
+                // 避免过度占用 CPU，等待一小段时间后再检查
+                await Task.Delay(200, cancellationToken).ConfigureAwait(false);
+            }
+
+            // 如果是因为取消而退出循环，则抛出取消异常
+            cancellationToken.ThrowIfCancellationRequested();
+        }
+
         public async Task StopAsync()
         {
             _stopCts.Cancel();
