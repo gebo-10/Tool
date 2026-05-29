@@ -238,48 +238,80 @@ const showModal = ref(false);
         animate: false,
       },
       data: {
-        nodes: [
-          {
-            id: 'node-0',
-            style: {
-              label: '开始',
-              status: 'completed',
-              progress: 100,
-            },
-          },
-          {
-            id: 'node-1',
-            style: {
-              label: '任务1',
-              status: 'pending',
-              progress: 10,
-            },
-          },
-          {
-            id: 'node-2',
-            style: {
-              label: '任务2',
-              status: 'running',
-              progress: 10,
-            },
-          },
-          {
-            id: 'node-3',
-            style: {
-
-              label: '任务三',
-              status: 'running',
-              progress: 10,
-            },
-          }
-        ],
-        edges: [
-          {id: 'edge-01', source: 'node-0', target: 'node-1' ,sourcePort: 'right', targetPort: 'left'},
-          {id: 'edge-03', source: 'node-0', target: 'node-3' ,sourcePort: 'right', targetPort: 'left'},
-          { id: 'edge-1', source: 'node-1', target: 'node-2' ,sourcePort: 'right', targetPort: 'left'},
-          { id: 'edge-2', source: 'node-3', target: 'node-2' ,sourcePort: 'right', targetPort: 'left'}
-        ],
-      },
+  "nodes": [
+    {
+      "id": "805f7412-0e33-4323-9ff5-711310eed7ab",
+      "style": {
+        "label": "ClearAndroid1",
+        "status": "pending",
+        "progress": 0
+      }
+    },
+    {
+      "id": "43987b73-ab4b-4927-a92d-d2914ceb9ef2",
+      "style": {
+        "label": "BuildApk1",
+        "status": "pending",
+        "progress": 0
+      }
+    },
+    {
+      "id": "cc22b797-d562-4659-904c-946ced48939b",
+      "style": {
+        "label": "ClearAndroid2",
+        "status": "pending",
+        "progress": 0
+      }
+    },
+    {
+      "id": "f9e9fc9d-2bf3-4946-a150-25f1fd476198",
+      "style": {
+        "label": "BuildApk2",
+        "status": "pending",
+        "progress": 0
+      }
+    },
+    {
+      "id": "4aab70b4-3bc3-4803-8c09-3a13d67643f5",
+      "style": {
+        "label": "ClearAndroid3",
+        "status": "pending",
+        "progress": 0
+      }
+    },
+    {
+      "id": "befd77ba-dea3-4a05-81e4-cd4ead52cd5c",
+      "style": {
+        "label": "BuildApk3",
+        "status": "pending",
+        "progress": 0
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "805f7412-0e33-4323-9ff5-711310eed7ab43987b73-ab4b-4927-a92d-d2914ceb9ef2",
+      "source": "805f7412-0e33-4323-9ff5-711310eed7ab",
+      "target": "43987b73-ab4b-4927-a92d-d2914ceb9ef2",
+      "sourcePort": "right",
+      "targetPort": "left"
+    },
+    {
+      "id": "cc22b797-d562-4659-904c-946ced48939bf9e9fc9d-2bf3-4946-a150-25f1fd476198",
+      "source": "cc22b797-d562-4659-904c-946ced48939b",
+      "target": "f9e9fc9d-2bf3-4946-a150-25f1fd476198",
+      "sourcePort": "right",
+      "targetPort": "left"
+    },
+    {
+      "id": "4aab70b4-3bc3-4803-8c09-3a13d67643f5befd77ba-dea3-4a05-81e4-cd4ead52cd5c",
+      "source": "4aab70b4-3bc3-4803-8c09-3a13d67643f5",
+      "target": "befd77ba-dea3-4a05-81e4-cd4ead52cd5c",
+      "sourcePort": "right",
+      "targetPort": "left"
+    }
+  ]
+},
     });
 
 

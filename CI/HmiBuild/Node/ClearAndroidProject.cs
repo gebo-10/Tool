@@ -1,12 +1,8 @@
 ﻿using BuildSystem;
-using DagEngine;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace HmiBuild
 {
-    public class ClearAndroidProject: Node
+    public class ClearAndroidProject: HmiBuildNode
     {
         public ClearAndroidProject() {
             AddOutput("AndroidProjet", typeof(string));
@@ -14,6 +10,7 @@ namespace HmiBuild
 
         public override async Task ExecuteAsync(CancellationToken cancellationToken = default)
         {
+            status = HmiBuildNodeStatus.Running;
             var workspace = Blackboard.Get<Workspace>("workspace");
             if (workspace == null)
                 throw new InvalidOperationException("Workspace not found in blackboard.");
@@ -22,29 +19,41 @@ namespace HmiBuild
             if (string.IsNullOrEmpty(projectPath))
                 throw new InvalidOperationException("Project path is required.");
 
-            // 将当前节点的执行逻辑封装为一个委托，提交到 AndroidQueue 中排队执行
-            await workspace.AndroidQueue.EnqueueAsync(async token =>
+            try
             {
-                // 模拟清空操作（这里使用进度报告模拟耗时任务）
-                const int totalDurationMs = 2000;   // 总耗时 2 秒
-                const int intervalMs = 500;         // 每 0.5 秒报告一次
-                int steps = totalDurationMs / intervalMs;
-
-                for (int i = 0; i <= steps; i++)
+                await workspace.AndroidQueue.EnqueueAsync(async token =>
                 {
-                    token.ThrowIfCancellationRequested();
+                    const int totalDurationMs = 2000;
+                    const int intervalMs = 500;
+                    int steps = totalDurationMs / intervalMs;
 
-                    int percentage = (i * 100) / steps;  // 0, 25, 50, 75, 100
-                    ReportProgress(percentage);          // 触发进度事件
+                    for (int i = 0; i <= steps; i++)
+                    {
+                        token.ThrowIfCancellationRequested();
 
-                    if (i < steps)
-                        await Task.Delay(intervalMs, token);
-                }
+                        int percentage = (i * 100) / steps;
+                        progress = percentage;
+                        if (percentage == 100)
+                        {
+                            status = HmiBuildNodeStatus.Completed;
+                        }
+                        ReportProgress(percentage);
 
-                // 设置输出引脚的值
-                SetOutputValue("AndroidProjet", projectPath);
-            });
+                        if (i < steps)
+                            await Task.Delay(intervalMs, token);
+                    }
 
+                    SetOutputValue("AndroidProjet", projectPath);
+                }, cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                status = HmiBuildNodeStatus.Failed;
+                ReportProgress(progress);
+                // 可选：记录日志
+                // Console.WriteLine($"节点 {Id} 执行失败: {ex.Message}");
+                throw; // 重新抛出，让 DAG 引擎捕获并处理
+            }
         }
     }
 }

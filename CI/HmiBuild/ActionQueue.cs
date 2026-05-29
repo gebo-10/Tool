@@ -3,82 +3,81 @@ using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace BuildSystem
+public class ActionQueue
 {
-    /// <summary>
-    /// 代表一个只能同时执行一个任务的资源队列
-    /// </summary>
-    public class ActionQueue
+    private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(0); // 初始计数 0
+    private readonly ConcurrentQueue<(Func<CancellationToken, Task> TaskFactory, TaskCompletionSource<bool> Tcs, CancellationToken CancellationToken)> _pending = new();
+    private readonly CancellationTokenSource _stopCts = new();
+    private readonly Task _workerTask;
+    private bool _disposed;
+
+    public string Name { get; }
+
+    public ActionQueue(string name)
     {
-        private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
-        private readonly ConcurrentQueue<(Func<CancellationToken, Task> TaskFactory, TaskCompletionSource<bool> Tcs)> _pending = new();
-        private readonly CancellationTokenSource _stopCts = new();
-        private readonly Task _workerTask;
-        private bool _disposed;
+        Name = name;
+        _workerTask = Task.Run(ProcessQueue);
+    }
 
-        public string Name { get; }
+    /// <summary>
+    /// 将任务加入队列，返回一个 Task 表示该任务的完成。
+    /// </summary>
+    /// <param name="taskFactory">接受 CancellationToken 的异步任务委托</param>
+    /// <param name="cancellationToken">外部取消令牌，会与队列停止令牌合并</param>
+    public Task EnqueueAsync(Func<CancellationToken, Task> taskFactory, CancellationToken cancellationToken = default)
+    {
+        if (taskFactory == null) throw new ArgumentNullException(nameof(taskFactory));
+        var tcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+        _pending.Enqueue((taskFactory, tcs, cancellationToken));
+        _semaphore.Release(); // 通知有任务
+        return tcs.Task;
+    }
 
-        public ActionQueue(string name)
+    private async Task ProcessQueue()
+    {
+        var stopToken = _stopCts.Token;
+        while (!stopToken.IsCancellationRequested)
         {
-            Name = name;
-            _workerTask = Task.Run(ProcessQueue);
-        }
+            await _semaphore.WaitAsync(stopToken).ConfigureAwait(false);
+            if (stopToken.IsCancellationRequested) break;
 
-        /// <summary>
-        /// 提交一个任务到队列，返回一个 Task 表示该任务的完成
-        /// </summary>
-        public Task EnqueueAsync(Func<CancellationToken, Task> taskFactory)
-        {
-            if (taskFactory == null) throw new ArgumentNullException(nameof(taskFactory));
-            var tcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
-            _pending.Enqueue((taskFactory, tcs));
-            _semaphore.Release(); // 唤醒工作线程
-            return tcs.Task;
-        }
-
-        private async Task ProcessQueue()
-        {
-            var token = _stopCts.Token;
-            while (!token.IsCancellationRequested)
+            if (_pending.TryDequeue(out var item))
             {
-                await _semaphore.WaitAsync(token).ConfigureAwait(false);
-                if (token.IsCancellationRequested) break;
-
-                if (_pending.TryDequeue(out var item))
+                // 合并队列停止令牌和调用者传入的取消令牌
+                using var cts = CancellationTokenSource.CreateLinkedTokenSource(stopToken, item.CancellationToken);
+                try
                 {
-                    try
-                    {
-                        await item.TaskFactory(token).ConfigureAwait(false);
-                        item.Tcs.TrySetResult(true);
-                    }
-                    catch (OperationCanceledException)
-                    {
-                        item.Tcs.TrySetCanceled();
-                    }
-                    catch (Exception ex)
-                    {
-                        item.Tcs.TrySetException(ex);
-                    }
+                    await item.TaskFactory(cts.Token).ConfigureAwait(false);
+                    item.Tcs.TrySetResult(true);
                 }
+                catch (OperationCanceledException)
+                {
+                    item.Tcs.TrySetCanceled();
+                }
+                catch (Exception ex)
+                {
+                    item.Tcs.TrySetException(ex);
+                }
+                // 无需手动释放 cts，using 块已处理
             }
         }
+    }
 
-        public async Task StopAsync()
-        {
-            _stopCts.Cancel();
-            await _workerTask.ConfigureAwait(false);
-            _stopCts.Dispose();
-            _semaphore.Dispose();
-        }
+    public async Task StopAsync()
+    {
+        _stopCts.Cancel();
+        await _workerTask.ConfigureAwait(false);
+        _stopCts.Dispose();
+        _semaphore.Dispose();
+    }
 
-        public void Dispose()
-        {
-            if (_disposed) return;
-            _stopCts.Cancel();
-            _workerTask.Wait(5000);
-            _stopCts.Dispose();
-            _semaphore.Dispose();
-            _disposed = true;
-        }
+    public void Dispose()
+    {
+        if (_disposed) return;
+        _stopCts.Cancel();
+        _workerTask.Wait(5000);
+        _stopCts.Dispose();
+        _semaphore.Dispose();
+        _disposed = true;
     }
 }

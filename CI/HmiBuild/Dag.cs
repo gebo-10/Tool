@@ -66,6 +66,7 @@ namespace DagEngine
         public string NodeType { get; set; } = ""; 
         public string NodeName { get; set; } = "";
         public int Percentage { get; set; }
+        public Node Node { get; set; }
     }
 
     // ---------- 可扩展节点基类（支持多输入/多输出）----------
@@ -129,16 +130,27 @@ namespace DagEngine
         protected void ReportProgress(int percentage)
         {
             percentage = Math.Clamp(percentage, 0, 100);
-            ProgressUpdated?.Invoke(this, new NodeProgressEventArgs { 
-                NodeId = this.Id, 
+            ProgressUpdated?.Invoke(this, new NodeProgressEventArgs
+            {
+                NodeId = this.Id,
                 Percentage = percentage,
-                NodeType= this.GetType().Name,
+                NodeType = this.GetType().Name,
                 NodeName = this.Name,
+                Node = this,
             });
         }
 
         // 异步执行节点逻辑（子类必须实现）
         public abstract Task ExecuteAsync(CancellationToken cancellationToken = default);
+
+        protected internal virtual Dictionary<string, object?>? Serialize()
+        {
+            return new Dictionary<string, object?>
+            {
+                ["id"] = Id,
+                ["Name"] = Name,
+            };
+        }
     }
 
 
@@ -376,8 +388,9 @@ namespace DagEngine
 
                 try
                 {
+                    Console.WriteLine($"[{DateTime.Now:HH:mm:ss.fff}] 开始执行节点 {node.Name}");
                     await node.ExecuteAsync(cts.Token).ConfigureAwait(false);
-
+                    Console.WriteLine($"[{DateTime.Now:HH:mm:ss.fff}] 完成节点 {node.Name}");
                     // 节点成功完成
                     List<string>? downstreamNodes = null;
                     lock (lockObj)
@@ -440,67 +453,57 @@ namespace DagEngine
             public Dictionary<string, object?>? Parameters { get; set; }
         }
 
-        public class EdgeDefinition
-        {
-            public string FromNode { get; set; } = "";
-            public string FromPin { get; set; } = "";
-            public string ToNode { get; set; } = "";
-            public string ToPin { get; set; } = "";
-        }
+        //public class EdgeDefinition
+        //{
+        //    public string FromNode { get; set; } = "";
+        //    public string FromPin { get; set; } = "";
+        //    public string ToNode { get; set; } = "";
+        //    public string ToPin { get; set; } = "";
+        //}
 
         public class DagData
         {
-            public List<NodeDefinition> Nodes { get; set; } = new();
-            public List<EdgeDefinition> Edges { get; set; } = new();
+            public List<Dictionary<string, object>> nodes { get; set; } = new();
+            public List<Dictionary<string, object>> edges { get; set; } = new();
         }
 
-        public static Dag FromJson(string json, Func<string, Dictionary<string, object?>?, Node> nodeFactory)
-        {
-            var data = JsonSerializer.Deserialize<DagData>(json)
-                ?? throw new InvalidOperationException("JSON 反序列化失败");
+        //public static Dag FromJson(string json, Func<string, Dictionary<string, object?>?, Node> nodeFactory)
+        //{
+        //    var data = JsonSerializer.Deserialize<DagData>(json)
+        //        ?? throw new InvalidOperationException("JSON 反序列化失败");
 
-            var dag = new Dag();
+        //    var dag = new Dag();
 
-            foreach (var nodeDef in data.Nodes)
-            {
-                var node = nodeFactory(nodeDef.Type, nodeDef.Parameters);
-                node.Id = nodeDef.Id;
-                dag.AddNode(node);
-            }
+        //    foreach (var nodeDef in data.Nodes)
+        //    {
+        //        var node = nodeFactory(nodeDef.Type, nodeDef.Parameters);
+        //        node.Id = nodeDef.Id;
+        //        dag.AddNode(node);
+        //    }
 
-            foreach (var edgeDef in data.Edges)
-            {
-                dag.AddEdge(edgeDef.FromNode, edgeDef.FromPin, edgeDef.ToNode, edgeDef.ToPin);
-            }
+        //    foreach (var edgeDef in data.Edges)
+        //    {
+        //        dag.AddEdge(edgeDef.FromNode, edgeDef.FromPin, edgeDef.ToNode, edgeDef.ToPin);
+        //    }
 
-            return dag;
-        }
+        //    return dag;
+        //}
 
         public string ToJson()
         {
             var data = new DagData
             {
-                Nodes = _nodes.Values.Select(n => new NodeDefinition
+                nodes = _nodes.Values.Select(n => n.Serialize()).ToList(),
+                edges = _edges.Select(e => new Dictionary<string, object>
                 {
-                    Id = n.Id,
-                    Type = n.GetType().AssemblyQualifiedName ?? n.GetType().FullName!,
-                    Parameters = SerializeNodeParameters(n)
-                }).ToList(),
-                Edges = _edges.Select(e => new EdgeDefinition
-                {
-                    FromNode = e.FromNode,
-                    FromPin = e.FromPin,
-                    ToNode = e.ToNode,
-                    ToPin = e.ToPin
+                    ["id"]=e.FromNode+e.ToNode,
+                    ["source"]=e.FromNode,
+                    ["target"]= e.ToNode,
+                    ["sourcePort"]= "right",
+                    ["targetPort"]= "left",
                 }).ToList()
             };
             return JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true });
-        }
-
-        private static Dictionary<string, object?>? SerializeNodeParameters(Node node)
-        {
-            // 可根据节点类型扩展，此处返回 null 表示无额外参数
-            return null;
         }
     }
 }

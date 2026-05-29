@@ -1,5 +1,7 @@
 ﻿using HmiBuild;
 using System.Diagnostics;
+using System.Text.Json;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace BuildSystem
 {
@@ -77,26 +79,64 @@ namespace BuildSystem
             dag.Blackboard.Set("workspace", workspace);
             // 添加节点（实际应从参数读取节点类型和连接）
             // 此处仅为演示，真正使用时需根据业务逻辑构建
-
-            var node1 = new ClearAndroidProject()
             {
-                Name = "ClearAndroid"
-            };
-            var node2 = new BuildApk()
-            {
-                Name = "BuildApk"
-            };
-            dag.AddNode(node1);
-            dag.AddNode(node2);
+                var node1 = new ClearAndroidProject()
+                {
+                    Name = "ClearAndroid1"
+                };
+                var node2 = new BuildApk()
+                {
+                    Name = "BuildApk1"
+                };
+                dag.AddNode(node1);
+                dag.AddNode(node2);
 
-            dag.AddEdge(node1.Id, "AndroidProjet", node2.Id, "Project");
+                dag.AddEdge(node1.Id, "AndroidProjet", node2.Id, "Project");
+            }
+
+            {
+                var node1 = new ClearAndroidProject()
+                {
+                    Name = "ClearAndroid2"
+                };
+                var node2 = new BuildApk()
+                {
+                    Name = "BuildApk2"
+                };
+                dag.AddNode(node1);
+                dag.AddNode(node2);
+
+                dag.AddEdge(node1.Id, "AndroidProjet", node2.Id, "Project");
+            }
+
+            {
+                var node1 = new ClearAndroidProject()
+                {
+                    Name = "ClearAndroid3"
+                };
+                var node2 = new BuildApk()
+                {
+                    Name = "BuildApk3"
+                };
+                dag.AddNode(node1);
+                dag.AddNode(node2);
+
+                dag.AddEdge(node1.Id, "AndroidProjet", node2.Id, "Project");
+            }
+
 
             dag.NodeProgressUpdated += (s, e) =>
             {
                 Console.WriteLine($"节点 {e.NodeId} {e.NodeType} {e.NodeName} 进度: {e.Percentage}%");
+                var json = JsonSerializer.Serialize(e.Node.Serialize(), new JsonSerializerOptions { WriteIndented = true });
+                Console.WriteLine(json);
                 // 这里可以将节点进度转换为 PipelineProgress 并报告
                 // _progress?.Report(new PipelineProgress { ... });
             };
+
+
+            var json=dag.ToJson();
+
             return dag;
         }
 
