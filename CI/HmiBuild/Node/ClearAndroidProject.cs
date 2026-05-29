@@ -46,13 +46,20 @@ namespace HmiBuild
                     SetOutputValue("AndroidProjet", projectPath);
                 }, cancellationToken);
             }
+            catch (OperationCanceledException)
+            {
+                status = HmiBuildNodeStatus.Cancelled;
+                // 可选：报告取消时的进度
+                ReportProgress(progress);
+                // 重新抛出取消异常，让 DAG 引擎知道是被取消的
+                throw;
+            }
             catch (Exception ex)
             {
                 status = HmiBuildNodeStatus.Failed;
                 ReportProgress(progress);
-                // 可选：记录日志
-                // Console.WriteLine($"节点 {Id} 执行失败: {ex.Message}");
-                throw; // 重新抛出，让 DAG 引擎捕获并处理
+                // 记录日志
+                throw;
             }
         }
     }

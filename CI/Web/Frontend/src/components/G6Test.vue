@@ -41,9 +41,10 @@
       running:  { bg: '#DBEAFE', text: '#1D4ED8', prog: '#3B82F6' },
       completed:{ bg: '#D1FAE5', text: '#047857', prog: '#10B981' },
       failed:   { bg: '#FEE2E2', text: '#B91C1C', prog: '#EF4444' },
+      cancelled: { bg: '#F3F4F6', text: '#e2b00d', prog: '#9CA3AF' }
     };
     const colors = statusColors[status] || statusColors.pending;
-    const statusLabel = { pending: '等待中', running: '运行中', completed: '已完成', failed: '失败' }[status] || status;
+    const statusLabel = { pending: '等待中', running: '运行中', completed: '已完成', failed: '失败', cancelled: '已取消' }[status] || status;
 
     // ---------- 绘制背景矩形 ----------
     // const keyShape = this.upsert('key', 'rect', {
@@ -243,7 +244,7 @@ const showModal = ref(false);
       "id": "805f7412-0e33-4323-9ff5-711310eed7ab",
       "style": {
         "label": "ClearAndroid1",
-        "status": "pending",
+        "status": "running",
         "progress": 0
       }
     },
@@ -259,7 +260,7 @@ const showModal = ref(false);
       "id": "cc22b797-d562-4659-904c-946ced48939b",
       "style": {
         "label": "ClearAndroid2",
-        "status": "pending",
+        "status": "cancelled",
         "progress": 0
       }
     },

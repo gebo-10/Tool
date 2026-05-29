@@ -7,7 +7,8 @@ namespace HmiBuild
         Pending,
         Running,
         Completed,
-        Failed
+        Failed,
+        Cancelled,
     }
     public abstract class HmiBuildNode : Node
     {
