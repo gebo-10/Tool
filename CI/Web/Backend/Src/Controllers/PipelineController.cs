@@ -92,6 +92,9 @@ public class PipelinesController : ControllerBase
         if (pipeline == null)
             return NotFound();
 
+        //_buildService.
+
+
         return Ok(ToResponse(pipeline));
     }
 

@@ -38,6 +38,14 @@ namespace BuildSystem
         {
             Parameters = parameters ?? new Dictionary<string, object>();
             Name = Parameters.TryGetValue("Name", out var n) ? n.ToString() : Id;
+
+            var dag = new DagEngine.Dag();
+            var node1 = new ClearAndroidProject()
+            {
+                Name = "ClearAndroid1"
+            };
+            dag.AddNode(node1);
+            _dag = dag;
         }
 
 
@@ -160,6 +168,11 @@ namespace BuildSystem
         }
 
         public override string ToString() => $"Pipeline {Name} ({Id})";
+
+        public string ToJson()
+        {
+            return _dag.ToJson();
+        }
     }
 
 }

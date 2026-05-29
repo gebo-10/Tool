@@ -51,12 +51,16 @@ namespace Backend.Service
 
             if (entity == null) return false;
 
-            entity.Status = "Running";
-            await db.SaveChangesAsync(token);
+           
 
             // 创建 Pipeline 并提交到 HmiCi
             var pipeline = new Pipeline(new Dictionary<string, object> { ["Name"] = entity.Name });
             pipeline.Id = entity.PipelineId.ToString(); // 使用数据库 ID
+
+            entity.Status = "Running";
+            entity.DagJson = pipeline.ToJson();
+            await db.SaveChangesAsync(token);
+
             _hmiCi.EnqueuePipeline(pipeline);
             return true;
         }
@@ -76,6 +80,7 @@ namespace Backend.Service
             {
                 entity.Status = status;
                 entity.CompletedAt = DateTime.UtcNow;
+                entity.DagJson = pipeline.ToJson();
                 await db.SaveChangesAsync();
             }
             else

@@ -137,7 +137,7 @@ const pagination = computed(() => ({
 // ---- 行点击进入详情 ----
 const rowProps = (row) => ({
   style: 'cursor: pointer;',
-  onClick: () => router.push(`/pipeline/${row.id}`),
+  onClick: () => router.push(`/pipelines/${row.id}`),
 });
 
 // ---- 斑马纹 ----

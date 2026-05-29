@@ -3,16 +3,20 @@
 </template>
 
 <script setup>
+console.log('setup 执行了'); 
 import { ref, onMounted, onUnmounted } from 'vue';
 import DagViewer from '../components/DagViewer.vue';
 import request from '../utils/request';
+import { useRoute } from 'vue-router';
+const route = useRoute();
 
 const graphData = ref({ nodes: [], edges: [] });
 let eventSource = null;
 
 // 1. 首次获取 DAG 结构
 const fetchDag = async (pipelineId) => {
-  const res = await request.get(`/pipeline/${pipelineId}/dag`);
+  const res = await request.get(`/pipelines/${pipelineId}`);
+  console.log('初始 DAG 数据', res);
   graphData.value = res.data;
 };
 
@@ -31,7 +35,8 @@ const connectSSE = (pipelineId) => {
 };
 
 onMounted(() => {
-  const pipelineId = 'demo'; // 从路由参数获取
+  const pipelineId = route.params.id; // 假设路由为 /pipeline/:id
+  console.log('Pipeline ID from route:', pipelineId);
   fetchDag(pipelineId).then(() => connectSSE(pipelineId));
 });
 

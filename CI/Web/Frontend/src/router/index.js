@@ -16,7 +16,7 @@ const routes = [
     component: () => import('../views/LoginView.vue'),
   },
   {
-    path: '/pipeline/:id',          // 动态路由参数
+    path: '/pipelines/:id',          // 动态路由参数
     name: 'pipeline-detail',
     component: PipelineView,
     meta: { requiresAuth: true },
