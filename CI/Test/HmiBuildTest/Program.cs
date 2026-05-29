@@ -26,7 +26,10 @@ namespace HmiBuildTest
             //Console.WriteLine("所有任务已完成。");
 
             await Task.Delay(2000);
-            Console.WriteLine("中断执行");
+            //Console.WriteLine("中断执行");
+
+            ci.CancelPipeline(pipeline.Id);
+            await Task.Delay(5000);
 
             //可选：优雅停止调度器
             await ci.StopAsync();
