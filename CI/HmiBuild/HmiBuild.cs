@@ -59,7 +59,15 @@ namespace BuildSystem
             var cancellationToken = _stopCts.Token;
             while (!cancellationToken.IsCancellationRequested)
             {
-                await _queueSignal.WaitAsync(cancellationToken).ConfigureAwait(false);
+                try
+                {
+                    await _queueSignal.WaitAsync(cancellationToken).ConfigureAwait(false);
+                }
+                catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+                {
+                    // 正常取消，退出循环
+                    break;
+                }
                 if (cancellationToken.IsCancellationRequested) break;
 
                 // 1. 先出队一个 Pipeline

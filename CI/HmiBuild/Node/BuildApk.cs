@@ -29,7 +29,7 @@ namespace HmiBuild
 
                 int percentage = (i * 100) / steps;
                 ReportProgress(percentage);  // 触发进度事件
-
+                Console.WriteLine("BuildApk working");
                 if (i < steps)  // 最后一步不需要再 Delay
                     await Task.Delay(intervalMs, cancellationToken);
             }

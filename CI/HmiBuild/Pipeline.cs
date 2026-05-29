@@ -78,8 +78,14 @@ namespace BuildSystem
             // 添加节点（实际应从参数读取节点类型和连接）
             // 此处仅为演示，真正使用时需根据业务逻辑构建
 
-            var node1 = new ClearAndroidProject();
-            var node2 = new BuildApk();  
+            var node1 = new ClearAndroidProject()
+            {
+                Name = "ClearAndroid"
+            };
+            var node2 = new BuildApk()
+            {
+                Name = "BuildApk"
+            };
             dag.AddNode(node1);
             dag.AddNode(node2);
 
@@ -87,7 +93,7 @@ namespace BuildSystem
 
             dag.NodeProgressUpdated += (s, e) =>
             {
-                Console.WriteLine($"节点 {e.NodeId} 进度: {e.Percentage}%");
+                Console.WriteLine($"节点 {e.NodeId} {e.NodeType} {e.NodeName} 进度: {e.Percentage}%");
                 // 这里可以将节点进度转换为 PipelineProgress 并报告
                 // _progress?.Report(new PipelineProgress { ... });
             };
@@ -97,7 +103,7 @@ namespace BuildSystem
         /// <summary>
         /// 绑定工作区，并执行打包流程
         /// </summary>
-        internal async Task ExecuteAsync(Workspace workspace, CancellationToken externalToken = default)
+        public async Task ExecuteAsync(Workspace workspace, CancellationToken externalToken = default)
         {
             _workspace = workspace ?? throw new ArgumentNullException(nameof(workspace));
 
@@ -109,31 +115,11 @@ namespace BuildSystem
 
             _dag = BuildDag(workspace);
 
-            // 可选：将 Workspace 路径注入到节点参数中（例如通过全局变量）
-            InjectWorkspaceToNodes(_dag, workspace.RootPath);
-
             // 执行 DAG
             await _dag.ExecuteAllAsync(maxConcurrency: -1, combinedToken).ConfigureAwait(false);
-        }
-
-        private void InjectWorkspaceToNodes(DagEngine.Dag dag, string workspacePath)
-        {
-            // 遍历所有节点，如果节点类型支持设置工作区路径，则进行注入
-            foreach (var node in dag.Nodes.Values)
-            {
-                if (node is IWorkspaceAware aware)
-                    aware.SetWorkspacePath(workspacePath);
-            }
         }
 
         public override string ToString() => $"Pipeline {Name} ({Id})";
     }
 
-    /// <summary>
-    /// 节点可实现的接口，用于获取工作区路径
-    /// </summary>
-    public interface IWorkspaceAware
-    {
-        void SetWorkspacePath(string path);
-    }
 }

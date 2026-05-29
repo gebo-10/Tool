@@ -63,6 +63,8 @@ namespace DagEngine
     public class NodeProgressEventArgs : EventArgs
     {
         public string NodeId { get; set; } = "";
+        public string NodeType { get; set; } = ""; 
+        public string NodeName { get; set; } = "";
         public int Percentage { get; set; }
     }
 
@@ -71,7 +73,7 @@ namespace DagEngine
     {
         public IBlackboard? Blackboard { get; internal set; }
         public string Id { get; set; } = Guid.NewGuid().ToString();
-
+        public string Name { get; set; }
         protected List<PinIn> InputPins { get; } = new List<PinIn>();
         protected List<PinOut> OutputPins { get; } = new List<PinOut>();
 
@@ -80,6 +82,11 @@ namespace DagEngine
 
         // 进度更新事件
         public event EventHandler<NodeProgressEventArgs>? ProgressUpdated;
+
+        //public Node(string name)
+        //{
+        //    Name = name;
+        //}
 
         protected PinIn AddInput(string name, Type type)
         {
@@ -122,7 +129,12 @@ namespace DagEngine
         protected void ReportProgress(int percentage)
         {
             percentage = Math.Clamp(percentage, 0, 100);
-            ProgressUpdated?.Invoke(this, new NodeProgressEventArgs { NodeId = this.Id, Percentage = percentage });
+            ProgressUpdated?.Invoke(this, new NodeProgressEventArgs { 
+                NodeId = this.Id, 
+                Percentage = percentage,
+                NodeType= this.GetType().Name,
+                NodeName = this.Name,
+            });
         }
 
         // 异步执行节点逻辑（子类必须实现）
@@ -321,6 +333,11 @@ namespace DagEngine
 
             // ---------- 2. 并行调度 ----------
             var state = new Dictionary<string, int>(); // 0=未启动,1=运行中,2=已完成,3=失败
+            foreach (var nodeId in _nodes.Keys)
+            {
+                state[nodeId] = 0;   // 0=未启动
+            }
+
             var remainingNodes = _nodes.Count;
             var tcs = new TaskCompletionSource<bool>();
             using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);

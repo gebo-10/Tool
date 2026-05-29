@@ -15,30 +15,35 @@ namespace HmiBuild
         public override async Task ExecuteAsync(CancellationToken cancellationToken = default)
         {
             var workspace = Blackboard.Get<Workspace>("workspace");
-            // 获取项目路径（可选，用于模拟清空操作）
+            if (workspace == null)
+                throw new InvalidOperationException("Workspace not found in blackboard.");
+
             string projectPath = workspace.AndroidProjectPath;
             if (string.IsNullOrEmpty(projectPath))
-                throw new InvalidOperationException("Project input is required.");
+                throw new InvalidOperationException("Project path is required.");
 
-            const int totalDurationMs = 2000;   // 总耗时 2 秒
-            const int intervalMs = 500;         // 每 0.5 秒报告一次
-            int steps = totalDurationMs / intervalMs; // 4 步
-
-            for (int i = 0; i <= steps; i++)
+            // 将当前节点的执行逻辑封装为一个委托，提交到 AndroidQueue 中排队执行
+            await workspace.AndroidQueue.EnqueueAsync(async token =>
             {
-                cancellationToken.ThrowIfCancellationRequested();
+                // 模拟清空操作（这里使用进度报告模拟耗时任务）
+                const int totalDurationMs = 2000;   // 总耗时 2 秒
+                const int intervalMs = 500;         // 每 0.5 秒报告一次
+                int steps = totalDurationMs / intervalMs;
 
-                int percentage = (i * 100) / steps;  // 0, 25, 50, 75, 100
-                ReportProgress(percentage);          // 触发进度事件
+                for (int i = 0; i <= steps; i++)
+                {
+                    token.ThrowIfCancellationRequested();
 
-                if (i < steps)
-                    await Task.Delay(intervalMs, cancellationToken);
-            }
+                    int percentage = (i * 100) / steps;  // 0, 25, 50, 75, 100
+                    ReportProgress(percentage);          // 触发进度事件
 
-            SetOutputValue("AndroidProjet", projectPath);
-            // 模拟清空操作（例如删除临时文件等）
-            // 此处仅为演示，实际可调用文件系统操作
-            await Task.CompletedTask;
+                    if (i < steps)
+                        await Task.Delay(intervalMs, token);
+                }
+
+                // 设置输出引脚的值
+                SetOutputValue("AndroidProjet", projectPath);
+            });
 
         }
     }

@@ -6,13 +6,12 @@ namespace HmiBuildTest
         static async Task Main(string[] args)
         {
             Console.WriteLine("Hello, World!");
-            HmiCi ci = new HmiCi(new[] { "H:\\Work\\Tool\\CI\\Workspaces\\Workspace1", "H:\\Work\\Tool\\CI\\Workspaces\\Workspace2" });
+            HmiCi ci = new HmiCi(new[] { "D:\\work3d\\Tool\\CI\\Workspaces\\Workspace1", "D:\\work3d\\Tool\\CI\\Workspaces\\Workspace2" });
 
             var pipeline = new Pipeline(new Dictionary<string, object>
             {
                 ["Name"] = "Test Pipeline"
             });
-            
 
             ci.EnqueuePipeline(pipeline);
 
@@ -21,7 +20,10 @@ namespace HmiBuildTest
             await ci.WaitForCompletionAsync();
             Console.WriteLine("所有任务已完成。");
 
-            // 可选：优雅停止调度器
+            //await Task.Delay(3000);
+            //Console.WriteLine("中断执行");
+
+            //可选：优雅停止调度器
             await ci.StopAsync();
         }
     }

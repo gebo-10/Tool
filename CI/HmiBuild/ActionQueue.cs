@@ -11,10 +11,12 @@ namespace BuildSystem
     public class ActionQueue
     {
         private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
-        private readonly ConcurrentQueue<Func<CancellationToken, Task>> _pending = new ConcurrentQueue<Func<CancellationToken, Task>>();
-        private readonly CancellationTokenSource _stopCts = new CancellationTokenSource();
+        private readonly ConcurrentQueue<(Func<CancellationToken, Task> TaskFactory, TaskCompletionSource<bool> Tcs)> _pending = new();
+        private readonly CancellationTokenSource _stopCts = new();
         private readonly Task _workerTask;
         private bool _disposed;
+
+        public string Name { get; }
 
         public ActionQueue(string name)
         {
@@ -22,16 +24,16 @@ namespace BuildSystem
             _workerTask = Task.Run(ProcessQueue);
         }
 
-        public string Name { get; }
-
         /// <summary>
-        /// 提交一个任务到队列，任务会排队顺序执行
+        /// 提交一个任务到队列，返回一个 Task 表示该任务的完成
         /// </summary>
-        public void Enqueue(Func<CancellationToken, Task> taskFactory)
+        public Task EnqueueAsync(Func<CancellationToken, Task> taskFactory)
         {
             if (taskFactory == null) throw new ArgumentNullException(nameof(taskFactory));
-            _pending.Enqueue(taskFactory);
+            var tcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+            _pending.Enqueue((taskFactory, tcs));
             _semaphore.Release(); // 唤醒工作线程
+            return tcs.Task;
         }
 
         private async Task ProcessQueue()
@@ -42,17 +44,20 @@ namespace BuildSystem
                 await _semaphore.WaitAsync(token).ConfigureAwait(false);
                 if (token.IsCancellationRequested) break;
 
-                if (_pending.TryDequeue(out var taskFactory))
+                if (_pending.TryDequeue(out var item))
                 {
                     try
                     {
-                        // 执行任务，传入取消令牌
-                        await taskFactory(token).ConfigureAwait(false);
+                        await item.TaskFactory(token).ConfigureAwait(false);
+                        item.Tcs.TrySetResult(true);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        item.Tcs.TrySetCanceled();
                     }
                     catch (Exception ex)
                     {
-                        // 记录日志，但继续处理下一个任务
-                        Console.WriteLine($"[ActionQueue:{Name}] 任务执行失败: {ex.Message}");
+                        item.Tcs.TrySetException(ex);
                     }
                 }
             }
