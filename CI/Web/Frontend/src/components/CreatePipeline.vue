@@ -27,7 +27,8 @@
 <script setup>
 import { ref, reactive } from 'vue';
 import { NModal, NForm, NFormItem, NInput, NSelect, NButton, NSpace, useMessage } from 'naive-ui';
-import axios from 'axios'; // 如果项目中已封装 request，可替换为你的实例
+//import axios from 'axios'; // 如果项目中已封装 request，可替换为你的实例
+import request from '../utils/request';
 
 const show = defineModel('show', { type: Boolean, default: false });
 const emit = defineEmits(['created']);
@@ -94,7 +95,7 @@ const onSubmit = async () => {
         // 根据选择的模板生成 DAG JSON
         const dagJson = generateDagJson(form.template);
         // 调用后端 API
-        await axios.post('/api/pipelines', {
+        await request.post('/pipelines', {
             name: form.name,
             description: form.description,
             dagJson: dagJson

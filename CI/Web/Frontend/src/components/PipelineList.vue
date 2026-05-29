@@ -37,20 +37,21 @@
 </template>
 
 <script setup>
-import { ref, computed, h, onMounted ,reactive} from 'vue';
+import { ref, computed, h, onMounted, reactive } from 'vue';
 import { NTag, NIcon, NButton } from 'naive-ui';
 import { useRouter } from 'vue-router';
 import { SyncCircle, PauseCircle } from '@vicons/ionicons5';
+import request from '../utils/request'; // 请根据实际路径调整
+
 const router = useRouter();
 
-
-
-// ---- 状态映射（不变） ----
+// ---- 状态映射（与后端返回的状态值匹配）----
 const statusMap = {
-  pending: { label: '等待中', color: 'default' },
-  running: { label: '运行中', color: 'info' },
-  completed: { label: '已完成', color: 'success' },
-  failed: { label: '失败', color: 'error' },
+  Pending: { label: '等待中', color: 'default' },
+  Running: { label: '运行中', color: 'info' },
+  Completed: { label: '已完成', color: 'success' },
+  Failed: { label: '失败', color: 'error' },
+  Cancelled: { label: '已取消', color: 'warning' }
 };
 
 const statusOptions = Object.entries(statusMap).map(([value, { label }]) => ({
@@ -58,14 +59,16 @@ const statusOptions = Object.entries(statusMap).map(([value, { label }]) => ({
   value,
 }));
 
-const clickCounts = reactive({}); 
+const clickCounts = reactive({});
+
 const formatTime = (timestamp) => {
   if (!timestamp) return '-';
   const date = new Date(timestamp);
   const pad = (n) => String(n).padStart(2, '0');
   return `${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
 };
-// ---- 表格列定义 ----
+
+// ---- 表格列定义（注意字段映射）----
 const columns = [
   { title: '任务ID', key: 'id', width: 120 },
   { title: '任务名称', key: 'name', ellipsis: { tooltip: true } },
@@ -74,10 +77,11 @@ const columns = [
     key: 'status',
     width: 100,
     render(row) {
-      return h(NTag, { type: statusMap[row.status]?.color || 'default', size: 'small' }, () => statusMap[row.status]?.label || row.status);
+      const statusInfo = statusMap[row.status] || { label: row.status, color: 'default' };
+      return h(NTag, { type: statusInfo.color, size: 'small' }, () => statusInfo.label);
     },
   },
-  { title: '进度', key: 'progress', width: 100, render: (row) => `${row.progress}%` },
+  { title: '进度', key: 'progress', width: 100, render: (row) => `${row.progress ?? 0}%` },
   { title: '开始时间', key: 'startTime', width: 160, render: (row) => formatTime(row.startTime) },
   { title: '结束时间', key: 'endTime', width: 160, render: (row) => formatTime(row.endTime) },
   {
@@ -85,50 +89,33 @@ const columns = [
     key: 'actions',
     width: 80,
     render(row) {
-        const isFinished = row.status === 'completed' || row.status === 'failed';
-        const count = clickCounts[row.id] || 0;
-        const hasClicked = count > 0;
-        const iconStyle = isFinished && hasClicked
+      const isFinished = row.status === 'Completed' || row.status === 'Failed' || row.status === 'Cancelled';
+      const count = clickCounts[row.id] || 0;
+      const hasClicked = count > 0;
+      const iconStyle = isFinished && hasClicked
         ? { animation: 'spin-once 0.6s ease-in-out' }
         : {};
 
-        const handleClick = (e) => {
+      const handleClick = (e) => {
         e.stopPropagation();
         if (isFinished) {
-            handleRestart(row.id);
+          handleRestart(row.id);
         } else {
-            handlePause(row.id);
+          handlePause(row.id);
         }
-        };
+      };
 
-        const iconComponent = isFinished ? SyncCircle : PauseCircle; // 需要导入 PauseCircle
-
-        return h(
+      const iconComponent = isFinished ? SyncCircle : PauseCircle;
+      return h(
         NButton,
-        {
-            size: 'small',
-            quaternary: true,
-            onClick: handleClick,
-        },
-        () =>
-            h(
-            'span',
-            {
-                key: row.id + '_' + count,
-                style: { display: 'inline-flex' },
-            },
-            [h(NIcon, { component: iconComponent, size: 18, style: iconStyle })]
-            )
-        );
+        { size: 'small', quaternary: true, onClick: handleClick },
+        () => h('span', { style: { display: 'inline-flex' } }, [h(NIcon, { component: iconComponent, size: 18, style: iconStyle })])
+      );
     },
-    },
+  },
 ];
 
-// 旋转动画注入到全局（因为 scoped 下需深度或全局）
-// 可直接在 <style> 中不加 scoped 或使用 :global
-// 这里我们在组件中添加一个全局样式
-
-// ---- 数据与分页（不变） ----
+// ---- 数据与分页 ----
 const loading = ref(false);
 const tableData = ref([]);
 const totalCount = ref(0);
@@ -144,49 +131,50 @@ const pagination = computed(() => ({
   showSizePicker: true,
   pageSizes: [15, 20, 50],
   onUpdatePage: (page) => { currentPage.value = page; fetchTasks(); },
-  onUpdatePageSize: (pageSize) => { pageSize.value = pageSize; currentPage.value = 1; fetchTasks(); },
+  onUpdatePageSize: (size) => { pageSize.value = size; currentPage.value = 1; fetchTasks(); },
 }));
 
 // ---- 行点击进入详情 ----
-const rowProps = (row) => {
-  return {
-    style: 'cursor: pointer;',
-    onClick: () => {
-      router.push(`/pipeline/${row.id}`);
-    },
-  };
-};
+const rowProps = (row) => ({
+  style: 'cursor: pointer;',
+  onClick: () => router.push(`/pipeline/${row.id}`),
+});
 
 // ---- 斑马纹 ----
-const getRowClassName = (row, index) => {
-  return index % 2 === 0 ? 'row-even' : 'row-odd';
-};
+const getRowClassName = (row, index) => (index % 2 === 0 ? 'row-even' : 'row-odd');
 
-// ---- 获取任务列表（模拟） ----
+// ---- 获取任务列表（真实 API）----
 const fetchTasks = async () => {
   loading.value = true;
-  // 模拟...
-  await new Promise((resolve) => setTimeout(resolve, 400));
-  const mockData = [];
-  const statuses = ['pending', 'running', 'completed', 'failed'];
-  for (let i = 0; i < pageSize.value; i++) {
-    const idx = (currentPage.value - 1) * pageSize.value + i + 1;
-    const baseTime = Date.now() - 86400000 * idx; // 模拟不同时间
-    mockData.push({
-      id: `${String(idx).padStart(4, '0')}`,
-      name: `打包任务 ${idx}`,
-      status: statuses[idx % statuses.length],
-      progress: Math.floor(Math.random() * 101),
-      startTime: baseTime,
-      endTime: idx % 3 === 0 ? baseTime + 3600000 : null, // 有些可能尚未结束
-    });
-  }
-  totalCount.value = 46;
-  tableData.value = mockData;
-  loading.value = false;
-};
+  try {
+    // 构建查询参数
+    const params = {
+      page: currentPage.value,
+      size: pageSize.value,
+    };
+    if (searchKeyword.value) params.search = searchKeyword.value;
+    // 注意：后端当前 GET /api/pipelines 只支持 search，不支持 status 筛选
+    // 如果需要按状态筛选，需扩展后端，此处暂不实现
 
-defineExpose({ fetchTasks });
+    const response = await request.get('/pipelines', { params });
+    // 后端返回格式：{ pageIndex, pageSize, totalCount, items }
+    const data = response.data;
+    totalCount.value = data.totalCount;
+    // 将 items 映射为前端需要的字段
+    tableData.value = data.items.map(item => ({
+      id: item.id,
+      name: item.name,
+      status: item.status,          // "Pending", "Running", 等
+      progress: item.progress ?? 0, // 如果后端未提供，暂时为 0
+      startTime: item.createdAt,    // 使用创建时间作为开始时间
+      endTime: item.completedAt,    // 完成时间
+    }));
+  } catch (error) {
+    console.error('获取任务列表失败', error);
+  } finally {
+    loading.value = false;
+  }
+};
 
 // 查询/筛选
 const handleSearch = () => {
@@ -194,25 +182,19 @@ const handleSearch = () => {
   fetchTasks();
 };
 
-
+// 暂停任务（需后端支持）
 const handlePause = (taskId) => {
-  // TODO: 调用 API 暂停任务
   console.log('暂停任务:', taskId);
-  // 可以在此更新任务状态（若需立即反馈）
+  // TODO: await request.put(`/api/pipelines/${taskId}/cancel`);
 };
 
+// 重启任务（需后端支持）
 const handleRestart = (taskId) => {
-  clickCounts[taskId] = (clickCounts[taskId] || 0) + 1; // 触发旋转动画
-  // TODO: 调用 API 重新启动任务
+  clickCounts[taskId] = (clickCounts[taskId] || 0) + 1;
   console.log('重新启动任务:', taskId);
+  // TODO: await request.post(`/api/pipelines/${taskId}/restart`);
 };
 
-
-// const handleReapply = (taskId) => {
-//   // 增加计数，触发 key 变化 → 图标元素重新创建 → 动画播放一次
-//   clickCounts[taskId] = (clickCounts[taskId] || 0) + 1;
-//   console.log('重新申请任务:', taskId);
-// };
 onMounted(fetchTasks);
 </script>
 
