@@ -1,4 +1,4 @@
-﻿using HmiBuild;
+﻿
 using System.Diagnostics;
 using System.Text.Json;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -21,7 +21,7 @@ namespace BuildSystem
     /// </summary>
     public class Pipeline : IDisposable
     {
-        public string Id { get; } = Guid.NewGuid().ToString();
+        public string Id { get; set; } = Guid.NewGuid().ToString();
         public string Name { get; set; }
         public Dictionary<string, object> Parameters { get; }
 

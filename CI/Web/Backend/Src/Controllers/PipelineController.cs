@@ -1,5 +1,6 @@
 ﻿using Backend.Data;
 using Backend.Models;
+using Backend.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,14 +10,16 @@ namespace Backend.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize]  // 继承全局 JWT 认证要求
+//[Authorize]  // 继承全局 JWT 认证要求
 public class PipelinesController : ControllerBase
 {
     private readonly AppDbContext _db;
+    private readonly BuildService _buildService;  // 直接使用具体类型
 
-    public PipelinesController(AppDbContext db)
+    public PipelinesController(AppDbContext db, BuildService buildService)
     {
         _db = db;
+        _buildService = buildService;
     }
 
     // POST /api/pipelines
@@ -37,6 +40,9 @@ public class PipelinesController : ControllerBase
 
         _db.Pipelines.Add(pipeline);
         await _db.SaveChangesAsync();
+
+        // 2. 可选：立即触发后台拉取（发送信号，如使用 Channel 或 SemaphoreSlim）
+        _buildService.NotifyNewTask(); // 或依赖轮询
 
         return CreatedAtAction(nameof(GetPipelineById), new { id = pipeline.Id }, ToResponse(pipeline));
     }

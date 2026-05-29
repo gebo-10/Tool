@@ -1,54 +1,87 @@
-﻿using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Backend.Data;
-
-namespace Backend.Services;
-
-public class BuildService : BackgroundService
+﻿using Backend.Data;
+using BuildSystem;
+using Microsoft.EntityFrameworkCore;
+namespace Backend.Service
 {
-    private readonly ILogger<BuildService> _logger;
-    private readonly IServiceScopeFactory _scopeFactory;
-
-    public BuildService(ILogger<BuildService> logger, IServiceScopeFactory scopeFactory)
+    public class BuildService : BackgroundService
     {
-        _logger = logger;
-        _scopeFactory = scopeFactory;   // 用于获取 Scoped 服务（如 DbContext）
-    }
+        private readonly ILogger<BuildService> _logger;
+        private readonly IServiceScopeFactory _scopeFactory;
+        private readonly HmiCi _hmiCi;
+        private readonly SemaphoreSlim _signal = new SemaphoreSlim(0);
+        private readonly CancellationTokenSource _stopCts = new();
 
-    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
-    {
-        _logger.LogInformation("常驻服务已启动。");
-
-        // 示例：每秒执行一次任务
-        while (!stoppingToken.IsCancellationRequested)
+        public BuildService(ILogger<BuildService> logger, IServiceScopeFactory scopeFactory)
         {
-            try
-            {
-                // 如果需要使用 DbContext 或其他 Scoped 服务，必须创建独立的作用域
-                using (var scope = _scopeFactory.CreateScope())
-                {
-                    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-                    // 执行你的数据操作...
-                    _logger.LogInformation("后台服务正在工作，当前时间: {Time}", DateTime.Now);
-                }
-
-                // 等待一段时间，避免空转
-                await Task.Delay(TimeSpan.FromSeconds(5), stoppingToken);
-            }
-            catch (OperationCanceledException)
-            {
-                // 正常停止，不做处理
-                break;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "后台服务发生未处理异常。");
-                // 可根据需要增加重试或延迟逻辑
-                await Task.Delay(TimeSpan.FromSeconds(10), stoppingToken);
-            }
+            _logger = logger;
+            _scopeFactory = scopeFactory;
+            _hmiCi = new HmiCi(new[] { "D:\\work3d\\Tool\\CI\\Workspaces\\Workspace1", "D:\\work3d\\Tool\\CI\\Workspaces\\Workspace2" });
         }
 
-        _logger.LogInformation("常驻服务已停止。");
+        public void NotifyNewTask() => _signal.Release();
+
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        {
+            // 注册停止事件
+            stoppingToken.Register(() => _signal.Release());
+
+            _hmiCi.PipelineCompleted += UpdateStatus;
+            _hmiCi.PipelineFailed += UpdateStatus;
+            _hmiCi.PipelineCancelled += UpdateStatus;
+
+            while (!stoppingToken.IsCancellationRequested)
+            {
+                await _signal.WaitAsync(stoppingToken);
+                while (await TryProcessOneTaskAsync(stoppingToken)) { }
+            }
+
+            await _hmiCi.StopAsync();
+        }
+
+        private async Task<bool> TryProcessOneTaskAsync(CancellationToken token)
+        {
+            using var scope = _scopeFactory.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+            // 原子性取一个 Pending 任务
+            var entity = await db.Pipelines
+                .Where(p => p.Status == "Pending")
+                .OrderBy(p => p.CreatedAt)
+                .FirstOrDefaultAsync(token);
+
+            if (entity == null) return false;
+
+            entity.Status = "Running";
+            await db.SaveChangesAsync(token);
+
+            // 创建 Pipeline 并提交到 HmiCi
+            var pipeline = new Pipeline(new Dictionary<string, object> { ["Name"] = entity.Name });
+            pipeline.Id = entity.PipelineId.ToString(); // 使用数据库 ID
+            _hmiCi.EnqueuePipeline(pipeline);
+            return true;
+        }
+
+        private void UpdateStatus(Pipeline pipeline, Workspace workspace) => UpdatePipelineStatus(pipeline, "Completed");
+        private void UpdateStatus(Pipeline pipeline, Exception ex) => UpdatePipelineStatus(pipeline, "Failed");
+        private void UpdateStatus(Pipeline pipeline) => UpdatePipelineStatus(pipeline, "Cancelled");
+
+        private async void UpdatePipelineStatus(BuildSystem.Pipeline pipeline, string status)
+        {
+            using var scope = _scopeFactory.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+            // 根据 PipelineId（字符串）查找实体
+            var entity = await db.Pipelines.FirstOrDefaultAsync(p => p.PipelineId == pipeline.Id);
+            if (entity != null)
+            {
+                entity.Status = status;
+                entity.CompletedAt = DateTime.UtcNow;
+                await db.SaveChangesAsync();
+            }
+            else
+            {
+                _logger.LogWarning($"未找到 PipelineId 为 {pipeline.Id} 的记录");
+            }
+        }
     }
 }

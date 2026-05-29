@@ -1,6 +1,6 @@
 ﻿using BuildSystem;
 using DagEngine;
-namespace HmiBuild
+namespace BuildSystem
 {
     public class BuildUnityLibrary : HmiBuildNode
     {

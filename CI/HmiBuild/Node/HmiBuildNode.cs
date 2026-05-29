@@ -1,6 +1,6 @@
 ﻿using DagEngine;
 
-namespace HmiBuild
+namespace BuildSystem
 {
     public enum HmiBuildNodeStatus
     {

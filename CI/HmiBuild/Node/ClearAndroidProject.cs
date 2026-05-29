@@ -1,6 +1,6 @@
 ﻿using BuildSystem;
 
-namespace HmiBuild
+namespace BuildSystem
 {
     public class ClearAndroidProject: HmiBuildNode
     {

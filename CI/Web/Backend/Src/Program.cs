@@ -1,5 +1,6 @@
 using Backend.Data;
 using Backend.Models;
+using Backend.Service;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -26,7 +27,11 @@ builder.Services.AddDbContext<UserDbContext>(options =>
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddHostedService<Backend.Services.BuildService>();
+// 先注册为单例（用于控制器注入）
+builder.Services.AddSingleton<BuildService>();
+
+// 再注册为托管服务（使用同一个实例）
+builder.Services.AddSingleton<IHostedService>(sp => sp.GetRequiredService<BuildService>());
 
 
 // JWT 认证配置
