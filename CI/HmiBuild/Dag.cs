@@ -143,7 +143,7 @@ namespace DagEngine
         // 异步执行节点逻辑（子类必须实现）
         public abstract Task ExecuteAsync(CancellationToken cancellationToken = default);
 
-        protected internal virtual Dictionary<string, object?>? Serialize()
+        public virtual Dictionary<string, object?>? Serialize()
         {
             return new Dictionary<string, object?>
             {

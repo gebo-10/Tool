@@ -2,7 +2,7 @@
 
 namespace BuildSystem
 {
-    public enum HmiBuildNodeStatus
+    public enum HmiBuildStatus
     {
         Pending,
         Running,
@@ -12,10 +12,10 @@ namespace BuildSystem
     }
     public abstract class HmiBuildNode : Node
     {
-        public HmiBuildNodeStatus status { get; protected set; } = HmiBuildNodeStatus.Pending;
+        public HmiBuildStatus status { get; protected set; } = HmiBuildStatus.Pending;
         public int progress { get; protected set; } = 0;
 
-        protected internal override Dictionary<string, object?>? Serialize()
+        public override Dictionary<string, object?>? Serialize()
         {
             return new Dictionary<string, object?>
             {

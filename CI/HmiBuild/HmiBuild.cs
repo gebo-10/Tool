@@ -1,4 +1,5 @@
-﻿using System.Collections.Concurrent;
+﻿using DagEngine;
+using System.Collections.Concurrent;
 
 namespace BuildSystem
 {
@@ -21,6 +22,8 @@ namespace BuildSystem
         public event Action<Pipeline, Exception>? PipelineFailed;
         public event Action<Pipeline>? PipelineCancelled;
 
+        public event Action<Pipeline, NodeProgressEventArgs>? PipelineProgress;
+
         public HmiCi(IEnumerable<string> workspaceDirs)
         {
             _workspaceManager = new WorkspaceManager(workspaceDirs);
@@ -39,6 +42,7 @@ namespace BuildSystem
             if (!_activePipelines.TryAdd(pipeline.Id, pipeline))
                 throw new InvalidOperationException($"Pipeline {pipeline.Id} 已存在");
 
+            pipeline.PipelineProgress += (p,e) => PipelineProgress?.Invoke(p,e);
             _pendingQueue.Enqueue(pipeline);
             _queueSignal.Release();
         }
@@ -99,19 +103,23 @@ namespace BuildSystem
 
         private async Task ExecutePipelineAsync(Pipeline pipeline, Workspace workspace, CancellationToken stopToken)
         {
+            pipeline.status= HmiBuildStatus.Running;
             PipelineStarted?.Invoke(pipeline, workspace);
             try
             {
                 // Pipeline 内部会合并自己的令牌和 stopToken
                 await pipeline.ExecuteAsync(workspace, stopToken).ConfigureAwait(false);
+                pipeline.status = HmiBuildStatus.Completed;
                 PipelineCompleted?.Invoke(pipeline, workspace);
             }
             catch (OperationCanceledException)
             {
+                pipeline.status = HmiBuildStatus.Cancelled;
                 PipelineCancelled?.Invoke(pipeline);
             }
             catch (Exception ex)
             {
+                pipeline.status = HmiBuildStatus.Failed;
                 PipelineFailed?.Invoke(pipeline, ex);
             }
             finally

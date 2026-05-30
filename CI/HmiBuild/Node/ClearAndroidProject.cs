@@ -10,7 +10,7 @@ namespace BuildSystem
 
         public override async Task ExecuteAsync(CancellationToken cancellationToken = default)
         {
-            status = HmiBuildNodeStatus.Running;
+            status = HmiBuildStatus.Running;
             var workspace = Blackboard.Get<Workspace>("workspace");
             if (workspace == null)
                 throw new InvalidOperationException("Workspace not found in blackboard.");
@@ -35,7 +35,7 @@ namespace BuildSystem
                         progress = percentage;
                         if (percentage == 100)
                         {
-                            status = HmiBuildNodeStatus.Completed;
+                            status = HmiBuildStatus.Completed;
                         }
                         ReportProgress(percentage);
 
@@ -48,7 +48,7 @@ namespace BuildSystem
             }
             catch (OperationCanceledException)
             {
-                status = HmiBuildNodeStatus.Cancelled;
+                status = HmiBuildStatus.Cancelled;
                 // 可选：报告取消时的进度
                 ReportProgress(progress);
                 // 重新抛出取消异常，让 DAG 引擎知道是被取消的
@@ -56,7 +56,7 @@ namespace BuildSystem
             }
             catch (Exception ex)
             {
-                status = HmiBuildNodeStatus.Failed;
+                status = HmiBuildStatus.Failed;
                 ReportProgress(progress);
                 // 记录日志
                 throw;

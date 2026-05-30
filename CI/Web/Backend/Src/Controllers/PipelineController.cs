@@ -4,6 +4,7 @@ using Backend.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 using static Backend.Data.AppDbContext;
 
 namespace Backend.Controllers;
@@ -141,4 +142,60 @@ public class PipelinesController : ControllerBase
             UpdatedAt = p.UpdatedAt
         };
     }
+
+
+    [HttpGet("{id:int}/status-stream")]
+    public async Task StreamPipelineStatus(int id, CancellationToken cancellationToken)
+    {
+        // 检查 Pipeline 是否存在
+        if (!await _db.Pipelines.AnyAsync(p => p.Id == id, cancellationToken))
+        {
+            Response.StatusCode = 404;
+            return;
+        }
+
+        // SSE 响应头
+        Response.Headers.Append("Content-Type", "text/event-stream");
+        Response.Headers.Append("Cache-Control", "no-cache");
+        Response.Headers.Append("Connection", "keep-alive");
+        Response.Headers.Append("X-Accel-Buffering", "no");
+
+        try
+        {
+            // 首次连接时发送一次当前状态（可选）
+            //var initialStatus = await GetPipelineStatusAsync(id, cancellationToken);
+            //await WriteSseDataAsync(initialStatus, cancellationToken);
+
+            // 订阅 BuildService 的事件流
+            await foreach (var buildEvent in _buildService.SubscribePipeline(id, cancellationToken))
+            {
+                var statusInfo = new 
+                {
+                    Id = buildEvent.PipelineId,
+                    Status = buildEvent.Status,
+                    Progress = buildEvent.Progress,
+                    Message = buildEvent.Message,
+                    Timestamp = DateTime.UtcNow
+                };
+
+                await WriteSseDataAsync(statusInfo, cancellationToken);
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            // 客户端主动断开，正常结束
+        }
+    }
+
+    // 辅助方法：写一条 SSE 消息
+    private async Task WriteSseDataAsync(object data, CancellationToken ct)
+    {
+        var json = JsonSerializer.Serialize(data, new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        });
+        await Response.WriteAsync($"data: {json}\n\n", ct);
+        await Response.Body.FlushAsync(ct);
+    }
+
 }

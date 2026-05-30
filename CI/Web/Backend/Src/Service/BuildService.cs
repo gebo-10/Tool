@@ -1,6 +1,9 @@
 ﻿using Backend.Data;
 using BuildSystem;
+using DagEngine;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
+using System.Threading.Channels;
 namespace Backend.Service
 {
     public class BuildService : BackgroundService
@@ -10,6 +13,7 @@ namespace Backend.Service
         private readonly HmiCi _hmiCi;
         private readonly SemaphoreSlim _signal = new SemaphoreSlim(0);
         private readonly CancellationTokenSource _stopCts = new();
+
 
         public BuildService(ILogger<BuildService> logger, IServiceScopeFactory scopeFactory)
         {
@@ -25,9 +29,11 @@ namespace Backend.Service
             // 注册停止事件
             stoppingToken.Register(() => _signal.Release());
 
-            _hmiCi.PipelineCompleted += UpdateStatus;
-            _hmiCi.PipelineFailed += UpdateStatus;
-            _hmiCi.PipelineCancelled += UpdateStatus;
+            _hmiCi.PipelineStarted += (pipeline, workspace) => UpdatePipelineStatus(pipeline, "Started");
+            _hmiCi.PipelineCompleted += (pipeline, workspace) => UpdatePipelineStatus(pipeline, "Completed");
+            _hmiCi.PipelineFailed += (pipeline, ex) => UpdatePipelineStatus(pipeline, "Failed", null,ex);
+            _hmiCi.PipelineCancelled += (pipeline) => UpdatePipelineStatus(pipeline, "Cancelled");
+            _hmiCi.PipelineProgress +=(pipeline, progress) => UpdatePipelineStatus(pipeline, "Progress", progress);
 
             while (!stoppingToken.IsCancellationRequested)
             {
@@ -65,28 +71,63 @@ namespace Backend.Service
             return true;
         }
 
-        private void UpdateStatus(Pipeline pipeline, Workspace workspace) => UpdatePipelineStatus(pipeline, "Completed");
-        private void UpdateStatus(Pipeline pipeline, Exception ex) => UpdatePipelineStatus(pipeline, "Failed");
-        private void UpdateStatus(Pipeline pipeline) => UpdatePipelineStatus(pipeline, "Cancelled");
-
-        private async void UpdatePipelineStatus(BuildSystem.Pipeline pipeline, string status)
+        private async void UpdatePipelineStatus(BuildSystem.Pipeline pipeline,string eventType, NodeProgressEventArgs? progress=null, Exception? ex=null)
         {
-            using var scope = _scopeFactory.CreateScope();
-            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-
-            // 根据 PipelineId（字符串）查找实体
-            var entity = await db.Pipelines.FirstOrDefaultAsync(p => p.PipelineId == pipeline.Id);
-            if (entity != null)
+            if(eventType == "Progress")
             {
-                entity.Status = status;
-                entity.CompletedAt = DateTime.UtcNow;
-                entity.DagJson = pipeline.ToJson();
-                await db.SaveChangesAsync();
+                //Console.WriteLine($"节点 {e.NodeId} {e.NodeType} {e.NodeName} 进度: {e.Percentage}%");
+                var json = JsonSerializer.Serialize(progress.Node.Serialize(), new JsonSerializerOptions { WriteIndented = true });
+                //Console.WriteLine(json);
+                _logger.LogInformation($"Pipeline {pipeline.Id} Progress: {progress?.Percentage}% - Node: {progress?.NodeName} ({progress?.NodeType})");
+
+                // 在产生事件的地方检查
+                if (Volatile.Read(ref _subscriberCount) > 0)
+                {
+                    //await _eventChannel.Writer.WriteAsync(new BuildEvent());
+                }
+
             }
             else
             {
-                _logger.LogWarning($"未找到 PipelineId 为 {pipeline.Id} 的记录");
+                using var scope = _scopeFactory.CreateScope();
+                var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+                // 根据 PipelineId（字符串）查找实体
+                var entity = await db.Pipelines.FirstOrDefaultAsync(p => p.PipelineId == pipeline.Id);
+                if (entity != null)
+                {
+                    entity.Status = pipeline.status.ToString();
+                    entity.CompletedAt = DateTime.UtcNow;
+                    entity.DagJson = pipeline.ToJson();
+                    await db.SaveChangesAsync();
+                }
+                else
+                {
+                    _logger.LogWarning($"未找到 PipelineId 为 {pipeline.Id} 的记录");
+                }
             }
+
+
+        }
+
+
+        public record BuildEvent(int PipelineId, string Status, int Progress, string? Message);
+        // 全局事件通道
+
+        private readonly Channel<BuildEvent> _eventChannel = Channel.CreateBounded<BuildEvent>(new BoundedChannelOptions(1000)
+        {
+            FullMode = BoundedChannelFullMode.DropOldest  // 队列满时丢弃最旧的事件
+        });
+
+
+        private int _subscriberCount = 0;
+        public IAsyncEnumerable<BuildEvent> SubscribePipeline(int pipelineId, CancellationToken ct)
+        {
+            Interlocked.Increment(ref _subscriberCount);
+            ct.Register(() => Interlocked.Decrement(ref _subscriberCount));
+
+            return _eventChannel.Reader.ReadAllAsync(ct)
+                .Where(e => e.PipelineId == pipelineId);
         }
     }
 }

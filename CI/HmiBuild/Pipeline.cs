@@ -1,7 +1,6 @@
 ﻿
-using System.Diagnostics;
+using DagEngine;
 using System.Text.Json;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace BuildSystem
 {
@@ -23,6 +22,9 @@ namespace BuildSystem
     {
         public string Id { get; set; } = Guid.NewGuid().ToString();
         public string Name { get; set; }
+
+        public HmiBuildStatus status= HmiBuildStatus.Pending;
+
         public Dictionary<string, object> Parameters { get; }
 
         private DagEngine.Dag _dag;
@@ -33,6 +35,7 @@ namespace BuildSystem
         protected CancellationToken CancellationToken => _cts.Token;
 
         //private IProgress<PipelineProgress>? _progress;
+        public event Action<Pipeline, NodeProgressEventArgs>? PipelineProgress;
 
         public Pipeline(Dictionary<string, object> parameters)
         {
@@ -135,11 +138,12 @@ namespace BuildSystem
 
             dag.NodeProgressUpdated += (s, e) =>
             {
-                Console.WriteLine($"节点 {e.NodeId} {e.NodeType} {e.NodeName} 进度: {e.Percentage}%");
-                var json = JsonSerializer.Serialize(e.Node.Serialize(), new JsonSerializerOptions { WriteIndented = true });
-                Console.WriteLine(json);
+                //Console.WriteLine($"节点 {e.NodeId} {e.NodeType} {e.NodeName} 进度: {e.Percentage}%");
+                //var json = JsonSerializer.Serialize(e.Node.Serialize(), new JsonSerializerOptions { WriteIndented = true });
+                //Console.WriteLine(json);
                 // 这里可以将节点进度转换为 PipelineProgress 并报告
                 // _progress?.Report(new PipelineProgress { ... });
+                PipelineProgress?.Invoke(this, e);
             };
 
 

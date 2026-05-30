@@ -131,7 +131,11 @@ watch(
   () => props.graphData,
   (newData) => {
     if (newData && newData.data && graph) {
-      renderGraph(newData.data);
+      //renderGraph(newData.data);
+      graph.setData(props.graphData.data);
+      graph.render().then(() => {
+        graph.fitView();
+      });
     }
   },
   { deep: true, immediate: true }
@@ -148,6 +152,15 @@ onMounted(() => {
     height: 500,
     autoFit: 'center',
     animation: false,
+    plugins: [
+      {
+        type: 'grid-line',
+        key: 'my-grid-line', // 指定唯一标识符，便于后续动态更新
+        size: 40,
+        stroke: '#0001',
+        follow: true,
+      },
+    ],
     node: {
       type: 'dag-task',
       style: {
@@ -172,7 +185,10 @@ onMounted(() => {
         endArrow: true,
       },
     },
+    //background: '#ffffff',
+    zoomRange: [0.5, 3],
     behaviors: [
+      'zoom-canvas',
       'drag-canvas',
       'drag-element',
       'click-select',
@@ -204,6 +220,10 @@ onMounted(() => {
   // 初始渲染（如果父组件已传入数据）
   if (props.graphData?.data) {
     renderGraph(props.graphData.data);
+    // graph.setData(props.graphData.data);
+    // graph.render().then(() => {
+    //   graph.fitView();
+    // });
   }
 });
 
@@ -215,7 +235,7 @@ onUnmounted(() => {
 });
 </script>
 
-<style scoped>
+<!-- <style scoped>
 .dag-page {
   display: flex;
   width: 100%;
@@ -231,4 +251,4 @@ onUnmounted(() => {
   padding: 16px;
   overflow-y: auto;
 }
-</style>
+</style> -->
