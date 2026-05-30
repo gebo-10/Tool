@@ -75,9 +75,6 @@ using (var scope = app.Services.CreateScope())
 }
 
 
-
-
-
 //app.UseHttpsRedirection();
 
 
@@ -109,76 +106,37 @@ app.MapControllers();
 app.MapFallbackToFile("index.html");
 
 
-var summaries = new[]
-{
-    "1Freezing", "2Bracing", "3Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-//app.MapGet("/api/weatherforecast", () =>
+//app.MapGet("/api/logs", async (HttpContext context, CancellationToken ct) =>
 //{
-//    var forecast =  Enumerable.Range(1, 3).Select(index =>
-//        new WeatherForecast
-//        (
-//            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-//            Random.Shared.Next(-20, 55),
-//            summaries[Random.Shared.Next(summaries.Length)]
-//        ))
-//        .ToArray();
-//    return forecast;
-//})
-//.WithName("GetWeatherForecast");
+//    context.Response.ContentType = "text/event-stream";
+//    context.Response.Headers["Cache-Control"] = "no-cache";
+//    context.Response.Headers["Connection"] = "keep-alive";
 
+//    try
+//    {
+//        int i = 0;
+//        while (!ct.IsCancellationRequested)
+//        {
+//            var logEntry = new
+//            {
+//                time = DateTime.Now.ToString("HH:mm:ss"),
+//                level = i % 5 == 0 ? "ERROR" : "INFO",
+//                message = $"日志消息 #{i}"
+//            };
 
-app.MapGet("/api/weatherforecast", async (AppDbContext db) =>
-{
-    var records = await db.WeatherRecords.ToListAsync();
-    if (!records.Any())
-    {
-        var seedData = new List<WeatherRecord>
-        {
-            new() { Date = DateOnly.FromDateTime(DateTime.Now), TemperatureC = 10, Summary = "Cool" },
-            new() { Date = DateOnly.FromDateTime(DateTime.Now.AddDays(1)), TemperatureC = 25, Summary = "Warm" },
-            new() { Date = DateOnly.FromDateTime(DateTime.Now.AddDays(2)), TemperatureC = -5, Summary = "Freezing" }
-        };
-        db.WeatherRecords.AddRange(seedData);
-        await db.SaveChangesAsync();
-        records = seedData;
-    }
-    return records;
-}).RequireAuthorization();
+//            string json = System.Text.Json.JsonSerializer.Serialize(logEntry);
+//            await context.Response.WriteAsync($"data: {json}\n\n", ct);
+//            await context.Response.Body.FlushAsync(ct);
 
-
-app.MapGet("/api/logs", async (HttpContext context, CancellationToken ct) =>
-{
-    context.Response.ContentType = "text/event-stream";
-    context.Response.Headers["Cache-Control"] = "no-cache";
-    context.Response.Headers["Connection"] = "keep-alive";
-
-    try
-    {
-        int i = 0;
-        while (!ct.IsCancellationRequested)
-        {
-            var logEntry = new
-            {
-                time = DateTime.Now.ToString("HH:mm:ss"),
-                level = i % 5 == 0 ? "ERROR" : "INFO",
-                message = $"日志消息 #{i}"
-            };
-
-            string json = System.Text.Json.JsonSerializer.Serialize(logEntry);
-            await context.Response.WriteAsync($"data: {json}\n\n", ct);
-            await context.Response.Body.FlushAsync(ct);
-
-            i++;
-            await Task.Delay(1000, ct);
-        }
-    }
-    catch (OperationCanceledException)
-    {
-        // 客户端断开连接（刷新页面、关闭标签页等），正常结束，无需记录
-    }
-}).RequireAuthorization();
+//            i++;
+//            await Task.Delay(1000, ct);
+//        }
+//    }
+//    catch (OperationCanceledException)
+//    {
+//        // 客户端断开连接（刷新页面、关闭标签页等），正常结束，无需记录
+//    }
+//}).RequireAuthorization();
 
 
 
@@ -200,60 +158,55 @@ app.MapGet("/api/logs", async (HttpContext context, CancellationToken ct) =>
 
 
 
-// ====== 获取 Demo DAG 结构 ======
-app.MapGet("/api/pipeline/demo/dag", () =>
-{
-    var nodes = new[]
-    {
-        new { id = "build-front",  label = "编译前端", status = "pending", progress = 0 },
-        new { id = "build-back",   label = "编译后端", status = "pending", progress = 0 },
-        new { id = "integration",  label = "集成测试", status = "pending", progress = 0 },
-        new { id = "deploy",       label = "部署上线", status = "pending", progress = 0 }
-    };
+//// ====== 获取 Demo DAG 结构 ======
+//app.MapGet("/api/pipeline/demo/dag", () =>
+//{
+//    var nodes = new[]
+//    {
+//        new { id = "build-front",  label = "编译前端", status = "pending", progress = 0 },
+//        new { id = "build-back",   label = "编译后端", status = "pending", progress = 0 },
+//        new { id = "integration",  label = "集成测试", status = "pending", progress = 0 },
+//        new { id = "deploy",       label = "部署上线", status = "pending", progress = 0 }
+//    };
 
-    var edges = new[]
-    {
-        new { source = "build-front", target = "integration" },
-        new { source = "build-back",  target = "integration" },
-        new { source = "integration", target = "deploy" }
-    };
+//    var edges = new[]
+//    {
+//        new { source = "build-front", target = "integration" },
+//        new { source = "build-back",  target = "integration" },
+//        new { source = "integration", target = "deploy" }
+//    };
 
-    return Results.Ok(new { nodes, edges });
-});
+//    return Results.Ok(new { nodes, edges });
+//});
 
 // ====== Demo SSE：模拟任务进度推送 ======
-app.MapGet("/api/pipeline/demo/dag-updates", async (HttpContext context, CancellationToken ct) =>
-{
-    context.Response.ContentType = "text/event-stream";
-    context.Response.Headers["Cache-Control"] = "no-cache";
+//app.MapGet("/api/pipeline/demo/dag-updates", async (HttpContext context, CancellationToken ct) =>
+//{
+//    context.Response.ContentType = "text/event-stream";
+//    context.Response.Headers["Cache-Control"] = "no-cache";
 
-    var steps = new[] { "build-front", "build-back", "integration", "deploy" };
-    foreach (var nodeId in steps)
-    {
-        for (int p = 0; p <= 100; p += 20)
-        {
-            if (ct.IsCancellationRequested) break;
+//    var steps = new[] { "build-front", "build-back", "integration", "deploy" };
+//    foreach (var nodeId in steps)
+//    {
+//        for (int p = 0; p <= 100; p += 20)
+//        {
+//            if (ct.IsCancellationRequested) break;
 
-            var update = new
-            {
-                nodeId,
-                status = p == 100 ? "completed" : "running",
-                progress = p
-            };
-            string json = System.Text.Json.JsonSerializer.Serialize(update);
-            await context.Response.WriteAsync($"data: {json}\n\n", ct);
-            await context.Response.Body.FlushAsync(ct);
-            await Task.Delay(300, ct);   // 模拟实际耗时
-        }
-    }
-});
+//            var update = new
+//            {
+//                nodeId,
+//                status = p == 100 ? "completed" : "running",
+//                progress = p
+//            };
+//            string json = System.Text.Json.JsonSerializer.Serialize(update);
+//            await context.Response.WriteAsync($"data: {json}\n\n", ct);
+//            await context.Response.Body.FlushAsync(ct);
+//            await Task.Delay(300, ct);   // 模拟实际耗时
+//        }
+//    }
+//});
 
 
 
 
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}

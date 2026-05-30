@@ -7,7 +7,7 @@ public class Pipeline
     [Key]
     public int Id { get; set; }
 
-    public string PipelineId { get; set; } = Guid.NewGuid().ToString(); // 方便前端使用字符串 ID
+    public string Guid { get; set; } = System.Guid.NewGuid().ToString(); // 方便前端使用字符串 ID
 
     [Required, MaxLength(200)]
     public string Name { get; set; } = string.Empty;
@@ -29,9 +29,7 @@ public class Pipeline
 
     public DateTime CreatedAt { get; set; } = DateTime.Now;
 
-    //public DateTime? UpdatedAt { get; set; }
+    public DateTime? StartdAt { get; set; }
 
     public DateTime? CompletedAt { get; set; }
-
-    
 }

@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 using static Backend.Data.AppDbContext;
+using static Backend.Service.BuildService;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Backend.Controllers;
 
@@ -25,7 +27,7 @@ public class PipelinesController : ControllerBase
 
     // POST /api/pipelines
     [HttpPost]
-    public async Task<ActionResult<PipelineResponse>> CreatePipeline([FromBody] CreatePipelineRequest request)
+    public async Task<ActionResult<Pipeline>> CreatePipeline([FromBody] CreatePipelineRequest request)
     {
         // 获取当前用户名（从 JWT 或自定义头部）
         var currentUser = User.Identity?.Name ?? "anonymous";
@@ -42,6 +44,13 @@ public class PipelinesController : ControllerBase
         _db.Pipelines.Add(pipeline);
         await _db.SaveChangesAsync();
 
+        var response = ToResponse(pipeline);
+        await _buildService.PublishEventAsync(new BuildEvent(
+           "PipelineCreated",
+           pipeline.Id,
+           response  // 直接传递响应对象，前端可直接用来插入表格
+       ));
+
         // 2. 可选：立即触发后台拉取（发送信号，如使用 Channel 或 SemaphoreSlim）
         _buildService.NotifyNewTask(); // 或依赖轮询
 
@@ -50,7 +59,7 @@ public class PipelinesController : ControllerBase
 
     // GET /api/pipelines?page=1&size=10&search=xxx
     [HttpGet]
-    public async Task<ActionResult<PagedResult<PipelineResponse>>> GetPipelines(
+    public async Task<ActionResult<PagedResult<Pipeline>>> GetPipelines(
         [FromQuery] int page = 1,
         [FromQuery] int size = 10,
         [FromQuery] string? search = null)
@@ -74,7 +83,7 @@ public class PipelinesController : ControllerBase
             .Select(p => ToResponse(p))
             .ToListAsync();
 
-        var result = new PagedResult<PipelineResponse>
+        var result = new PagedResult<Pipeline>
         {
             PageIndex = page,
             PageSize = size,
@@ -87,7 +96,7 @@ public class PipelinesController : ControllerBase
 
     // GET /api/pipelines/{id}
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<PipelineResponse>> GetPipelineById(int id)
+    public async Task<ActionResult<Pipeline>> GetPipelineById(int id)
     {
         var pipeline = await _db.Pipelines.AsNoTracking().FirstOrDefaultAsync(p => p.Id == id);
         if (pipeline == null)
@@ -129,31 +138,30 @@ public class PipelinesController : ControllerBase
     //    return NoContent();
     //}
 
-    private static PipelineResponse ToResponse(Pipeline p)
+    private static Pipeline ToResponse(Pipeline p)
     {
-        return new PipelineResponse
-        {
-            Id = p.Id,
-            Name = p.Name,
-            Description = p.Description,
-            DagJson = p.DagJson,
-            Creator = p.Creator,
-            CreatedAt = p.CreatedAt,
-            CompletedAt = p.CompletedAt,
-        };
+        return p;
     }
 
+    //private static PipelineResponse ToResponse(Pipeline p)
+    //{
+    //    return new PipelineResponse
+    //    {
+    //        Id = p.Id,
+    //        Name = p.Name,
+    //        Description = p.Description,
+    //        DagJson = p.DagJson,
+    //        Creator = p.Creator,
+    //        CreatedAt = p.CreatedAt,
+    //        CompletedAt = p.CompletedAt,
+    //    };
+    //}
 
-    [HttpGet("{id:int}/status-stream")]
-    public async Task StreamPipelineStatus(int id, CancellationToken cancellationToken)
+
+    [HttpGet("status-stream")]
+    [AllowAnonymous]
+    public async Task StreamPipelineStatus(CancellationToken cancellationToken)
     {
-        // 检查 Pipeline 是否存在
-        if (!await _db.Pipelines.AnyAsync(p => p.Id == id, cancellationToken))
-        {
-            Response.StatusCode = 404;
-            return;
-        }
-
         // SSE 响应头
         Response.Headers.Append("Content-Type", "text/event-stream");
         Response.Headers.Append("Cache-Control", "no-cache");
@@ -163,22 +171,18 @@ public class PipelinesController : ControllerBase
         try
         {
             // 首次连接时发送一次当前状态（可选）
-            //var initialStatus = await GetPipelineStatusAsync(id, cancellationToken);
+            //var initialStatus = await GetPipelineStatusAsync(cancellationToken);
             //await WriteSseDataAsync(initialStatus, cancellationToken);
 
             // 订阅 BuildService 的事件流
-            await foreach (var buildEvent in _buildService.SubscribePipeline(id, cancellationToken))
+            await foreach (var buildEvent in _buildService.SubscribePipeline(cancellationToken))
             {
-                var statusInfo = new 
+                var json = JsonSerializer.Serialize(buildEvent, new JsonSerializerOptions
                 {
-                    Id = buildEvent.PipelineId,
-                    Status = buildEvent.Status,
-                    Progress = buildEvent.Progress,
-                    Message = buildEvent.Message,
-                    Timestamp = DateTime.Now
-                };
-
-                await WriteSseDataAsync(statusInfo, cancellationToken);
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+                });
+                await Response.WriteAsync($"data: {json}\n\n", cancellationToken);
+                await Response.Body.FlushAsync(cancellationToken);
             }
         }
         catch (OperationCanceledException)
@@ -187,15 +191,15 @@ public class PipelinesController : ControllerBase
         }
     }
 
-    // 辅助方法：写一条 SSE 消息
-    private async Task WriteSseDataAsync(object data, CancellationToken ct)
-    {
-        var json = JsonSerializer.Serialize(data, new JsonSerializerOptions
-        {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-        });
-        await Response.WriteAsync($"data: {json}\n\n", ct);
-        await Response.Body.FlushAsync(ct);
-    }
+    //// 辅助方法：写一条 SSE 消息
+    //private async Task WriteSseDataAsync(object data, CancellationToken ct)
+    //{
+    //    var json = JsonSerializer.Serialize(data, new JsonSerializerOptions
+    //    {
+    //        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+    //    });
+    //    await Response.WriteAsync($"data: {json}\n\n", ct);
+    //    await Response.Body.FlushAsync(ct);
+    //}
 
 }

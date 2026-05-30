@@ -477,7 +477,7 @@ namespace DagEngine
         //    foreach (var nodeDef in data.Nodes)
         //    {
         //        var node = nodeFactory(nodeDef.Type, nodeDef.Parameters);
-        //        node.Id = nodeDef.Id;
+        //        node.Guid = nodeDef.Guid;
         //        dag.AddNode(node);
         //    }
 

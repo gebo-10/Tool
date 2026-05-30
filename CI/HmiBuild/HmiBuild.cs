@@ -36,11 +36,11 @@ namespace BuildSystem
         public void EnqueuePipeline(Pipeline pipeline)
         {
             if (pipeline == null) throw new ArgumentNullException(nameof(pipeline));
-            if (string.IsNullOrEmpty(pipeline.Id))
-                throw new ArgumentException("Pipeline 必须具有非空的 Id 属性");
+            if (string.IsNullOrEmpty(pipeline.Guid))
+                throw new ArgumentException("Pipeline 必须具有非空的 Guid 属性");
 
-            if (!_activePipelines.TryAdd(pipeline.Id, pipeline))
-                throw new InvalidOperationException($"Pipeline {pipeline.Id} 已存在");
+            if (!_activePipelines.TryAdd(pipeline.Guid, pipeline))
+                throw new InvalidOperationException($"Pipeline {pipeline.Guid} 已存在");
 
             pipeline.PipelineProgress += (p,e) => PipelineProgress?.Invoke(p,e);
             _pendingQueue.Enqueue(pipeline);
@@ -79,14 +79,14 @@ namespace BuildSystem
                     continue;
 
                 // 2. 检查是否已被取消（不在活跃字典中）
-                if (!_activePipelines.ContainsKey(pipeline.Id))
+                if (!_activePipelines.ContainsKey(pipeline.Guid))
                     continue;  // 已取消，丢弃
 
-                // 3. 用 pipeline.Id 申请 Workspace
+                // 3. 用 pipeline.Guid 申请 Workspace
                 Workspace? workspace = null;
                 try
                 {
-                    workspace = await _workspaceManager.AcquireAsync(pipeline.Id, cancellationToken).ConfigureAwait(false);
+                    workspace = await _workspaceManager.AcquireAsync(pipeline.Guid, cancellationToken).ConfigureAwait(false);
                 }
                 catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
                 {
@@ -125,10 +125,10 @@ namespace BuildSystem
             finally
             {
                 // 从活跃字典中移除并释放 Pipeline 资源
-                if (_activePipelines.TryRemove(pipeline.Id, out var _))
+                if (_activePipelines.TryRemove(pipeline.Guid, out var _))
                     pipeline.Dispose();
 
-                _workspaceManager.Release(workspace, pipeline.Id);
+                _workspaceManager.Release(workspace, pipeline.Guid);
             }
         }
 
@@ -156,7 +156,7 @@ namespace BuildSystem
 
             // 取消所有活跃的 Pipeline
             foreach (var pipeline in _activePipelines.Values.ToList())
-                CancelPipeline(pipeline.Id);
+                CancelPipeline(pipeline.Guid);
         }
 
         public void Dispose()

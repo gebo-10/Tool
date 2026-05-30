@@ -37,7 +37,7 @@
 </template>
 
 <script setup>
-import { ref, computed, h, onMounted, reactive } from 'vue';
+import { ref, computed, h, onMounted,onUnmounted, reactive } from 'vue';
 import { NTag, NIcon, NButton } from 'naive-ui';
 import { useRouter } from 'vue-router';
 import { SyncCircle, PauseCircle } from '@vicons/ionicons5';
@@ -172,6 +172,7 @@ const fetchTasks = async () => {
       startTime: item.createdAt,    // 使用创建时间作为开始时间
       endTime: item.completedAt,    // 完成时间
     }));
+    //console.log('获取任务列表成功', tableData.value, data.items);
   } catch (error) {
     console.error('获取任务列表失败', error);
   } finally {
@@ -198,7 +199,80 @@ const handleRestart = (taskId) => {
   // TODO: await request.post(`/api/pipelines/${taskId}/restart`);
 };
 
-onMounted(fetchTasks);
+//onMounted(fetchTasks);
+
+function updateRow(id, data) {
+  const row = tableData.value.find(r => r.id === id);
+  if (row) {
+    // 直接赋值，Vue 会保持响应式
+    row.status = data.status;
+    row.progress = data.progress;
+
+    // 如果需要处理时间，可在此扩展，例如：
+    // if (row.status === 'Running' && !row.startTime) {
+    //   row.startTime = data.timestamp;   // 假设 data.timestamp 存在
+    // }
+    // if (['Completed', 'Failed', 'Cancelled'].includes(row.status)) {
+    //   row.endTime = data.timestamp;
+    // }
+  }
+}
+
+// 将后端 Pipeline 数据转为表格行对象
+const mapToTableRow = (pipeline) => {
+  return {
+    id: pipeline.id,
+    name: pipeline.name,
+    creator: pipeline.creator,
+    status: pipeline.status || 'Pending',  // 新建的可能没有 status，默认 Pending
+    progress: pipeline.progress ?? 0,
+    startTime: pipeline.createdAt,
+    endTime: pipeline.completedAt || null,
+    // 如果有其他字段需要映射，在此添加
+  };
+};
+
+let globalEventSource = null;
+
+function connectGlobalSSE() {
+  if (globalEventSource) globalEventSource.close();
+  
+  globalEventSource = new EventSource('/api/pipelines/status-stream');
+
+  globalEventSource.onmessage = (event) => {
+    const data = JSON.parse(event.data);
+    //console.log('全局 SSE 收到更新:', data);
+    if (data.eventType === 'PipelineCreated') {
+      // 插入新 Pipeline 到表格顶部（如果当前页是第一页）
+      if (currentPage.value === 1) {
+        const newRow = mapToTableRow(data.info); // info 就是 PipelineResponse
+        tableData.value.unshift(newRow);
+        // 如果超过 pageSize，可以移除最后一条，或让后端更新 totalCount
+        totalCount.value++;
+      } else {
+        // 不在第一页，简单提示或静默忽略（用户切换到第一页时会通过分页刷新）
+      }
+    } else if(data.eventType === 'PipelineInfo') {
+      updateRow(data.pipelineId, data.info);
+    }
+    //updateRow(data.PipelineId, data);
+  };
+
+  globalEventSource.onerror = (e) => {
+    console.error('全局 SSE 错误', e);
+  };
+}
+
+onMounted(() => {
+  fetchTasks();
+  connectGlobalSSE();
+});
+
+onUnmounted(() => {
+  globalEventSource?.close();
+});
+
+
 </script>
 
 <style scoped>

@@ -61,7 +61,8 @@ namespace Backend.Service
 
             // 创建 Pipeline 并提交到 HmiCi
             var pipeline = new Pipeline(new Dictionary<string, object> { ["Name"] = entity.Name });
-            pipeline.Id = entity.PipelineId.ToString(); // 使用数据库 ID
+            pipeline.Id = entity.Id;
+            pipeline.Guid=entity.Guid;
 
             entity.Status = "Running";
             entity.DagJson = pipeline.ToJson();
@@ -76,14 +77,14 @@ namespace Backend.Service
             if(eventType == "Progress")
             {
                 //Console.WriteLine($"节点 {e.NodeId} {e.NodeType} {e.NodeName} 进度: {e.Percentage}%");
-                var json = JsonSerializer.Serialize(progress.Node.Serialize(), new JsonSerializerOptions { WriteIndented = true });
+                //var json = JsonSerializer.Serialize(progress.Node.Serialize(), new JsonSerializerOptions { WriteIndented = true });
                 //Console.WriteLine(json);
-                _logger.LogInformation($"Pipeline {pipeline.Id} Progress: {progress?.Percentage}% - Node: {progress?.NodeName} ({progress?.NodeType})");
+                _logger.LogInformation($"Pipeline {pipeline.Guid} Progress: {progress?.Percentage}% - Node: {progress?.NodeName} ({progress?.NodeType})");
 
                 // 在产生事件的地方检查
                 if (Volatile.Read(ref _subscriberCount) > 0)
-                {
-                    //await _eventChannel.Writer.WriteAsync(new BuildEvent());
+                { 
+                    await _eventChannel.Writer.WriteAsync(new BuildEvent("NodeInfo",pipeline.Id, progress.Node.Serialize()));
                 }
 
             }
@@ -92,42 +93,72 @@ namespace Backend.Service
                 using var scope = _scopeFactory.CreateScope();
                 var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-                // 根据 PipelineId（字符串）查找实体
-                var entity = await db.Pipelines.FirstOrDefaultAsync(p => p.PipelineId == pipeline.Id);
+                // 根据 id查找实体
+                var entity = await db.Pipelines.FirstOrDefaultAsync(p => p.Id == pipeline.Id);
                 if (entity != null)
                 {
                     entity.Status = pipeline.status.ToString();
-                    entity.CompletedAt = DateTime.Now;
+                    //entity.CompletedAt = DateTime.Now;
+                    switch(eventType)
+                    {
+                        case "Completed":
+                            entity.CompletedAt = DateTime.Now;
+                            break;
+                        case "Failed":
+                            entity.CompletedAt = DateTime.Now;
+                            entity.Description = ex?.Message;
+                            break;
+                        case "Cancelled":
+                            entity.CompletedAt = DateTime.Now;
+                            break;
+                    }
                     entity.DagJson = pipeline.ToJson();
                     await db.SaveChangesAsync();
+
+                    // 在产生事件的地方检查
+                    if (Volatile.Read(ref _subscriberCount) > 0)
+                    {
+                        await _eventChannel.Writer.WriteAsync(new BuildEvent("PipelineInfo", pipeline.Id, entity));
+                    }
                 }
                 else
                 {
-                    _logger.LogWarning($"未找到 PipelineId 为 {pipeline.Id} 的记录");
+                    _logger.LogWarning($"未找到 Id 为 {pipeline.Id} 的记录");
                 }
             }
 
 
         }
-
-
-        public record BuildEvent(int PipelineId, string Status, int Progress, string? Message);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="eventType">pipeline,node</param>
+        /// pipeline: 状态 进度 开始时间  结束时间 
+        /// node: 状态 进度 
+        /// <param name="PipelineId"></param>
+        /// <param name="Status"></param>
+        /// <param name="Progress"></param>
+        /// <param name="Message"></param>
+        public record BuildEvent(string eventType, int PipelineId, object info); //string Status, int Progress, string? Message
+        
         // 全局事件通道
-
-        private readonly Channel<BuildEvent> _eventChannel = Channel.CreateBounded<BuildEvent>(new BoundedChannelOptions(1000)
+        private readonly Channel<BuildEvent> _eventChannel = Channel.CreateBounded<BuildEvent>(new BoundedChannelOptions(100)
         {
             FullMode = BoundedChannelFullMode.DropOldest  // 队列满时丢弃最旧的事件
         });
 
+        public async Task PublishEventAsync(BuildEvent evt)
+        {
+            await _eventChannel.Writer.WriteAsync(evt);
+        }
 
         private int _subscriberCount = 0;
-        public IAsyncEnumerable<BuildEvent> SubscribePipeline(int pipelineId, CancellationToken ct)
+        public IAsyncEnumerable<BuildEvent> SubscribePipeline(CancellationToken ct)
         {
             Interlocked.Increment(ref _subscriberCount);
             ct.Register(() => Interlocked.Decrement(ref _subscriberCount));
 
-            return _eventChannel.Reader.ReadAllAsync(ct)
-                .Where(e => e.PipelineId == pipelineId);
+            return _eventChannel.Reader.ReadAllAsync(ct);
         }
     }
 }

@@ -7,8 +7,6 @@ public class AppDbContext : DbContext
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
-    public DbSet<WeatherRecord> WeatherRecords { get; set; }
-
     public DbSet<Pipeline> Pipelines { get; set; }   // 新增
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -28,24 +26,24 @@ public class AppDbContext : DbContext
         public string DagJson { get; set; } = string.Empty;
     }
 
-    public class UpdatePipelineRequest
-    {
-        public string Name { get; set; } = string.Empty;
-        public string? Description { get; set; }
-        public string DagJson { get; set; } = string.Empty;
-    }
+    //public class UpdatePipelineRequest
+    //{
+    //    public string Name { get; set; } = string.Empty;
+    //    public string? Description { get; set; }
+    //    public string DagJson { get; set; } = string.Empty;
+    //}
 
     // ---------- 响应 DTO ----------
-    public class PipelineResponse
-    {
-        public int Id { get; set; }
-        public string Name { get; set; } = string.Empty;
-        public string? Description { get; set; }
-        public string DagJson { get; set; } = string.Empty;
-        public string? Creator { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime? CompletedAt { get; set; }
-    }
+    //public class PipelineResponse
+    //{
+    //    public int Id { get; set; }
+    //    public string Name { get; set; } = string.Empty;
+    //    public string? Description { get; set; }
+    //    public string DagJson { get; set; } = string.Empty;
+    //    public string? Creator { get; set; }
+    //    public DateTime CreatedAt { get; set; }
+    //    public DateTime? CompletedAt { get; set; }
+    //}
 
     public class PagedResult<T>
     {

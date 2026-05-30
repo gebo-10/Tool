@@ -20,7 +20,8 @@ namespace BuildSystem
     /// </summary>
     public class Pipeline : IDisposable
     {
-        public string Id { get; set; } = Guid.NewGuid().ToString();
+        public int Id { get; set; }
+        public string Guid { get; set; } = System.Guid.NewGuid().ToString();
         public string Name { get; set; }
 
         public HmiBuildStatus status= HmiBuildStatus.Pending;
@@ -40,7 +41,7 @@ namespace BuildSystem
         public Pipeline(Dictionary<string, object> parameters)
         {
             Parameters = parameters ?? new Dictionary<string, object>();
-            Name = Parameters.TryGetValue("Name", out var n) ? n.ToString() : Id;
+            Name = Parameters.TryGetValue("Name", out var n) ? n.ToString() : Guid;
 
             var dag = new DagEngine.Dag();
             var node1 = new ClearAndroidProject()
@@ -171,7 +172,7 @@ namespace BuildSystem
             await _dag.ExecuteAllAsync(maxConcurrency: -1, combinedToken).ConfigureAwait(false);
         }
 
-        public override string ToString() => $"Pipeline {Name} ({Id})";
+        public override string ToString() => $"Pipeline {Name} ({Guid})";
 
         public string ToJson()
         {

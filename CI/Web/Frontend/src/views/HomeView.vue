@@ -15,7 +15,7 @@ const pipelineListRef = ref(null);
 const handleCreated = () => {
   //showCreateModal.value = false;
   // 触发列表刷新（如果 PipelineList 暴露了刷新方法）
-  pipelineListRef.value?.fetchTasks();
+  //pipelineListRef.value?.fetchTasks();
 };
 </script>
 

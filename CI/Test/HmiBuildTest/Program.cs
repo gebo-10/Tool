@@ -10,7 +10,7 @@ namespace HmiBuildTest
 
             ci.PipelineFailed += (pipeline, ex) =>
             {
-                Console.WriteLine($"Pipeline {pipeline.Id} 失败: {ex.Message}");
+                Console.WriteLine($"Pipeline {pipeline.Guid} 失败: {ex.Message}");
             };
 
             var pipeline = new Pipeline(new Dictionary<string, object>
@@ -28,7 +28,7 @@ namespace HmiBuildTest
             await Task.Delay(2000);
             //Console.WriteLine("中断执行");
 
-            ci.CancelPipeline(pipeline.Id);
+            ci.CancelPipeline(pipeline.Guid);
             await Task.Delay(5000);
 
             //可选：优雅停止调度器
