@@ -97,7 +97,7 @@ namespace Backend.Service
                 if (entity != null)
                 {
                     entity.Status = pipeline.status.ToString();
-                    entity.CompletedAt = DateTime.UtcNow;
+                    entity.CompletedAt = DateTime.Now;
                     entity.DagJson = pipeline.ToJson();
                     await db.SaveChangesAsync();
                 }

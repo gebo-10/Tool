@@ -12,7 +12,10 @@ public class Pipeline
     [Required, MaxLength(200)]
     public string Name { get; set; } = string.Empty;
 
+    [MaxLength(250)]
     public string? Description { get; set; }
+
+    public string Params { get; set; } = "{}";
 
     public string Status { get; set; } = "Pending";  // Pending, Running, Completed, Failed, Cancelled    
 
@@ -21,11 +24,12 @@ public class Pipeline
     /// </summary>
     public string DagJson { get; set; } = string.Empty;
 
+    [Required, MaxLength(64)]
     public string? Creator { get; set; }
 
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
 
-    public DateTime? UpdatedAt { get; set; }
+    //public DateTime? UpdatedAt { get; set; }
 
     public DateTime? CompletedAt { get; set; }
 

@@ -19,29 +19,52 @@ namespace BuildSystem
             var workspace = Blackboard.Get<Workspace>("workspace");
             if (workspace == null)
                 throw new InvalidOperationException("Workspace not found in blackboard.");
-            await workspace.UnityQueue.EnqueueAsync(async token =>
+            try
             {
-                // 模拟打包：总耗时 5 秒，每 0.5 秒报告一次进度
-                const int totalDurationMs = 5000;
-                const int intervalMs = 500;
-                int steps = totalDurationMs / intervalMs; // 10 步
-
-                for (int i = 0; i <= steps; i++)
+                await workspace.UnityQueue.EnqueueAsync(async token =>
                 {
-                    cancellationToken.ThrowIfCancellationRequested();
+                    // 模拟打包：总耗时 5 秒，每 0.5 秒报告一次进度
+                    const int totalDurationMs = 5000;
+                    const int intervalMs = 500;
+                    int steps = totalDurationMs / intervalMs; // 10 步
 
-                    int percentage = (i * 100) / steps;
-                    ReportProgress(percentage);  // 触发进度事件
-                    //Console.WriteLine("BuildApk working");
-                    if (i < steps)  // 最后一步不需要再 Delay
-                        await Task.Delay(intervalMs, cancellationToken);
-                }
+                    for (int i = 0; i <= steps; i++)
+                    {
+                        cancellationToken.ThrowIfCancellationRequested();
 
-                // 模拟生成 APK 文件路径
-                string apkPath = System.IO.Path.Combine(projectPath, "app.apk");
-                SetOutputValue("ApkPath", apkPath);
-            });
-  
+                        int percentage = (i * 100) / steps;
+                        progress = percentage;
+                        if (percentage == 100)
+                        {
+                            status = HmiBuildStatus.Completed;
+                        }
+                        ReportProgress(percentage);  // 触发进度事件
+                        //Console.WriteLine("BuildApk working");
+                        if (i < steps)  // 最后一步不需要再 Delay
+                            await Task.Delay(intervalMs, cancellationToken);
+                    }
+
+                    // 模拟生成 APK 文件路径
+                    string apkPath = System.IO.Path.Combine(projectPath, "app.apk");
+                    SetOutputValue("ApkPath", apkPath);
+                });
+            }
+            catch (OperationCanceledException)
+            {
+                status = HmiBuildStatus.Cancelled;
+                // 可选：报告取消时的进度
+                ReportProgress(progress);
+                // 重新抛出取消异常，让 DAG 引擎知道是被取消的
+                throw;
+            }
+            catch (Exception ex)
+            {
+                status = HmiBuildStatus.Failed;
+                ReportProgress(progress);
+                // 记录日志
+                throw;
+            }
+
         }
     }
 }

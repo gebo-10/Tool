@@ -44,7 +44,7 @@ public class AppDbContext : DbContext
         public string DagJson { get; set; } = string.Empty;
         public string? Creator { get; set; }
         public DateTime CreatedAt { get; set; }
-        public DateTime? UpdatedAt { get; set; }
+        public DateTime? CompletedAt { get; set; }
     }
 
     public class PagedResult<T>

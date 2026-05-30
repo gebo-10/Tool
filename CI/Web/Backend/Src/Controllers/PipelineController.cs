@@ -11,7 +11,7 @@ namespace Backend.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-//[Authorize]  // 继承全局 JWT 认证要求
+[Authorize]  // 继承全局 JWT 认证要求
 public class PipelinesController : ControllerBase
 {
     private readonly AppDbContext _db;
@@ -36,7 +36,7 @@ public class PipelinesController : ControllerBase
             Description = request.Description,
             DagJson = request.DagJson,
             Creator = currentUser,
-            CreatedAt = DateTime.UtcNow
+            CreatedAt = DateTime.Now
         };
 
         _db.Pipelines.Add(pipeline);
@@ -99,35 +99,35 @@ public class PipelinesController : ControllerBase
         return Ok(ToResponse(pipeline));
     }
 
-    // PUT /api/pipelines/{id}
-    [HttpPut("{id:int}")]
-    public async Task<IActionResult> UpdatePipeline(int id, [FromBody] UpdatePipelineRequest request)
-    {
-        var pipeline = await _db.Pipelines.FindAsync(id);
-        if (pipeline == null)
-            return NotFound();
+    //// PUT /api/pipelines/{id}
+    //[HttpPut("{id:int}")]
+    //public async Task<IActionResult> UpdatePipeline(int id, [FromBody] UpdatePipelineRequest request)
+    //{
+    //    var pipeline = await _db.Pipelines.FindAsync(id);
+    //    if (pipeline == null)
+    //        return NotFound();
 
-        pipeline.Name = request.Name;
-        pipeline.Description = request.Description;
-        pipeline.DagJson = request.DagJson;
-        pipeline.UpdatedAt = DateTime.UtcNow;
+    //    pipeline.Name = request.Name;
+    //    pipeline.Description = request.Description;
+    //    pipeline.DagJson = request.DagJson;
+    //    //pipeline.CompletedAt = DateTime.UtcNow;
 
-        await _db.SaveChangesAsync();
-        return NoContent();
-    }
+    //    await _db.SaveChangesAsync();
+    //    return NoContent();
+    //}
 
-    // DELETE /api/pipelines/{id}
-    [HttpDelete("{id:int}")]
-    public async Task<IActionResult> DeletePipeline(int id)
-    {
-        var pipeline = await _db.Pipelines.FindAsync(id);
-        if (pipeline == null)
-            return NotFound();
+    //// DELETE /api/pipelines/{id}
+    //[HttpDelete("{id:int}")]
+    //public async Task<IActionResult> DeletePipeline(int id)
+    //{
+    //    var pipeline = await _db.Pipelines.FindAsync(id);
+    //    if (pipeline == null)
+    //        return NotFound();
 
-        _db.Pipelines.Remove(pipeline);
-        await _db.SaveChangesAsync();
-        return NoContent();
-    }
+    //    _db.Pipelines.Remove(pipeline);
+    //    await _db.SaveChangesAsync();
+    //    return NoContent();
+    //}
 
     private static PipelineResponse ToResponse(Pipeline p)
     {
@@ -139,7 +139,7 @@ public class PipelinesController : ControllerBase
             DagJson = p.DagJson,
             Creator = p.Creator,
             CreatedAt = p.CreatedAt,
-            UpdatedAt = p.UpdatedAt
+            CompletedAt = p.CompletedAt,
         };
     }
 
@@ -175,7 +175,7 @@ public class PipelinesController : ControllerBase
                     Status = buildEvent.Status,
                     Progress = buildEvent.Progress,
                     Message = buildEvent.Message,
-                    Timestamp = DateTime.UtcNow
+                    Timestamp = DateTime.Now
                 };
 
                 await WriteSseDataAsync(statusInfo, cancellationToken);

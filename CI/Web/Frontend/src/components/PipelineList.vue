@@ -71,7 +71,9 @@ const formatTime = (timestamp) => {
 // ---- 表格列定义（注意字段映射）----
 const columns = [
   { title: '任务ID', key: 'id', width: 120 },
-  { title: '任务名称', key: 'name', ellipsis: { tooltip: true } },
+  { title: '提交人', key: 'creator',  width: 120},
+  { title: '任务名称', key: 'name', width: 120},
+  { title: '参数', key: 'params', ellipsis: { tooltip: true } },
   {
     title: '状态',
     key: 'status',
@@ -164,6 +166,7 @@ const fetchTasks = async () => {
     tableData.value = data.items.map(item => ({
       id: item.id,
       name: item.name,
+      creator: item.creator,
       status: item.status,          // "Pending", "Running", 等
       progress: item.progress ?? 0, // 如果后端未提供，暂时为 0
       startTime: item.createdAt,    // 使用创建时间作为开始时间
