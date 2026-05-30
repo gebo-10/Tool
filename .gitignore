@@ -1,1 +1,3 @@
 /CI/Workspaces
+*.db-wal
+*.db-shm
