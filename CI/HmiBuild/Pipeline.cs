@@ -43,13 +43,8 @@ namespace BuildSystem
             Parameters = parameters ?? new Dictionary<string, object>();
             Name = Parameters.TryGetValue("Name", out var n) ? n.ToString() : Guid;
 
-            var dag = new DagEngine.Dag();
-            var node1 = new ClearAndroidProject()
-            {
-                Name = "ClearAndroid1"
-            };
-            dag.AddNode(node1);
-            _dag = dag;
+
+            _dag = BuildDag();
         }
 
 
@@ -84,11 +79,11 @@ namespace BuildSystem
         /// <summary>
         /// 根据参数构建 DAG（由子类重写，或通过工厂注入）
         /// </summary>
-        protected virtual DagEngine.Dag BuildDag(Workspace workspace)
+        protected virtual DagEngine.Dag BuildDag()
         {
             // 示例实现：根据参数创建一个简单的 DAG
             var dag = new DagEngine.Dag();
-            dag.Blackboard.Set("workspace", workspace);
+           
             // 添加节点（实际应从参数读取节点类型和连接）
             // 此处仅为演示，真正使用时需根据业务逻辑构建
             {
@@ -148,7 +143,7 @@ namespace BuildSystem
             };
 
 
-            var json=dag.ToJson();
+            //var json=dag.ToJson();
 
             return dag;
         }
@@ -166,8 +161,8 @@ namespace BuildSystem
             var combinedToken = linkedCts.Token;
 
 
-            _dag = BuildDag(workspace);
-
+            //_dag = BuildDag();
+            _dag.Blackboard.Set("workspace", workspace);
             // 执行 DAG
             await _dag.ExecuteAllAsync(maxConcurrency: -1, combinedToken).ConfigureAwait(false);
         }

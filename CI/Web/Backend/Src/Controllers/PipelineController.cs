@@ -98,14 +98,16 @@ public class PipelinesController : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<ActionResult<Pipeline>> GetPipelineById(int id)
     {
-        var pipeline = await _db.Pipelines.AsNoTracking().FirstOrDefaultAsync(p => p.Id == id);
-        if (pipeline == null)
+        var entity = await _db.Pipelines.AsNoTracking().FirstOrDefaultAsync(p => p.Id == id);
+        if (entity == null)
             return NotFound();
 
+        var pipeline=_buildService.GetPipeline(entity.Guid);
+        entity.DagJson = pipeline?.ToJson() ?? entity.DagJson;
         //_buildService.
 
 
-        return Ok(ToResponse(pipeline));
+        return Ok(ToResponse(entity));
     }
 
     //// PUT /api/pipelines/{id}

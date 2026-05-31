@@ -58,6 +58,13 @@ namespace BuildSystem
             return true;
         }
 
+        public Pipeline? GetPipeline(string Guid)
+        {
+            _activePipelines.TryGetValue(Guid, out var pipeline);
+            return pipeline;
+        }
+
+
         private async Task DispatcherLoopAsync()
         {
             var cancellationToken = _stopCts.Token;

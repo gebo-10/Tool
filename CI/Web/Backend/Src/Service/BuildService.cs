@@ -35,10 +35,12 @@ namespace Backend.Service
             _hmiCi.PipelineCancelled += (pipeline) => UpdatePipelineStatus(pipeline, "Cancelled");
             _hmiCi.PipelineProgress +=(pipeline, progress) => UpdatePipelineStatus(pipeline, "Progress", progress);
 
+            NotifyNewTask();//启动的时候清理数据库 running的变failed  pending的执行 TODO
+
             while (!stoppingToken.IsCancellationRequested)
             {
                 await _signal.WaitAsync(stoppingToken);
-                while (await TryProcessOneTaskAsync(stoppingToken)) { }
+                while (await TryProcessOneTaskAsync(stoppingToken)) { } //无法并行 TODO
             }
 
             await _hmiCi.StopAsync();
@@ -81,12 +83,7 @@ namespace Backend.Service
                 //Console.WriteLine(json);
                 _logger.LogInformation($"Pipeline {pipeline.Guid} Progress: {progress?.Percentage}% - Node: {progress?.NodeName} ({progress?.NodeType})");
 
-                // 在产生事件的地方检查
-                if (Volatile.Read(ref _subscriberCount) > 0)
-                { 
-                    await _eventChannel.Writer.WriteAsync(new BuildEvent("NodeInfo",pipeline.Id, progress.Node.Serialize()));
-                }
-
+                await PublishEventAsync(new BuildEvent("NodeInfo", pipeline.Id, progress.Node.Serialize()));
             }
             else
             {
@@ -101,6 +98,9 @@ namespace Backend.Service
                     //entity.CompletedAt = DateTime.Now;
                     switch(eventType)
                     {
+                        case "Started":
+                            
+                            break;
                         case "Completed":
                             entity.CompletedAt = DateTime.Now;
                             break;
@@ -115,11 +115,9 @@ namespace Backend.Service
                     entity.DagJson = pipeline.ToJson();
                     await db.SaveChangesAsync();
 
-                    // 在产生事件的地方检查
-                    if (Volatile.Read(ref _subscriberCount) > 0)
-                    {
-                        await _eventChannel.Writer.WriteAsync(new BuildEvent("PipelineInfo", pipeline.Id, entity));
-                    }
+                    await PublishEventAsync(new BuildEvent("PipelineInfo", pipeline.Id, entity));
+
+                    await PublishEventAsync(new BuildEvent("DagInfo", pipeline.Id, pipeline.ToJson()));
                 }
                 else
                 {
@@ -129,6 +127,15 @@ namespace Backend.Service
 
 
         }
+
+
+        public Pipeline? GetPipeline(string guid)
+        {
+            return _hmiCi.GetPipeline(guid);
+        }
+
+
+
         /// <summary>
         /// 
         /// </summary>
@@ -141,6 +148,7 @@ namespace Backend.Service
         /// <param name="Message"></param>
         public record BuildEvent(string eventType, int PipelineId, object info); //string Status, int Progress, string? Message
         
+
         // 全局事件通道
         private readonly Channel<BuildEvent> _eventChannel = Channel.CreateBounded<BuildEvent>(new BoundedChannelOptions(100)
         {
@@ -149,7 +157,11 @@ namespace Backend.Service
 
         public async Task PublishEventAsync(BuildEvent evt)
         {
-            await _eventChannel.Writer.WriteAsync(evt);
+            // 在产生事件的地方检查
+            if (Volatile.Read(ref _subscriberCount) > 0)
+            {
+                await _eventChannel.Writer.WriteAsync(evt);
+            }
         }
 
         private int _subscriberCount = 0;
