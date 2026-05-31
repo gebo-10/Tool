@@ -24,8 +24,11 @@ namespace BuildSystem
 
         public event Action<Pipeline, NodeProgressEventArgs>? PipelineProgress;
 
-        public HmiCi(IEnumerable<string> workspaceDirs)
+        string workDir;
+
+        public HmiCi(string workDir, IEnumerable<string> workspaceDirs)
         {
+            this.workDir = workDir;
             _workspaceManager = new WorkspaceManager(workspaceDirs);
             _dispatcherTask = Task.Run(DispatcherLoopAsync);
         }
@@ -42,6 +45,7 @@ namespace BuildSystem
             if (!_activePipelines.TryAdd(pipeline.Guid, pipeline))
                 throw new InvalidOperationException($"Pipeline {pipeline.Guid} 已存在");
 
+            pipeline.WorkDir = workDir;
             pipeline.PipelineProgress += (p,e) => PipelineProgress?.Invoke(p,e);
             _pendingQueue.Enqueue(pipeline);
             _queueSignal.Release();

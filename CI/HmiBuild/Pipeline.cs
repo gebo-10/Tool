@@ -38,6 +38,7 @@ namespace BuildSystem
         //private IProgress<PipelineProgress>? _progress;
         public event Action<Pipeline, NodeProgressEventArgs>? PipelineProgress;
 
+        public string WorkDir {  get; set; }
         public Pipeline(Dictionary<string, object> parameters)
         {
             Parameters = parameters ?? new Dictionary<string, object>();
@@ -155,6 +156,7 @@ namespace BuildSystem
         {
             _workspace = workspace ?? throw new ArgumentNullException(nameof(workspace));
 
+            Directory.CreateDirectory(Path.Combine(WorkDir, Guid));
 
             // 合并外部令牌和内部令牌
             using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(_cts.Token, externalToken);
@@ -163,6 +165,7 @@ namespace BuildSystem
 
             //_dag = BuildDag();
             _dag.Blackboard.Set("workspace", workspace);
+            _dag.Blackboard.Set("pipeline", this);
             // 执行 DAG
             await _dag.ExecuteAllAsync(maxConcurrency: -1, combinedToken).ConfigureAwait(false);
         }

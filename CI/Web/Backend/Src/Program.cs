@@ -3,6 +3,7 @@ using Backend.Models;
 using Backend.Service;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -17,7 +18,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddControllers();
 
-
+builder.Services.AddDirectoryBrowser();
 
 
 // 注册 UserDbContext（用户数据）
@@ -78,12 +79,46 @@ using (var scope = app.Services.CreateScope())
 //app.UseHttpsRedirection();
 
 
+
 // 1. 启用静态文件服务（会自动去 wwwroot 找 index.html、JS、CSS 等）
-app.UseDefaultFiles();       // 自动寻找默认页（如 index.html）
-app.UseStaticFiles();
+//app.UseDefaultFiles();       // 自动寻找默认页（如 index.html）
+//app.UseStaticFiles();    // 先启用静态文件（提供下载）
+//app.UseDirectoryBrowser(); // 再启用目录浏览（显示列表）
+
+
+// 定义要暴露的物理目录和 URL 路径
+var outputsPath = Path.Combine(builder.Environment.WebRootPath, "Artifact");
+Directory.CreateDirectory(outputsPath); // 确保目录存在
+
+// 1. 静态文件中间件（处理文件下载）
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(outputsPath),
+    RequestPath = "/Artifact",               // 对外访问的 URL 路径
+    ServeUnknownFileTypes = true,          // 允许未知扩展名（如 .log）
+    OnPrepareResponse = ctx =>
+    {
+        // 强制所有文件以附件形式下载
+        ctx.Context.Response.Headers.ContentDisposition =
+            $"attachment; filename=\"{ctx.File.Name}\"";
+        // 可选：统一为 octet-stream 避免浏览器试图预览
+        ctx.Context.Response.ContentType = "application/octet-stream";
+    }
+});
+
+// 目录浏览（如需）
+app.UseDirectoryBrowser(new DirectoryBrowserOptions
+{
+    FileProvider = new PhysicalFileProvider(
+        Path.Combine(builder.Environment.WebRootPath, "Artifact")),
+    RequestPath = "/Artifact"
+});
+
+
 
 // 2. 配置路由
 app.UseRouting();
+
 
 
 

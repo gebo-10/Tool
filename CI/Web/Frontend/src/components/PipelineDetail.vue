@@ -3,7 +3,6 @@
 </template>
 
 <script setup>
-console.log('setup 执行了'); 
 import { ref, onMounted, onUnmounted } from 'vue';
 import DagViewer from '../components/DagViewer.vue';
 import request from '../utils/request';

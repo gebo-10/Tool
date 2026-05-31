@@ -133,3 +133,5 @@ Thumbs.db
 *.orig
 *.tmp
 *~
+
+/wwwroot/Artifact
