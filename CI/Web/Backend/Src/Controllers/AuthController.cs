@@ -1,5 +1,4 @@
 using Backend.Data;
-using Backend.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -25,7 +24,7 @@ public class AuthController : ControllerBase
         if (string.IsNullOrWhiteSpace(request.Username) || string.IsNullOrWhiteSpace(request.Password))
             return BadRequest("用户名和密码不能为空");
 
-        if (_userDb.Users.Any(u => u.Username == request.Username))
+        if (_userDb.Users.Exists(u => u.Username == request.Username))
             return Conflict("用户名已被注册");
 
         var user = new User
@@ -34,15 +33,15 @@ public class AuthController : ControllerBase
             PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password)
         };
 
-        _userDb.Users.Add(user);
-        await _userDb.SaveChangesAsync();
+        _userDb.Users.Insert(user);
+        //await _userDb.SaveChangesAsync();
         return Ok(new { message = "注册成功" });
     }
 
     [HttpPost("login")]
     public IActionResult Login([FromBody] LoginRequest request)
     {
-        var user = _userDb.Users.FirstOrDefault(u => u.Username == request.Username);
+        var user = _userDb.Users.FindOne(u => u.Username == request.Username);
         if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
             return Unauthorized("用户名或密码错误");
 

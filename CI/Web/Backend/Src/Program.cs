@@ -1,8 +1,6 @@
 using Backend.Data;
-using Backend.Models;
 using Backend.Service;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -22,11 +20,23 @@ builder.Services.AddDirectoryBrowser();
 
 
 // 注册 UserDbContext（用户数据）
-builder.Services.AddDbContext<UserDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("UserConnection")));
+//builder.Services.AddDbContext<UserDbContext>(options =>
+//    options.UseSqlite(builder.Configuration.GetConnectionString("UserConnection")));
 
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+//builder.Services.AddDbContext<AppDbContext>(options =>
+//    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// 注册用户数据库（单例）
+builder.Services.AddSingleton<UserDbContext>(sp =>
+{
+    return new UserDbContext(@"users.db");   // 单独的文件
+});
+
+// 注册用户数据库（单例）
+builder.Services.AddSingleton<PipelineDbContext>(sp =>
+{
+    return new PipelineDbContext(@"pipelines.db");   // 单独的文件
+});
 
 // 先注册为单例（用于控制器注入）
 builder.Services.AddSingleton<BuildService>();
@@ -68,11 +78,11 @@ if (app.Environment.IsDevelopment())
 
 using (var scope = app.Services.CreateScope())
 {
-    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    db.Database.EnsureCreated();
+    //var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    //db.Database.EnsureCreated();
 
-    var userDb = scope.ServiceProvider.GetRequiredService<UserDbContext>();
-    userDb.Database.EnsureCreated();
+    //var userDb = scope.ServiceProvider.GetRequiredService<UserDbContext>();
+    //userDb.Database.EnsureCreated();
 }
 
 

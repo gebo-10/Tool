@@ -1,13 +1,10 @@
 ﻿using Backend.Data;
-using Backend.Models;
 using Backend.Service;
+using LiteDB;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
-using static Backend.Data.AppDbContext;
 using static Backend.Service.BuildService;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Backend.Controllers;
 
@@ -16,23 +13,24 @@ namespace Backend.Controllers;
 [Authorize]  // 继承全局 JWT 认证要求
 public class PipelinesController : ControllerBase
 {
-    private readonly AppDbContext _db;
+    private readonly PipelineDbContext _db;
     private readonly BuildService _buildService;  // 直接使用具体类型
 
-    public PipelinesController(AppDbContext db, BuildService buildService)
+    public PipelinesController(PipelineDbContext db, BuildService buildService)
     {
         _db = db;
+
         _buildService = buildService;
     }
 
     // POST /api/pipelines
     [HttpPost]
-    public async Task<ActionResult<Pipeline>> CreatePipeline([FromBody] CreatePipelineRequest request)
+    public async Task<ActionResult<PipelineEntity>> CreatePipeline([FromBody] CreatePipelineRequest request)
     {
         // 获取当前用户名（从 JWT 或自定义头部）
         var currentUser = User.Identity?.Name ?? "anonymous";
 
-        var pipeline = new Pipeline
+        var pipeline = new PipelineEntity
         {
             Name = request.Name,
             Description = request.Description,
@@ -41,8 +39,10 @@ public class PipelinesController : ControllerBase
             CreatedAt = DateTime.Now
         };
 
-        _db.Pipelines.Add(pipeline);
-        await _db.SaveChangesAsync();
+        //_db.Pipelines.Add(pipeline);
+        //await _db.SaveChangesAsync();
+        _db.Pipelines.Insert(pipeline);
+
 
         var response = ToResponse(pipeline);
         await _buildService.PublishEventAsync(new BuildEvent(
@@ -59,7 +59,7 @@ public class PipelinesController : ControllerBase
 
     // GET /api/pipelines?page=1&size=10&search=xxx
     [HttpGet]
-    public async Task<ActionResult<PagedResult<Pipeline>>> GetPipelines(
+    public async Task<ActionResult<PagedResult<PipelineEntity>>> GetPipelines(
         [FromQuery] int page = 1,
         [FromQuery] int size = 10,
         [FromQuery] string? search = null)
@@ -68,26 +68,35 @@ public class PipelinesController : ControllerBase
         if (size < 1) size = 10;
         if (size > 100) size = 100;
 
-        var query = _db.Pipelines.AsNoTracking();
+        //var query = _db.Pipelines.AsNoTracking();
 
-        if (!string.IsNullOrWhiteSpace(search))
-        {
-            query = query.Where(p => p.Name.Contains(search) || (p.Description != null && p.Description.Contains(search)));
-        }
+        //if (!string.IsNullOrWhiteSpace(search))
+        //{
+        //    query = query.Where(p => p.Name.Contains(search) || (p.Description != null && p.Description.Contains(search)));
+        //}
 
-        var totalCount = await query.CountAsync();
-        var items = await query
+        //var totalCount = await query.CountAsync();
+        //var items = await query
+        //    .OrderByDescending(p => p.CreatedAt)
+        //    .Skip((page - 1) * size)
+        //    .Take(size)
+        //    .Select(p => ToResponse(p))
+        //    .ToListAsync();
+
+
+        var total = _db.Pipelines.Count();
+        var items = _db.Pipelines.Query()
             .OrderByDescending(p => p.CreatedAt)
-            .Skip((page - 1) * size)
-            .Take(size)
-            .Select(p => ToResponse(p))
-            .ToListAsync();
+            .Offset((page - 1) * size)
+            .Limit(size)
+            .ToList();
 
-        var result = new PagedResult<Pipeline>
+
+        var result = new PagedResult<PipelineEntity>
         {
             PageIndex = page,
             PageSize = size,
-            TotalCount = totalCount,
+            TotalCount = total,
             Items = items
         };
 
@@ -96,56 +105,25 @@ public class PipelinesController : ControllerBase
 
     // GET /api/pipelines/{id}
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<Pipeline>> GetPipelineById(int id)
+    public async Task<ActionResult<PipelineEntity>> GetPipelineById(int id)
     {
-        var entity = await _db.Pipelines.AsNoTracking().FirstOrDefaultAsync(p => p.Id == id);
+        //var entity = await _db.Pipelines.AsNoTracking().FirstOrDefaultAsync(p => p.Id == id);
+        var entity = _db.Pipelines.FindById(id);
         if (entity == null)
             return NotFound();
 
-        var pipeline=_buildService.GetPipeline(entity.Guid);
+        var pipeline=_buildService.GetPipeline(entity.PipelineGuid);
         entity.DagJson = pipeline?.ToJson() ?? entity.DagJson;
-        //_buildService.
-
 
         return Ok(ToResponse(entity));
     }
 
-    //// PUT /api/pipelines/{id}
-    //[HttpPut("{id:int}")]
-    //public async Task<IActionResult> UpdatePipeline(int id, [FromBody] UpdatePipelineRequest request)
-    //{
-    //    var pipeline = await _db.Pipelines.FindAsync(id);
-    //    if (pipeline == null)
-    //        return NotFound();
-
-    //    pipeline.Name = request.Name;
-    //    pipeline.Description = request.Description;
-    //    pipeline.DagJson = request.DagJson;
-    //    //pipeline.CompletedAt = DateTime.UtcNow;
-
-    //    await _db.SaveChangesAsync();
-    //    return NoContent();
-    //}
-
-    //// DELETE /api/pipelines/{id}
-    //[HttpDelete("{id:int}")]
-    //public async Task<IActionResult> DeletePipeline(int id)
-    //{
-    //    var pipeline = await _db.Pipelines.FindAsync(id);
-    //    if (pipeline == null)
-    //        return NotFound();
-
-    //    _db.Pipelines.Remove(pipeline);
-    //    await _db.SaveChangesAsync();
-    //    return NoContent();
-    //}
-
-    private static Pipeline ToResponse(Pipeline p)
+    private static PipelineEntity ToResponse(PipelineEntity p)
     {
         return p;
     }
 
-    //private static PipelineResponse ToResponse(Pipeline p)
+    //private static PipelineResponse ToResponse(PipelineEntity p)
     //{
     //    return new PipelineResponse
     //    {
@@ -179,7 +157,7 @@ public class PipelinesController : ControllerBase
             // 订阅 BuildService 的事件流
             await foreach (var buildEvent in _buildService.SubscribePipeline(cancellationToken))
             {
-                var json = JsonSerializer.Serialize(buildEvent, new JsonSerializerOptions
+                var json = System.Text.Json.JsonSerializer.Serialize(buildEvent, new JsonSerializerOptions
                 {
                     PropertyNamingPolicy = JsonNamingPolicy.CamelCase
                 });

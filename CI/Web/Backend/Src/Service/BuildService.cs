@@ -1,13 +1,12 @@
 ﻿using Backend.Data;
 using BuildSystem;
 using DagEngine;
-using Microsoft.EntityFrameworkCore;
-using System.Text.Json;
 using System.Threading.Channels;
 namespace Backend.Service
 {
     public class BuildService : BackgroundService
     {
+        private readonly PipelineDbContext _db;
         private readonly ILogger<BuildService> _logger;
         private readonly IServiceScopeFactory _scopeFactory;
         private readonly HmiCi _hmiCi;
@@ -15,8 +14,9 @@ namespace Backend.Service
         private readonly CancellationTokenSource _stopCts = new();
 
 
-        public BuildService(ILogger<BuildService> logger, IServiceScopeFactory scopeFactory)
+        public BuildService(PipelineDbContext db, ILogger<BuildService> logger, IServiceScopeFactory scopeFactory)
         {
+            _db = db;
             _logger = logger;
             _scopeFactory = scopeFactory;
             //_hmiCi = new HmiCi(
@@ -55,27 +55,36 @@ namespace Backend.Service
 
         private async Task<bool> TryProcessOneTaskAsync(CancellationToken token)
         {
-            using var scope = _scopeFactory.CreateScope();
-            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            //using var scope = _scopeFactory.CreateScope();
+            //var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-            // 原子性取一个 Pending 任务
-            var entity = await db.Pipelines
-                .Where(p => p.Status == "Pending")
-                .OrderBy(p => p.CreatedAt)
-                .FirstOrDefaultAsync(token);
+            //// 原子性取一个 Pending 任务
+            //var entity = await db.Pipelines
+            //    .Where(p => p.Status == "Pending")
+            //    .OrderBy(p => p.CreatedAt)
+            //    .FirstOrDefaultAsync(token);
+
+            var col = _db.Pipelines;
+            var entity = col.Query()
+               .Where(p => p.Status == "Pending")
+               .OrderBy(p => p.CreatedAt)
+               .Limit(1)
+               .FirstOrDefault();
 
             if (entity == null) return false;
 
            
 
-            // 创建 Pipeline 并提交到 HmiCi
-            var pipeline = new Pipeline(new Dictionary<string, object> { ["Name"] = entity.Name });
+            // 创建 PipelineEntity 并提交到 HmiCi
+            var pipeline = new BuildSystem.Pipeline(new Dictionary<string, object> { ["Name"] = entity.Name });
             pipeline.Id = entity.Id;
-            pipeline.Guid=entity.Guid;
+            pipeline.Guid=entity.PipelineGuid;
 
             entity.Status = "Running";
             entity.DagJson = pipeline.ToJson();
-            await db.SaveChangesAsync(token);
+
+            //await db.SaveChangesAsync(token);
+            col.Update(entity);
 
             _hmiCi.EnqueuePipeline(pipeline);
             return true;
@@ -88,17 +97,20 @@ namespace Backend.Service
                 //Console.WriteLine($"节点 {e.NodeId} {e.NodeType} {e.NodeName} 进度: {e.Percentage}%");
                 //var json = JsonSerializer.Serialize(progress.Node.Serialize(), new JsonSerializerOptions { WriteIndented = true });
                 //Console.WriteLine(json);
-                _logger.LogInformation($"Pipeline {pipeline.Guid} Progress: {progress?.Percentage}% - Node: {progress?.NodeName} ({progress?.NodeType})");
+                _logger.LogInformation($"PipelineEntity {pipeline.Guid} Progress: {progress?.Percentage}% - Node: {progress?.NodeName} ({progress?.NodeType})");
 
                 await PublishEventAsync(new BuildEvent("NodeInfo", pipeline.Id, progress.Node.Serialize()));
             }
             else
             {
-                using var scope = _scopeFactory.CreateScope();
-                var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                //using var scope = _scopeFactory.CreateScope();
+                //var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
                 // 根据 id查找实体
-                var entity = await db.Pipelines.FirstOrDefaultAsync(p => p.Id == pipeline.Id);
+                //var entity = await db.Pipelines.FirstOrDefaultAsync(p => p.Id == pipeline.Id);
+
+                var col = _db.Pipelines;
+                var entity = col.FindById(pipeline.Id);
                 if (entity != null)
                 {
                     entity.Status = pipeline.status.ToString();
@@ -120,7 +132,8 @@ namespace Backend.Service
                             break;
                     }
                     entity.DagJson = pipeline.ToJson();
-                    await db.SaveChangesAsync();
+                    //await db.SaveChangesAsync();
+                    col.Update(entity);
 
                     await PublishEventAsync(new BuildEvent("PipelineInfo", pipeline.Id, entity));
 
@@ -136,7 +149,7 @@ namespace Backend.Service
         }
 
 
-        public Pipeline? GetPipeline(string guid)
+        public BuildSystem.Pipeline? GetPipeline(string guid)
         {
             return _hmiCi.GetPipeline(guid);
         }
