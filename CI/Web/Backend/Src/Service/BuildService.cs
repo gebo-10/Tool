@@ -70,7 +70,7 @@ namespace Backend.Service
             pipeline.Guid=entity.PipelineGuid;
 
             entity.Status = "Running";
-            entity.DagJson = pipeline.ToJson();
+            entity.Dag = pipeline.Serialize();
 
             //await db.SaveChangesAsync(token);
             col.Update(entity);
@@ -114,13 +114,13 @@ namespace Backend.Service
                             entity.CompletedAt = DateTime.Now;
                             break;
                     }
-                    entity.DagJson = pipeline.ToJson();
+                    entity.Dag = pipeline.Serialize();
                     //await db.SaveChangesAsync();
                     col.Update(entity);
 
                     await PublishEventAsync(new BuildEvent("PipelineInfo", pipeline.Id, entity));
 
-                    await PublishEventAsync(new BuildEvent("DagInfo", pipeline.Id, pipeline.ToJson()));
+                    //await PublishEventAsync(new BuildEvent("DagInfo", pipeline.Id, pipeline.Serialize()));
                 }
                 else
                 {

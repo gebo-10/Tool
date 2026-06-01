@@ -154,6 +154,15 @@ namespace DagEngine
     }
 
 
+    public class Edge
+    {
+        public string id { get; set; } = Guid.NewGuid().ToString();
+        public string FromNode;
+        public string FromPin;
+        public string ToNode;
+        public string ToPin;
+    }
+
     /// <summary>
     /// 黑板接口，提供线程安全的键值对存储
     /// </summary>
@@ -211,10 +220,10 @@ namespace DagEngine
 
 
         private readonly Dictionary<string, Node> _nodes = new();
-        private readonly List<(string FromNode, string FromPin, string ToNode, string ToPin)> _edges = new();
+        private readonly List<Edge> _edges = new();
 
         public IReadOnlyDictionary<string, Node> Nodes => _nodes;
-        public IReadOnlyList<(string FromNode, string FromPin, string ToNode, string ToPin)> Edges => _edges;
+        public IReadOnlyList<Edge> Edges => _edges;
 
         public IBlackboard Blackboard
         {
@@ -254,7 +263,7 @@ namespace DagEngine
             toPin.Connection?.Connections.Remove(toPin);
             toPin.Connection = null;
             fromPin.ConnectTo(toPin);
-            _edges.Add((fromNodeId, fromPinName, toNodeId, toPinName));
+            _edges.Add(new Edge {FromNode= fromNodeId, FromPin= fromPinName,ToNode= toNodeId,ToPin= toPinName });
         }
 
 
@@ -496,7 +505,7 @@ namespace DagEngine
                 nodes = _nodes.Values.Select(n => n.Serialize()).ToList(),
                 edges = _edges.Select(e => new Dictionary<string, object>
                 {
-                    ["id"]=e.FromNode+e.ToNode,
+                    ["id"]=e.id,
                     ["source"]=e.FromNode,
                     ["target"]= e.ToNode,
                     ["sourcePort"]= "right",
@@ -504,6 +513,23 @@ namespace DagEngine
                 }).ToList()
             };
             return JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true });
+        }
+
+        public DagData Serialize()
+        {
+            var data = new DagData
+            {
+                nodes = _nodes.Values.Select(n => n.Serialize()).ToList(),
+                edges = _edges.Select(e => new Dictionary<string, object>
+                {
+                    ["id"] = e.id,
+                    ["source"] = e.FromNode,
+                    ["target"] = e.ToNode,
+                    ["sourcePort"] = "right",
+                    ["targetPort"] = "left",
+                }).ToList()
+            };
+            return data;
         }
     }
 }

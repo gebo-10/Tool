@@ -33,7 +33,7 @@ public class PipelinesController : ControllerBase
         {
             Name = request.Name,
             Description = request.Description,
-            DagJson = request.DagJson,
+            //Dag = request.DagJson,
             Creator = currentUser,
             CreatedAt = DateTime.Now
         };
@@ -97,8 +97,10 @@ public class PipelinesController : ControllerBase
             return NotFound();
 
         var pipeline=_buildService.GetPipeline(entity.PipelineGuid);
-        entity.DagJson = pipeline?.ToJson() ?? entity.DagJson;
-
+        if(pipeline != null)
+        {
+            entity.Dag = pipeline?.Serialize();
+        }
         return Ok(ToResponse(entity));
     }
 
@@ -114,7 +116,7 @@ public class PipelinesController : ControllerBase
     //        Id = p.Id,
     //        Name = p.Name,
     //        Description = p.Description,
-    //        DagJson = p.DagJson,
+    //        Dag = p.Dag,
     //        Creator = p.Creator,
     //        CreatedAt = p.CreatedAt,
     //        CompletedAt = p.CompletedAt,

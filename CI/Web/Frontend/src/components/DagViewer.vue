@@ -87,10 +87,10 @@ const connectSSE = () => {
           console.log('更新节点', nodeInfo.id, nodeInfo);
           updateNode(nodeInfo.id, nodeInfo); // 直接用 info 更新节点数据，前提是后端发送的 info 格式正确
         }
-      }else if(evt.eventType === 'DagInfo' && evt.pipelineId === pipelineId.value) {
-        var dagInfo = evt.info; // 假设 info 包含完整的 DAG 数据 { nodes: [], edges: [] }
+      }else if(evt.eventType === 'PipelineInfo' && evt.pipelineId === pipelineId.value) {
+        var dagInfo = evt.info.dag; // 假设 info 包含完整的 DAG 数据 { nodes: [], edges: [] }
         if (dagInfo.nodes && dagInfo.edges) {
-          graph.changeData(dagInfo); // 整体替换 DAG 数据，适用于大规模更新
+          graph.setData(dagInfo); // 整体替换 DAG 数据，适用于大规模更新
         }
       }
     } catch (e) {
@@ -125,7 +125,8 @@ const fetchAndRenderPipeline = async () => {
     const res = await request.get(`/pipelines/${pipelineId.value}`);
     console.log('获取 Pipeline 详情', res);
     const pipeline = res.data; // PipelineResponse 对象
-    const dagData =JSON.parse(pipeline.dagJson); // 假设 dagJson 是字符串，需要 parse
+    //const dagData =JSON.parse(pipeline.dagJson); // 假设 dagJson 是字符串，需要 parse
+    const dagData =pipeline.dag;
     console.log('解析后的 DAG 数据', dagData);  
     if (graph) {
       graph.setData(dagData); // 直接设置 { nodes: [...], edges: [...] }

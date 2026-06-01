@@ -1,5 +1,6 @@
 using LiteDB;
-
+using BuildSystem;
+using DagEngine;
 namespace Backend.Data;
 
 public class PipelineDbContext
@@ -21,6 +22,33 @@ public class PipelineParam
     public bool IsBuildApk { get; set; } = false;
 }
 
+//public class DagData
+//{
+//    public List<Dictionary<string, object>> nodes { get; set; } = new();
+//    public List<Dictionary<string, object>> edges { get; set; } = new();
+//}
+
+//public class Node
+//{
+//    public string Id { get; set; } = string.Empty;
+//    public string Label { get; set; } = string.Empty;
+//    // 可以添加更多属性，如配置、类型等
+//    public Dictionary<string, object>? Config { get; set; }
+//}
+
+//public class Edge
+//{
+//    public string Source { get; set; } = string.Empty; // 源节点 ID
+//    public string Target { get; set; } = string.Empty; // 目标节点 ID
+//    public string? Label { get; set; }
+//}
+
+//public class Artifact
+//{
+//    public string Name { get; set; } = string.Empty;
+//    public string Path { get; set; } = string.Empty;
+//}
+
 public class PipelineEntity
 {
     public int Id { get; set; }
@@ -38,7 +66,7 @@ public class PipelineEntity
     /// <summary>
     /// 例如 "DAG" 结构的 JSON 配置（节点 + 边）
     /// </summary>
-    public string DagJson { get; set; } = string.Empty;
+    public Dag.DagData Dag { get; set; } = new Dag.DagData();
 
     public string? Creator { get; set; }
 

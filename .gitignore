@@ -1,3 +1,4 @@
 /CI/Workspaces
 *.db-wal
 *.db-shm
+CI/Web/Backend/pipelines-log.db

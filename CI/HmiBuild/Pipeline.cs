@@ -1,6 +1,7 @@
 ﻿
 using DagEngine;
 using System.Text.Json;
+using static DagEngine.Dag;
 
 namespace BuildSystem
 {
@@ -175,6 +176,11 @@ namespace BuildSystem
         public string ToJson()
         {
             return _dag.ToJson();
+        }
+
+        public DagData Serialize()
+        {
+            return _dag.Serialize();
         }
     }
 
