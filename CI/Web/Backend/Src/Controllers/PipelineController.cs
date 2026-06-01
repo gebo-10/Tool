@@ -1,6 +1,5 @@
 ﻿using Backend.Data;
 using Backend.Service;
-using LiteDB;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
@@ -67,21 +66,6 @@ public class PipelinesController : ControllerBase
         if (page < 1) page = 1;
         if (size < 1) size = 10;
         if (size > 100) size = 100;
-
-        //var query = _db.Pipelines.AsNoTracking();
-
-        //if (!string.IsNullOrWhiteSpace(search))
-        //{
-        //    query = query.Where(p => p.Name.Contains(search) || (p.Description != null && p.Description.Contains(search)));
-        //}
-
-        //var totalCount = await query.CountAsync();
-        //var items = await query
-        //    .OrderByDescending(p => p.CreatedAt)
-        //    .Skip((page - 1) * size)
-        //    .Take(size)
-        //    .Select(p => ToResponse(p))
-        //    .ToListAsync();
 
 
         var total = _db.Pipelines.Count();

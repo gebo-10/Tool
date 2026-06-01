@@ -8,17 +8,15 @@ namespace Backend.Service
     {
         private readonly PipelineDbContext _db;
         private readonly ILogger<BuildService> _logger;
-        private readonly IServiceScopeFactory _scopeFactory;
         private readonly HmiCi _hmiCi;
         private readonly SemaphoreSlim _signal = new SemaphoreSlim(0);
         private readonly CancellationTokenSource _stopCts = new();
 
 
-        public BuildService(PipelineDbContext db, ILogger<BuildService> logger, IServiceScopeFactory scopeFactory)
+        public BuildService(PipelineDbContext db, ILogger<BuildService> logger)
         {
             _db = db;
             _logger = logger;
-            _scopeFactory = scopeFactory;
             //_hmiCi = new HmiCi(
             //    "H:\\Work\\Tool\\CI\\Web\\Backend\\wwwroot\\Artifact",
             //    new[] { "H:\\Work\\Tool\\CI\\Workspaces\\Workspace1", "H:\\Work\\Tool\\CI\\Workspaces\\Workspace2" }
@@ -55,15 +53,6 @@ namespace Backend.Service
 
         private async Task<bool> TryProcessOneTaskAsync(CancellationToken token)
         {
-            //using var scope = _scopeFactory.CreateScope();
-            //var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-
-            //// 原子性取一个 Pending 任务
-            //var entity = await db.Pipelines
-            //    .Where(p => p.Status == "Pending")
-            //    .OrderBy(p => p.CreatedAt)
-            //    .FirstOrDefaultAsync(token);
-
             var col = _db.Pipelines;
             var entity = col.Query()
                .Where(p => p.Status == "Pending")
@@ -103,12 +92,6 @@ namespace Backend.Service
             }
             else
             {
-                //using var scope = _scopeFactory.CreateScope();
-                //var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-
-                // 根据 id查找实体
-                //var entity = await db.Pipelines.FirstOrDefaultAsync(p => p.Id == pipeline.Id);
-
                 var col = _db.Pipelines;
                 var entity = col.FindById(pipeline.Id);
                 if (entity != null)
