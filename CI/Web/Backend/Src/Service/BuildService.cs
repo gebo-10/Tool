@@ -17,14 +17,14 @@ namespace Backend.Service
         {
             _db = db;
             _logger = logger;
-            //_hmiCi = new HmiCi(
-            //    "H:\\Work\\Tool\\CI\\Web\\Backend\\wwwroot\\Artifact",
-            //    new[] { "H:\\Work\\Tool\\CI\\Workspaces\\Workspace1", "H:\\Work\\Tool\\CI\\Workspaces\\Workspace2" }
-            //    );
             _hmiCi = new HmiCi(
-                "D:\\work3d\\Tool\\CI\\Web\\Backend\\wwwroot\\Artifact",
-                new[] { "D:\\work3d\\Tool\\CI\\Workspaces\\Workspace1", "D:\\work3d\\Tool\\CI\\Workspaces\\Workspace2" }
+                "H:\\Work\\Tool\\CI\\Web\\Backend\\wwwroot\\Artifact",
+                new[] { "H:\\Work\\Tool\\CI\\Workspaces\\Workspace1", "H:\\Work\\Tool\\CI\\Workspaces\\Workspace2" }
                 );
+            //_hmiCi = new HmiCi(
+            //    "D:\\work3d\\Tool\\CI\\Web\\Backend\\wwwroot\\Artifact",
+            //    new[] { "D:\\work3d\\Tool\\CI\\Workspaces\\Workspace1", "D:\\work3d\\Tool\\CI\\Workspaces\\Workspace2" }
+            //    );
         }
 
         public void NotifyNewTask() => _signal.Release();

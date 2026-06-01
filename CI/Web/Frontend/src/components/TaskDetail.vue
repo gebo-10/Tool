@@ -16,8 +16,8 @@
       <div class="logs-section">
         <h4>实时日志</h4>
         <div class="log-container" ref="logContainer">
-          <div v-for="(log, idx) in logs" :key="idx" class="log-line" :class="log.level">
-            <span class="log-time">{{ log.time }}</span>
+          <div v-for="(log, idx) in logs" :key="idx" :class="['log-line', log.level]">
+            <!-- <span class="log-time">{{ log.time }}</span> -->
             <!-- ⭐ 使用 v-html 渲染富文本 -->
             <span class="log-msg" v-html="renderLogMessage(log.message)"></span>
           </div>
@@ -143,18 +143,19 @@ const startLogStream = () => {
             try {
               const data = JSON.parse(jsonStr);
               if (data.lines) {
-                // 初始批量日志
                 data.lines.forEach(msg => {
+                  const level = parseLogLevel(msg) || 'INFO';
                   logs.value.push({
                     time: new Date().toLocaleTimeString(),
-                    level: 'INFO',
+                    level: level,
                     message: msg
                   });
                 });
               } else if (data.line !== undefined) {
+                const level = parseLogLevel(data.line) || 'INFO';
                 logs.value.push({
                   time: new Date().toLocaleTimeString(),
-                  level: 'INFO',
+                  level: level,
                   message: data.line
                 });
               } else if (data.end) {
@@ -183,6 +184,11 @@ const startLogStream = () => {
   });
 };
 
+// 辅助函数：从日志行中提取级别（如 [WRN]）
+const parseLogLevel = (line) => {
+  const match = line.match(/^.*?\[(\w{3})\]/); // 匹配开头的 [WRN], [ERR], [INF] 等
+  return match ? match[1].toUpperCase() : null;
+};
 
 // ---------- 新增：日志消息中的链接渲染 ----------
 const renderLogMessage = (msg) => {
@@ -265,13 +271,7 @@ onUnmounted(() => {
   border-radius: 4px;
   border: 1px solid #eee;
 }
-.log-line {
-  border-bottom: 1px solid #f0f0f0;
-  padding: 2px 0;
-}
-.log-line.ERROR { color: #d32f2f; }
-.log-time { color: #999; margin-right: 8px; }
-.log-msg { color: #333; }
+
 
 
 </style>
@@ -288,4 +288,12 @@ onUnmounted(() => {
 .log-link:hover {
   color: #284233;
 }
+
+.log-line {
+  border-bottom: 1px solid #f0f0f0;
+  padding: 2px 0;
+}
+.log-line.WRN { color: #b88d00; }   /* 黄色 */
+.log-line.ERR { color: #d32f2f; }   /* 红色 */
+.log-line.INF { color: inherit; }   /* 默认色 */
 </style>

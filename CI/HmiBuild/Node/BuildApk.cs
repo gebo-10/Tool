@@ -26,14 +26,16 @@ namespace BuildSystem
             //var logfile=File.Create(logPath);
 
             // 使用 StreamWriter 写入日志，设置 AutoFlush 保证实时落盘
-            using var logWriter = new StreamWriter(logPath, append: false) { AutoFlush = true };
-
+            //using var logWriter = new StreamWriter(logPath, append: false) { AutoFlush = true };
+            using var logger = new TaskLogger(logPath);
             try
             {
-                await logWriter.WriteLineAsync($"[{DateTime.Now}] Build started.");
+                //await logWriter.WriteLineAsync($"[{DateTime.Now}] Build started.");
+                logger.Warn($"Build started.");
                 await workspace.UnityQueue.EnqueueAsync(async token =>
                 {
-                    await logWriter.WriteLineAsync($"[{DateTime.Now}] Entering ActionQueue.");
+                    //await logWriter.WriteLineAsync($"[{DateTime.Now}] Entering ActionQueue.");
+                    logger.Error($"Entering ActionQueue.");
                     // 模拟打包：总耗时 5 秒，每 0.5 秒报告一次进度
                     const int totalDurationMs = 5000;
                     const int intervalMs = 500;
@@ -50,7 +52,8 @@ namespace BuildSystem
                             status = HmiBuildStatus.Completed;
                         }
                         ReportProgress(percentage);  // 触发进度事件
-                        await logWriter.WriteLineAsync($"[{DateTime.Now}] Progress: {percentage}%");
+                        logger.Log($"Progress: {percentage}%");
+                        //await logWriter.WriteLineAsync($"[{DateTime.Now}] Progress: {percentage}%");
                         //Console.WriteLine("BuildApk working");
                         if (i < steps)  // 最后一步不需要再 Delay
                             await Task.Delay(intervalMs, cancellationToken);
@@ -60,19 +63,22 @@ namespace BuildSystem
                     string apkPath = System.IO.Path.Combine(workPath, "app.apk");
                     File.Create(apkPath).Close();
 
-                    await logWriter.WriteLineAsync($"[{DateTime.Now}] APK: Artifact/{pipeline.Guid}/app.apk");
+                    //await logWriter.WriteLineAsync($"[{DateTime.Now}] APK: Artifact/{pipeline.Guid}/app.apk");
+                    logger.Log($"APK: Artifact/{pipeline.Guid}/app.apk");
 
                     SetOutputValue("ApkPath", apkPath);
-                    await logWriter.WriteLineAsync($"[{DateTime.Now}] APK path set to: {apkPath}");
+                    //await logWriter.WriteLineAsync($"[{DateTime.Now}] APK path set to: {apkPath}");
                 });
-                await logWriter.WriteLineAsync($"[{DateTime.Now}] Build completed successfully.");
+                //await logWriter.WriteLineAsync($"[{DateTime.Now}] Build completed successfully.");
+                logger.Log($"Build completed successfully.");
             }
             catch (OperationCanceledException)
             {
                 status = HmiBuildStatus.Cancelled;
                 // 可选：报告取消时的进度
                 ReportProgress(progress);
-                await logWriter.WriteLineAsync($"[{DateTime.Now}] Build cancelled.");
+                //await logWriter.WriteLineAsync($"[{DateTime.Now}] Build cancelled.");
+                logger.Log($"Build cancelled.");
                 // 重新抛出取消异常，让 DAG 引擎知道是被取消的
                 throw;
             }
@@ -81,7 +87,8 @@ namespace BuildSystem
                 status = HmiBuildStatus.Failed;
                 ReportProgress(progress);
                 // 记录日志
-                await logWriter.WriteLineAsync($"[{DateTime.Now}] Build failed: {ex}");
+                //await logWriter.WriteLineAsync($"[{DateTime.Now}] Build failed: {ex}");
+                logger.Log($"Build failed: {ex}");
                 throw;
             }
             
