@@ -19,9 +19,13 @@ namespace Backend.Service
         {
             _logger = logger;
             _scopeFactory = scopeFactory;
+            //_hmiCi = new HmiCi(
+            //    "H:\\Work\\Tool\\CI\\Web\\Backend\\wwwroot\\Artifact",
+            //    new[] { "H:\\Work\\Tool\\CI\\Workspaces\\Workspace1", "H:\\Work\\Tool\\CI\\Workspaces\\Workspace2" }
+            //    );
             _hmiCi = new HmiCi(
-                "H:\\Work\\Tool\\CI\\Web\\Backend\\wwwroot\\Artifact",
-                new[] { "H:\\Work\\Tool\\CI\\Workspaces\\Workspace1", "H:\\Work\\Tool\\CI\\Workspaces\\Workspace2" }
+                "D:\\work3d\\Tool\\CI\\Web\\Backend\\wwwroot\\Artifact",
+                new[] { "D:\\work3d\\Tool\\CI\\Workspaces\\Workspace1", "D:\\work3d\\Tool\\CI\\Workspaces\\Workspace2" }
                 );
         }
 
