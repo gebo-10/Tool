@@ -57,7 +57,7 @@ public class AuthController : ControllerBase
             issuer: _config["Jwt:Issuer"],
             audience: _config["Jwt:Audience"],
             claims: claims,
-            expires: DateTime.Now,
+            expires: DateTime.UtcNow.AddYears(100),
             signingCredentials: creds
         );
 
