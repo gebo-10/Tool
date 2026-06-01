@@ -293,7 +293,7 @@ onUnmounted(() => {
   border-bottom: 1px solid #f0f0f0;
   padding: 2px 0;
 }
-.log-line.WRN { color: #b88d00; }   /* 黄色 */
+.log-line.WRN { color: #b47e13; }   /* 黄色 */
 .log-line.ERR { color: #d32f2f; }   /* 红色 */
 .log-line.INF { color: inherit; }   /* 默认色 */
 </style>
