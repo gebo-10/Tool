@@ -89,6 +89,18 @@ namespace Backend.Service
                 _logger.LogInformation($"PipelineEntity {pipeline.Guid} Progress: {progress?.Percentage}% - Node: {progress?.NodeName} ({progress?.NodeType})");
 
                 await PublishEventAsync(new BuildEvent("NodeInfo", pipeline.Id, progress.Node.Serialize()));
+                //var col = _db.Pipelines;
+                //var entity = col.FindById(pipeline.Id);
+                //if (entity != null)
+                //{
+                //    entity.Dag = pipeline.Serialize();
+                //    col.Update(entity);
+                //}
+
+                //_db.Pipelines.UpdateMany(
+                //    x => x.Dag = pipeline.Serialize(),   // 只更新 Dag 字段
+                //    x => x.Id == pipeline.Id              // 条件：匹配对应的 Id
+                //);
             }
             else
             {

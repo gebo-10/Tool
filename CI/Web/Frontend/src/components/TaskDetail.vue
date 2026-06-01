@@ -13,16 +13,15 @@
         <n-descriptions-item label="参数" :span="2">{{ task.parameters || '-' }}</n-descriptions-item>
       </n-descriptions>
 
-      <!-- 实时日志展示 -->
       <div class="logs-section">
         <h4>实时日志</h4>
         <div class="log-container" ref="logContainer">
           <div v-for="(log, idx) in logs" :key="idx" class="log-line" :class="log.level">
             <span class="log-time">{{ log.time }}</span>
-            <span class="log-msg">{{ log.message }}</span>
+            <!-- ⭐ 使用 v-html 渲染富文本 -->
+            <span class="log-msg" v-html="renderLogMessage(log.message)"></span>
           </div>
           <n-empty v-if="!logs.length && !logLoading" description="暂无日志" />
-          <Logviewer />
         </div>
       </div>
     </n-spin>
@@ -30,12 +29,24 @@
 </template>
 
 <script setup>
-import { ref, watch, onUnmounted, nextTick } from 'vue';
+import { ref, onMounted, onUnmounted, nextTick, computed ,watch } from 'vue';
+import { useRoute } from 'vue-router';                         // 新增
 import { NSpin, NDescriptions, NDescriptionsItem, NTag, NEmpty } from 'naive-ui';
+const route = useRoute();   
+// 从路由参数获取 pipelineId（假设路由定义为 /pipelines/:id/tasks/:taskId）
+const pipelineId = computed(() => Number(route.params.id));
 
-import Logviewer from './LogViewer.vue';  // 可选：如果需要更复杂的日志组件
 const props = defineProps({
+  //pipelineId: { type: Number, required: true },  // 新增
   taskId: { type: String, required: true }
+});
+
+watch(() => props.taskId, (newId, oldId) => {
+  if (newId && newId !== oldId) {
+    // taskId 发生了变化，重新加载
+    //loadTaskDetail();
+    startLogStream();
+  }
 });
 
 const emit = defineEmits(['close']);
@@ -46,78 +57,194 @@ const loading = ref(false);
 const logs = ref([]);
 const logLoading = ref(false);
 const logContainer = ref(null);
-let logEventSource = null;
+let abortController = null;   // 用于取消 fetch 流
 
-// 模拟数据（实际应从 API 获取）
-const mockTaskData = (id) => ({
-  id,
-  label: `任务 ${id}`,
-  status: 'running',
-  progress: 45,
-  startTime: new Date().toLocaleString(),
-  endTime: null,
-  parameters: '{"param1":"value1"}',
-});
-
-// 模拟日志生成
-const mockLogs = () => {
-  const messages = ['初始化完成', '正在处理...', '数据读取中...', '校验通过', '步骤1完成'];
-  return {
-    time: new Date().toLocaleTimeString(),
-    level: 'INFO',
-    message: messages[Math.floor(Math.random() * messages.length)]
-  };
+// ---------- 工具函数 ----------
+const getAuthHeaders = () => {
+  const token = localStorage.getItem('token');  // 根据实际存储方式调整
+  return token ? { 'Authorization': `Bearer ${token}` } : {};
 };
 
-// 监听 taskId 变化，加载任务详情
-// watch(() => props.taskId, (newId) => {
-//   if (newId) {
-//     loadTaskDetail(newId);
-//     startLogStream(newId);
-//   }
-// }, { immediate: true });
-
-const loadTaskDetail = async (id) => {
-  loading.value = true;
-  // TODO: 替换为真实 API 请求
-  await new Promise(resolve => setTimeout(resolve, 300));
-  task.value = mockTaskData(id);
-  loading.value = false;
-};
-
-const startLogStream = (id) => {
-  // 先关闭旧连接
-  if (logEventSource) {
-    logEventSource.close();
-    logEventSource = null;
-  }
-  logs.value = [];
-  logLoading.value = true;
-
-  // 模拟 SSE 或轮询
-  // 实际可替换为 EventSource('/api/tasks/' + id + '/logs?token=...')
-  const interval = setInterval(() => {
-    logs.value.push(mockLogs());
-    // 滚动到底部
-    nextTick(() => {
-      if (logContainer.value) {
-        logContainer.value.scrollTop = logContainer.value.scrollHeight;
-      }
-    });
-  }, 1000);
-  
-  logEventSource = { close: () => clearInterval(interval) }; // 模拟关闭方法
-  logLoading.value = false;
-};
-
-// 辅助函数：状态对应的 tag 类型
 const statusType = (status) => {
   const map = { pending: 'default', running: 'info', completed: 'success', failed: 'error' };
   return map[status] || 'default';
 };
 
+// ---------- 加载任务详情 ----------
+const loadTaskDetail = async () => {
+  loading.value = true;
+  try {
+    const res = await fetch(`/api/pipelines/${pipelineId.value}/tasks/${props.taskId}`, {
+      headers: getAuthHeaders()
+    });
+    if (res.ok) {
+      const data = await res.json();
+      task.value = {
+        id: data.id,
+        label: data.label || data.name,
+        status: data.status,
+        progress: data.progress ?? 0,
+        startTime: data.startTime ? new Date(data.startTime).toLocaleString() : '-',
+        endTime: data.endTime ? new Date(data.endTime).toLocaleString() : null,
+        parameters: data.parameters ? JSON.stringify(data.parameters) : '-'
+      };
+    } else {
+      console.error('获取任务详情失败');
+    }
+  } catch (err) {
+    console.error('获取任务详情出错', err);
+  } finally {
+    loading.value = false;
+  }
+};
+
+// ---------- 启动 SSE 日志流 ----------
+const startLogStream = () => {
+  // 取消上一次连接
+  if (abortController) {
+    abortController.abort();
+  }
+  logs.value = [];
+  logLoading.value = true;
+  abortController = new AbortController();
+
+  fetch(`/api/pipelines/${pipelineId.value}/tasks/${props.taskId}/logs`, {
+    headers: {
+      ...getAuthHeaders(),
+      'Accept': 'text/event-stream'
+    },
+    signal: abortController.signal
+  }).then(async (response) => {
+    if (!response.ok) {
+      throw new Error('SSE 连接失败');
+    }
+    logLoading.value = false;
+
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = '';
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+
+      // 按 \n\n 分割 SSE 事件
+      const parts = buffer.split('\n\n');
+      buffer = parts.pop() || '';  // 最后一部分可能不完整，保留下次拼接
+
+      for (const part of parts) {
+        if (!part.trim()) continue;
+        // 解析 "data: ..."
+        const lines = part.split('\n');
+        for (const line of lines) {
+          if (line.startsWith('data: ')) {
+            const jsonStr = line.substring(6);
+            try {
+              const data = JSON.parse(jsonStr);
+              if (data.lines) {
+                // 初始批量日志
+                data.lines.forEach(msg => {
+                  logs.value.push({
+                    time: new Date().toLocaleTimeString(),
+                    level: 'INFO',
+                    message: msg
+                  });
+                });
+              } else if (data.line !== undefined) {
+                logs.value.push({
+                  time: new Date().toLocaleTimeString(),
+                  level: 'INFO',
+                  message: data.line
+                });
+              } else if (data.end) {
+                console.log('日志流结束');
+                abortController.abort(); // 触发 cleanup
+                return;
+              }
+            } catch (e) {
+              console.warn('解析日志数据失败', e);
+            }
+          }
+        }
+      }
+
+      // 自动滚动到底部
+      await nextTick();
+      if (logContainer.value) {
+        logContainer.value.scrollTop = logContainer.value.scrollHeight;
+      }
+    }
+  }).catch(err => {
+    if (err.name !== 'AbortError') {
+      console.error('日志流错误', err);
+    }
+    logLoading.value = false;
+  });
+};
+
+
+// ---------- 新增：日志消息中的链接渲染 ----------
+const renderLogMessage = (msg) => {
+  if (!msg) return '';
+
+  // 定义匹配和替换规则
+  const patterns = [
+    {
+      regex: /\b(Artifact\/[^\s<>]+)/g,
+      process: (match) => {
+        const fullUrl = window.location.origin + '/' + match;
+        const fileName = match.split('/').pop();
+        return `<a href="${fullUrl}" target="_blank" rel="noopener noreferrer" class="log-link">${fileName}</a>`;
+      }
+    },
+    {
+      regex: /(https?:\/\/[^\s<>]+)/g,
+      process: (match) => `<a href="${match}" target="_blank" rel="noopener noreferrer" class="log-link">${match}</a>`
+    }
+  ];
+
+  let result = msg;
+  const replacements = [];
+
+  // 1. 用特殊占位符替换所有匹配的链接
+  patterns.forEach(({ regex, process }) => {
+    result = result.replace(regex, (match) => {
+      const placeholder = `\x00LINK${replacements.length}\x00`;
+      replacements.push(process(match));
+      return placeholder;
+    });
+  });
+
+  // 2. 对剩余纯文本进行 HTML 转义（跳过占位符）
+  result = result.replace(/[&<>"']/g, (char) => {
+    const map = {
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#039;'
+    };
+    return map[char];
+  });
+
+  // 3. 将占位符替换回真正的 <a> 标签（不会被转义）
+  result = result.replace(/\x00LINK(\d+)\x00/g, (_, index) => {
+    return replacements[Number(index)];
+  });
+
+  return result;
+};
+
+
+// ---------- 生命周期 ----------
+onMounted(() => {
+  //loadTaskDetail();
+  startLogStream();
+});
+
 onUnmounted(() => {
-  if (logEventSource) logEventSource.close();
+  if (abortController) abortController.abort();
 });
 </script>
 
@@ -129,8 +256,8 @@ onUnmounted(() => {
   margin-top: 20px;
 }
 .log-container {
-  max-height: 300px;
-  overflow-y: auto;
+  /* max-height: 300px; */
+  /* overflow-y: auto; */
   background: #f9f9f9;
   padding: 8px;
   font-family: monospace;
@@ -145,4 +272,20 @@ onUnmounted(() => {
 .log-line.ERROR { color: #d32f2f; }
 .log-time { color: #999; margin-right: 8px; }
 .log-msg { color: #333; }
+
+
+</style>
+
+<style>
+/* 全局样式，影响所有 .log-link */
+.log-link {
+  color: #19974d;
+  text-decoration: none;
+  font-size: 22px;
+  font-style: italic;
+  font-weight: bold;
+}
+.log-link:hover {
+  color: #284233;
+}
 </style>

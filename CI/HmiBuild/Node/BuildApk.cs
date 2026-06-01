@@ -28,7 +28,6 @@ namespace BuildSystem
             // 使用 StreamWriter 写入日志，设置 AutoFlush 保证实时落盘
             using var logWriter = new StreamWriter(logPath, append: false) { AutoFlush = true };
 
-
             try
             {
                 await logWriter.WriteLineAsync($"[{DateTime.Now}] Build started.");
@@ -58,7 +57,11 @@ namespace BuildSystem
                     }
 
                     // 模拟生成 APK 文件路径
-                    string apkPath = System.IO.Path.Combine(projectPath, "app.apk");
+                    string apkPath = System.IO.Path.Combine(workPath, "app.apk");
+                    File.Create(apkPath).Close();
+
+                    await logWriter.WriteLineAsync($"[{DateTime.Now}] APK: Artifact/{pipeline.Guid}/app.apk");
+
                     SetOutputValue("ApkPath", apkPath);
                     await logWriter.WriteLineAsync($"[{DateTime.Now}] APK path set to: {apkPath}");
                 });
